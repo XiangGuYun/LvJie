@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="116dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="15dp"
+    android:background="@drawable/bg_rect_white">
+
+    <ImageView
+        android:id="@+id/ivPoint"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/gudingdian"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="29dp"/>
+
+    <TextView
+        android:id="@+id/tvPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="固定点"
+        android:textColor="#fffa6164"
+        android:textSize="12sp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="22dp"
+        android:layout_marginBottom="28dp"
+        />
+
+    <LinearLayout
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvDeviceNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备编号：20200000"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:id="@+id/tvDeviceLocation"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备位置：188,188"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:id="@+id/tvInstallDate"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="安装时间：2020-05-15"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:id="@+id/tvDataUpdateDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="数据更新时间：2020-05-15 12:10:30"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="7dp"
+        android:layout_height="12dp"
+        android:src="@mipmap/more"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="15dp"/>
+
+</FrameLayout>

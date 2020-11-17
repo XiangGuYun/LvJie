@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="46dp">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="算法1"
+        android:textColor="#ff333333"
+        android:textSize="14sp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="bottom"
+        android:background="#F7F7FB"/>
+
+    <ImageView
+        android:id="@+id/ivGou"
+        android:visibility="invisible"
+        android:layout_width="17dp"
+        android:layout_height="13dp"
+        android:src="@mipmap/gou"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="15dp"/>
+
+</FrameLayout>

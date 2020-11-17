@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.RealtimeDataActivity">
+
+    <include layout="@layout/header"/>
+
+    <FrameLayout
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="77dp">
+        <TextView
+            android:id="@+id/tvSheBeiBianHao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备编号：20200000"
+            android:textColor="#ff333333"
+            android:textSize="14sp"
+            />
+        <TextView
+            android:id="@+id/tvDianQianShiJian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="当前时间：2020-10-27 9:18:00"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:id="@+id/tvDianLiang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电量：51%"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            android:layout_gravity="right|bottom"
+            />
+    </FrameLayout>
+
+    <include layout="@layout/line_5dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="37dp"
+            android:src="@mipmap/guang_qiang_du"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="50dp"/>
+
+        <TextView
+            android:id="@+id/tvQiangDu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="强度：95"
+            android:textColor="#ff333333"
+            android:textSize="24sp"
+            android:layout_marginLeft="102dp"
+            android:layout_marginTop="54dp"
+            />
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@mipmap/pin_lv_big"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="127dp"/>
+
+        <TextView
+            android:id="@+id/tvPinLv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="频率：1450Hz"
+            android:textColor="#ff333333"
+            android:textSize="24sp"
+            android:layout_marginLeft="102dp"
+            android:layout_marginTop="128dp"
+            />
+
+        <FrameLayout
+            android:id="@+id/btnRefresh"
+            android:layout_marginTop="251dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_circle_blue1"
+            android:layout_width="117dp"
+            android:layout_height="117dp">
+            <TextView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:text="刷新"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_circle_blue"
+                />
+        </FrameLayout>
+    </FrameLayout>
+
+</LinearLayout>

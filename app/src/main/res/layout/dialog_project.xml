@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="170dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_project">
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:text="退出后将无法查看设备数据，确定\n要退出吗？"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:textColor="#3A3A3A"
+        android:textSize="14sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#c74D4D4D"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tvCancel"
+            android:text="取消"
+            android:textSize="17sp"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:textColor="#666666"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <View
+            android:id="@+id/line"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#c74D4D4D"/>
+        <TextView
+            android:id="@+id/tvConfirm"
+            android:text="确定"
+            android:textSize="17sp"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:textColor="#3C79FB"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

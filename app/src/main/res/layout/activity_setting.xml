@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@color/white"
+    tools:context=".activity.SettingActivity"
+    android:orientation="vertical">
+
+    <include layout="@layout/header"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvSetting"/>
+
+    <FrameLayout
+        android:background="#F7F7FB"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/tvQuitDebugMode"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="退出调试模式"
+            android:textColor="#ffffffff"
+            android:background="@drawable/bg_blue_button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="68dp"
+            android:textSize="16sp"
+            />
+    </FrameLayout>
+
+</LinearLayout>
