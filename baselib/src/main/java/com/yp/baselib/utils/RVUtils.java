@@ -35,7 +35,7 @@ public class RVUtils {
     public Context context;
     private EasyRVAdapter adapter;
     public List dataList;
-    private int gridSpanCount = 1;
+    public int gridSpanCount = 1;
     public boolean needHeader = false;
     public boolean needFooter = false;
     @NotNull

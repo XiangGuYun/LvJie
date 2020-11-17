@@ -128,17 +128,27 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     }
 
     private fun doUnBondedDeviceList() {
-        rvDisconnectDevices.wrap.rvAdapter(
-            listUnBonded,
-            { h, p ->
-                h.tv(R.id.tvName).txt(listUnBonded[p].name)
-                h.tv(R.id.tvAddress).txt(listUnBonded[p].address)
+        rvDisconnectDevices.wrap.generate(listUnBonded,
+            {
+                h, i, it ->
+                h.tv(R.id.tvName).txt(it.name)
+                h.tv(R.id.tvAddress).txt(it.address)
                 h.v(R.id.btnConn).click {
                     "正在连接".toast()
-                    BusUtils.post(MsgWhat.CONNECT_DEVICE, listUnBonded[p])
+                    BusUtils.post(MsgWhat.CONNECT_DEVICE, it)
                 }
-            }, R.layout.item_device1
-        )
+            }, null, R.layout.item_device1)
+//        rvDisconnectDevices.wrap.rvAdapter(
+//            listUnBonded,
+//            { h, p ->
+//                h.tv(R.id.tvName).txt(listUnBonded[p].name)
+//                h.tv(R.id.tvAddress).txt(listUnBonded[p].address)
+//                h.v(R.id.btnConn).click {
+//                    "正在连接".toast()
+//                    BusUtils.post(MsgWhat.CONNECT_DEVICE, listUnBonded[p])
+//                }
+//            }, R.layout.item_device1
+//        )
     }
 
     private fun doBondedDeviceList() {

@@ -1,6 +1,7 @@
 package com.yp.baselib.ex
 
 import android.support.v7.widget.*
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup
 import android.text.Html
 import android.view.View
 import android.widget.EditText
@@ -9,9 +10,70 @@ import android.widget.TextView
 import com.kotlinlib.common.Holder
 import com.kotlinlib.common.StringEx
 import com.yp.baselib.utils.RVUtils
+import com.yuyh.easyadapter.recyclerview.EasyRVAdapter
+import com.yuyh.easyadapter.recyclerview.EasyRVHolder
 
 
 interface RvEx : StringEx {
+
+
+    fun <T> RVUtils.generate(
+        data: List<T>,
+        doItem: (h: Holder, i: Int, it: T) -> Unit,
+        getLayoutIndex: ((i: Int) -> Int)? = null,
+        vararg itemLayoutId: Int
+    ) {
+        if (rv.layoutManager == null) {
+            rv.layoutManager = LinearLayoutManager(context)
+        }
+        rv.adapter = object : EasyRVAdapter<T>(context, data, *itemLayoutId) {
+            override fun onBindData(
+                viewHolder: EasyRVHolder,
+                position: Int,
+                item: T
+            ) {
+                doItem.invoke(viewHolder, position, item)
+            }
+
+            override fun getLayoutIndex(layoutIndex: Int, item: T): Int {
+                return getLayoutIndex?.invoke(layoutIndex) ?: 0
+            }
+
+            override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+                val layoutManager =
+                    recyclerView.layoutManager
+                if (layoutManager is GridLayoutManager) {
+                    layoutManager.spanSizeLookup = object : SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (needHeader && !needFooter) {
+                                if (position == 0) {
+                                    gridSpanCount
+                                } else {
+                                    1
+                                }
+                            } else if (needHeader && needFooter) {
+                                if (position == 0 || position == dataList.size - 1) {
+                                    gridSpanCount
+                                } else {
+                                    1
+                                }
+                            } else if (!needHeader && needFooter) {
+                                if (position == dataList.size - 1) {
+                                    gridSpanCount
+                                } else {
+                                    1
+                                }
+                            } else {
+                                1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        rv.adapter = adapter
+    }
+
     /**
      * 设置适配器
      * @receiver RVUtils
@@ -20,19 +82,27 @@ interface RvEx : StringEx {
      * @param itemId Int 列表项ID
      * @return RVUtils
      */
-    fun <T> RVUtils.rvAdapter(data: ArrayList<T>?,
-                              fun1: (holder: Holder, pos: Int) -> Unit,
-                              itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView { 0 }, itemId)
+    fun <T> RVUtils.rvAdapter(
+        data: ArrayList<T>?,
+        fun1: (holder: Holder, pos: Int) -> Unit,
+        itemId: Int
+    ): RVUtils {
+        adapter(
+            data, RVUtils.onBindData(fun1),
+            RVUtils.SetMultiCellView { 0 }, itemId
+        )
         return this
     }
 
-    fun <T> RVUtils.rvAdapter(data: List<T>?,
-                              fun1: (holder: Holder, pos: Int) -> Unit,
-                              itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView { 0 }, itemId)
+    fun <T> RVUtils.rvAdapter(
+        data: List<T>?,
+        fun1: (holder: Holder, pos: Int) -> Unit,
+        itemId: Int
+    ): RVUtils {
+        adapter(
+            data, RVUtils.onBindData(fun1),
+            RVUtils.SetMultiCellView { 0 }, itemId
+        )
         return this
     }
 
@@ -63,21 +133,29 @@ interface RvEx : StringEx {
      * @param itemId IntArray 传入可变长度的ID数组
      * @return RVUtils
      */
-    fun <T> RVUtils.rvMultiAdapter(data: ArrayList<T>,
-                                   fun1: (holder: Holder, pos: Int) -> Unit,
-                                   fun2: (pos: Int) -> Int,
-                                   vararg itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView(fun2), *itemId)
+    fun <T> RVUtils.rvMultiAdapter(
+        data: ArrayList<T>,
+        fun1: (holder: Holder, pos: Int) -> Unit,
+        fun2: (pos: Int) -> Int,
+        vararg itemId: Int
+    ): RVUtils {
+        adapter(
+            data, RVUtils.onBindData(fun1),
+            RVUtils.SetMultiCellView(fun2), *itemId
+        )
         return this
     }
 
-    fun <T> RVUtils.rvMultiAdapter(data: List<T>,
-                                   fun1: (holder: Holder, pos: Int) -> Unit,
-                                   fun2: (pos: Int) -> Int,
-                                   vararg itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView(fun2), *itemId)
+    fun <T> RVUtils.rvMultiAdapter(
+        data: List<T>,
+        fun1: (holder: Holder, pos: Int) -> Unit,
+        fun2: (pos: Int) -> Int,
+        vararg itemId: Int
+    ): RVUtils {
+        adapter(
+            data, RVUtils.onBindData(fun1),
+            RVUtils.SetMultiCellView(fun2), *itemId
+        )
         return this
     }
 
@@ -91,12 +169,14 @@ interface RvEx : StringEx {
      * @param handleNormalLayoutIndex (pos:Int)->Int
      * @param itemId IntArray
      */
-    fun <T> RVUtils.rvAdapterH(data: List<T>,
-                               headerViewId: Int,
-                               handleHeaderView: (holder: Holder) -> Unit,
-                               handleNormalView: (holder: Holder, pos: Int) -> Unit,
-                               handleNormalLayoutIndex: (pos: Int) -> Int,
-                               vararg itemId: Int) {
+    fun <T> RVUtils.rvAdapterH(
+        data: List<T>,
+        headerViewId: Int,
+        handleHeaderView: (holder: Holder) -> Unit,
+        handleNormalView: (holder: Holder, pos: Int) -> Unit,
+        handleNormalLayoutIndex: (pos: Int) -> Int,
+        vararg itemId: Int
+    ) {
         needHeader = true
         rvMultiAdapter(data, { holder, pos ->
             when (pos) {
@@ -125,14 +205,16 @@ interface RvEx : StringEx {
      * @param handleNormalLayoutIndex (pos:Int)->Int
      * @param itemId IntArray
      */
-    fun <T> RVUtils.rvAdapterHF(data: List<T>,
-                                headerViewId: Int,
-                                handleHeaderView: (headerHolder: Holder) -> Unit,
-                                footerViewId: Int,
-                                handleFooterView: (footerHolder: Holder) -> Unit,
-                                handleNormalView: (normalHolder: Holder, pos: Int) -> Unit,
-                                handleNormalLayoutIndex: (pos: Int) -> Int,
-                                vararg itemId: Int): RVUtils {
+    fun <T> RVUtils.rvAdapterHF(
+        data: List<T>,
+        headerViewId: Int,
+        handleHeaderView: (headerHolder: Holder) -> Unit,
+        footerViewId: Int,
+        handleFooterView: (footerHolder: Holder) -> Unit,
+        handleNormalView: (normalHolder: Holder, pos: Int) -> Unit,
+        handleNormalLayoutIndex: (pos: Int) -> Int,
+        vararg itemId: Int
+    ): RVUtils {
         needHeader = true
         needFooter = true
         rvMultiAdapter(data, { holder, pos ->
@@ -275,14 +357,22 @@ interface RvEx : StringEx {
      * 添加分割线
      */
     fun RVUtils.decorate(drawableId: Int, isVertical: Boolean = true): RVUtils {
-        val divider = DividerItemDecoration(context, if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL)
+        val divider = DividerItemDecoration(
+            context,
+            if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL
+        )
         divider.setDrawable(context.resources.getDrawable(drawableId))
         rv.addItemDecoration(divider)
         return this
     }
 
     fun RVUtils.decorate(isVertical: Boolean = true): RVUtils {
-        rv.addItemDecoration(DividerItemDecoration(context, if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL))
+        rv.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL
+            )
+        )
         return this
     }
 
