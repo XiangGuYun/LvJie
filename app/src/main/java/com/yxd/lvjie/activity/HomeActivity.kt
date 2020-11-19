@@ -37,6 +37,7 @@ import org.greenrobot.eventbus.Subscribe
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
 
+    private var isConnectedDevice: Boolean = false
     private lateinit var currentDevAddress: String
     private lateinit var currentDevName: String
 
@@ -131,9 +132,14 @@ class HomeActivity : BaseActivity() {
                     when (p) {
                         0 -> goTo<DeviceConnectActivity>()
                         1 -> {
-                            CmdUtils.getStrengthAndFrequency()
                         }
-                        2 -> goTo<RealtimeDataActivity>()
+                        2 -> {
+                            if(!isConnectedDevice){
+                                "请先连接设备".toast()
+                                return@click
+                            }
+                            goTo<RealtimeDataActivity>()
+                        }
                     }
                 }
             },
@@ -205,6 +211,7 @@ class HomeActivity : BaseActivity() {
             //连接成功
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
+                    isConnectedDevice = true
                     BusUtils.post(MsgWhat.HIDE_DIALOG)
                     BusUtils.post(
                         MsgWhat.CONNECT_SUCCESS,
@@ -218,6 +225,7 @@ class HomeActivity : BaseActivity() {
                 }
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     //connect break (连接断开)
+                    isConnectedDevice = false
                     "设备断开了连接".logD("CmdTag")
                     BusUtils.post(DEVICE_DISCONNECT)
                     listBonded.clear()
