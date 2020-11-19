@@ -13,11 +13,15 @@ abstract class ProjectBaseActivity : BaseActivity() {
         }
 
         findViewById<TextView>(ResUtils.getId(this, "tvTitle"))?.let {
-            when (javaClass.simpleName) {
-                "DeviceListActivity" -> it.txt("设备列表")
-                "RealtimeDataActivity"-> it.txt("实时数据")
-                else->{}
-            }
+            it.txt(
+                when (javaClass.simpleName) {
+                    "DeviceListActivity" -> "设备列表"
+                    "RealtimeDataActivity" -> "实时数据"
+                    "DeviceMarkActivity" -> "设备标定"
+                    else -> ""
+                }
+            )
+
         }
 
     }

@@ -5,6 +5,7 @@ import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.base.BaseActivity
 import com.yxd.lvjie.R
 import com.yxd.lvjie.dialog.ProjectDialog
+import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.advanced_settings.*
 import kotlinx.android.synthetic.main.enter_advanced_settings.*
 import kotlinx.android.synthetic.main.header.*
@@ -24,15 +25,17 @@ class AdvancedSettingActivity : BaseActivity() {
                 "请输入密码".toast()
                 return@click
             }
-            if(etPassword.str != "123456"){
-                ProjectDialog(this).setInfo("密码输入错误，请输入正确的密码",
-                    "确定", false){
-                    it.dismiss()
-                }.show()
-                return@click
+            Req.verifyPassword(etPassword.str){
+                if(it.code == 0){
+                    tvTitle.text = "高级设置"
+                    llEnterPassword.gone()
+                } else {
+                    ProjectDialog(this).setInfo("密码输入错误，请输入正确的密码",
+                        "确定", false){
+                        it.dismiss()
+                    }.show()
+                }
             }
-            tvTitle.text = "高级设置"
-            llEnterPassword.gone()
         }
 
         val list = listOf("设备标定", "主控制板寄存器表")
@@ -41,7 +44,7 @@ class AdvancedSettingActivity : BaseActivity() {
             h.tv(R.id.tvName).txt(list[p])
             h.itemClick {
                 when(p){
-                    0->goTo<DeviceBiaoDingActivity>()
+                    0->goTo<DeviceMarkActivity>()
                     1->{
 
                     }

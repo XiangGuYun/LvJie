@@ -10,8 +10,6 @@ import kotlinx.android.synthetic.main.activity_setting.*
 class SettingActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
-
-
         val listSetting = listOf(
                 "固件版本" to "V1.0 升级",
                 "line" to "",
@@ -33,6 +31,13 @@ class SettingActivity : ProjectBaseActivity() {
                         h.tv(R.id.tvRight).txt(listSetting[p].second)
                         if(p == 3) h.iv(R.id.ivMore).hide()
                     }
+                   h.itemClick {
+                       when(listSetting[p].first){
+                           "高级设置"->{
+                               goTo<AdvancedSettingActivity>()
+                           }
+                       }
+                   }
                 },{
             when{
                 it == 0 -> 0

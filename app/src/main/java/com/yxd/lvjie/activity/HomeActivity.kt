@@ -140,6 +140,9 @@ class HomeActivity : BaseActivity() {
                             }
                             goTo<RealtimeDataActivity>()
                         }
+                        8->{
+                            goTo<SettingActivity>()
+                        }
                     }
                 }
             },
@@ -193,7 +196,7 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun connectDevice(device: BluetoothDevice) {
-        //如果是连接状态，断开，重新连接
+        // 如果是连接状态，断开，重新连接
         if (BluetoothLeService.getConnectionState() !== BluetoothLeService.STATE_DISCONNECTED)
             BluetoothLeService.disconnect()
         currentDevName = device.name
@@ -207,8 +210,7 @@ class HomeActivity : BaseActivity() {
     private val mGattUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // Status received when connected to GATT Server
-            intent.action?.logD("dasfsdfsfgre")
-            //连接成功
+            // 连接成功
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
                     isConnectedDevice = true
@@ -217,14 +219,14 @@ class HomeActivity : BaseActivity() {
                         MsgWhat.CONNECT_SUCCESS,
                         BtDevice(currentDevName, currentDevAddress)
                     )
-                    //搜索服务
+                    // 搜索服务
                     BluetoothLeService.discoverServices()
                 }
                 BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED -> {
                     prepareData(BluetoothLeService.getSupportedGattServices())
                 }
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
-                    //connect break (连接断开)
+                    // connect break (连接断开)
                     isConnectedDevice = false
                     "设备断开了连接".logD("CmdTag")
                     BusUtils.post(DEVICE_DISCONNECT)

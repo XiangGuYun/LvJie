@@ -32,10 +32,10 @@ object Req {
      */
     fun verifyPassword(password: String, callback: (DeviceMarkEditBean) -> Unit) {
         OkUtils.postForm<DeviceMarkEditBean>(
-            URL.LOGIN,
+            URL.PWD_VERIFY,
             {
                 callback.invoke(it)
-            }, "password" to password
+            }, "password" to password, handleResponseCode = false
         )
     }
 

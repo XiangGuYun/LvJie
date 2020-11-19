@@ -20,7 +20,7 @@ class PopupUtils(
         onDismiss: (() -> Unit)? = null
 ) {
 
-    private var window: PopupWindow
+    var window: PopupWindow
 
     var windowView: View = LayoutInflater.from(ctx).inflate(layoutId, null)
 
