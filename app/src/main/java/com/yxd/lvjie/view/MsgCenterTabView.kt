@@ -14,7 +14,6 @@ class MsgCenterTabView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     init {
         addView(LayoutInflater.from(context).inflate(R.layout.tabview_msg_center, null))
-
     }
 
     override fun onDeselected(index: Int, totalCount: Int) {

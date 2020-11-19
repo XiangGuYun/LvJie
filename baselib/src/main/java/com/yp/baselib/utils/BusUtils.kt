@@ -8,6 +8,19 @@ import org.greenrobot.eventbus.EventBus
  */
 object BusUtils {
 
+    fun post(what: Int) {
+        val msg = Message.obtain()
+        msg.what = what
+        EventBus.getDefault().post(msg)
+    }
+
+    fun post(what: Int, obj: Any? = null) {
+        val msg = Message.obtain()
+        msg.what = what
+        if (obj != null) msg.obj = obj
+        EventBus.getDefault().post(msg)
+    }
+
     /**
      * 发送普通消息
      */

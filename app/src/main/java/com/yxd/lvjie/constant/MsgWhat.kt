@@ -24,4 +24,22 @@ object MsgWhat {
      * 发送Hex指令
      */
     const val SEND_COMMAND = 0x006
+
+    const val SHOW_DIALOG = 0x007
+
+    const val HIDE_DIALOG = 0x008
+
+    const val CONNECT_OVERTIME = 0x009
+
+    const val DEVICE_DISCONNECT = 0x010
+
+    /**
+     * 获取强度和频率
+     */
+    const val CMD_STRENGTH_FREQ = 0x100
+
+    /**
+     * 获取电量
+     */
+    const val CMD_EQ = 0x101
 }

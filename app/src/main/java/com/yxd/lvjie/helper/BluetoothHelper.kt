@@ -132,9 +132,8 @@ class BluetoothHelper private constructor() {
         if (adapter.isDiscovering) {
             //判断蓝牙是否正在扫描，如果是调用取消扫描方法；如果不是，则开始扫描
             adapter.cancelDiscovery();
-        } else {
-            adapter.startDiscovery();
         }
+        adapter.startDiscovery();
     }
 
     /**
@@ -307,6 +306,10 @@ class BluetoothHelper private constructor() {
 
         }
 
+    }
+
+    fun isDiscovering(): Boolean {
+        return adapter.isDiscovering
     }
 
 }

@@ -1,4 +1,4 @@
-package com.kotlinlib.view.edittext
+package com.yp.baselib.listener
 
 import android.text.TextWatcher
 import com.yp.baselib.listener.TextWatcherImpl

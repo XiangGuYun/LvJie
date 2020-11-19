@@ -98,7 +98,7 @@ public class AppUtils {
                 intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
             } else {
                 //当为允许安装未知来源应用时
-//                Toast.toast("请允许安装未知来源应用");
+                ToastUtils.toast("请允许安装未知来源应用");
                 //跳转至“安装未知应用”权限界面，引导用户开启权限，可以在onActivityResult中接收权限的开启结果
                 Uri packageURI = Uri.parse("package:" + ctx.getPackageName());
                 Intent intent1 = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);

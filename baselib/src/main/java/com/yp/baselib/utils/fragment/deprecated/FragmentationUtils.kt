@@ -1,4 +1,4 @@
-//package com.yp.baselib.utils.fragment
+package com.yp.baselib.utils.fragment.deprecated//package com.yp.baselib.utils.fragment
 //
 //import me.yokeyword.fragmentation.ISupportFragment
 //import me.yokeyword.fragmentation.SupportActivity

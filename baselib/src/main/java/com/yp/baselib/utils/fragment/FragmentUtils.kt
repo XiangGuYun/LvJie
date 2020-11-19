@@ -1,4 +1,4 @@
-package com.yp.baselib.utils.fragment.old
+package com.yp.baselib.utils.fragment
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
@@ -14,6 +14,10 @@ class FragmentUtils<T : Fragment> {
 
     private var manager: FragmentManager? = null
     var fragments = ArrayList<T>()
+
+    /**
+     * 注意：如果在同一个Activity中要是用多个FragmentUtils，这个id值尽量不要重复
+     */
     private var contentId: Int = 0
     private var act: FragmentActivity
 
@@ -25,6 +29,18 @@ class FragmentUtils<T : Fragment> {
         fragments.add(fragment)
         transaction.replace(contentId, fragment)
         transaction.commit()
+    }
+
+    constructor(a: FragmentActivity, list: List<T>, contentId: Int) {
+        act = a
+        manager = a.supportFragmentManager
+        this.contentId = contentId
+        val transaction = manager!!.beginTransaction()
+        fragments.addAll(list)
+        if(list.size != 0){
+            transaction.replace(contentId, list[0])
+        }
+        transaction.commitAllowingStateLoss()
     }
 
     constructor(a: FragmentActivity, list: ArrayList<T>, contentId: Int) {
@@ -103,7 +119,26 @@ class FragmentUtils<T : Fragment> {
         return true
     }
 
-    infix fun switch(index: Int): Boolean {
+    fun switch(index: Int): Boolean {
+        val targetFragment = fragments[index]
+        //fragments.remove(targetFragment)
+        val transaction = manager!!.beginTransaction()
+        if (!targetFragment.isAdded) {    // 先判断是否被add过
+            for (i in fragments.indices) {
+                if (fragments[i].isAdded) transaction.hide(fragments[i])
+            }
+            transaction.add(contentId, targetFragment).commit() // 隐藏当前的fragment，add下一个到Activity中
+        } else {
+            for (i in fragments.indices) {
+                if (fragments[i].isAdded) transaction.hide(fragments[i])
+            }
+            transaction.show(targetFragment).commit() // 隐藏当前的fragment，显示下一个
+        }
+        //fragments.add(targetFragment)
+        return true
+    }
+
+    fun switchFrag(index: Int): Boolean {
         val targetFragment = fragments[index]
         //fragments.remove(targetFragment)
         val transaction = manager!!.beginTransaction()

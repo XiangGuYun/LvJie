@@ -1,11 +1,10 @@
-package com.kotlinlib.view.base
+package com.yp.baselib.ex
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -21,8 +20,8 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.*
 import com.jakewharton.rxbinding2.view.RxView
+import com.yp.baselib.listener.OnSeekBarChange
 import com.yp.baselib.utils.DensityUtils.Companion.dip2px
-import com.kotlinlib.common.listener.OnSeekBarChange
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -123,7 +122,7 @@ interface ViewEx {
      * 显示1~N个View
      * @param views Array<out T>
      */
-    fun <T : View> showViews(vararg views: T) {
+    fun <T : View> show(vararg views: T) {
         views.forEach {
             it.show()
         }
@@ -176,32 +175,37 @@ interface ViewEx {
     }
 
     /**
-     * 设置点击事件，1秒内最多允许触发一次
-     */
-    infix fun <T : View> T.click(func: (View) -> Unit): T {
-        preventRepeatedClick(View.OnClickListener {
-            func.invoke(it)
-        }, 1)
-        return this
-    }
-
-    /**
      * 设置点击事件
+     * @param limitSecond 限制N秒内只允许触发一次点击时间，如果是0，则不限制
      */
-    infix fun <T : View> T.click(c: View.OnClickListener): T {
-        setOnClickListener(c)
-        return this
-    }
-
-    /**
-     * 设置点击事件
-     */
-    fun <T : View> T.click1(func: () -> Unit): T {
-        setOnClickListener {
-            func.invoke()
+    fun <T : View> T.click(limitSecond: Int = 0, func: (View) -> Unit): T {
+        if (limitSecond == 0) {
+            setOnClickListener(func)
+        } else {
+            preventRepeatedClick({
+                func.invoke(it)
+            }, 1)
         }
         return this
     }
+
+    /**
+     * 设置点击事件
+     */
+//    infix fun <T : View> T.click(c: View.OnClickListener): T {
+//        setOnClickListener(c)
+//        return this
+//    }
+
+    /**
+     * 设置点击事件
+     */
+//    fun <T : View> T.click1(func: () -> Unit): T {
+//        setOnClickListener {
+//            func.invoke()
+//        }
+//        return this
+//    }
 
     /**
      * 取消点击事件
@@ -273,27 +277,19 @@ interface ViewEx {
     }
 
     /**
-     * 反转可见性1(VISIBLE & INVISIBLE)
-     */
-    fun View.rvtVis1(): View {
-        visibility = if (visibility == View.INVISIBLE) View.VISIBLE else View.INVISIBLE
-        return this
-    }
-
-    /**
      * 反转可见性2(VISIBLE & GONE)，并设置对应事件
      * @receiver View
      * @param onVis Function0<Unit> 设置View为VISIBLE之后的回调
      * @param onGone Function0<Unit> 设置View为GONE之后的回调
      * @return View
      */
-    fun View.rvtVis2(onVis: () -> Unit, onGone: () -> Unit): View {
+    fun View.revertVisible(onVis: (() -> Unit)? = null, onGone: (() -> Unit)? = null): View {
         if (visibility == View.GONE) {
             visibility = View.VISIBLE
-            onVis.invoke()
+            onVis?.invoke()
         } else {
             visibility = View.GONE
-            onGone.invoke()
+            onGone?.invoke()
         }
         return this
     }
@@ -303,7 +299,7 @@ interface ViewEx {
      * 扩展: https://blog.csdn.net/hust_twj/article/details/78742453
      */
     fun View.limitClick(click: (v: View) -> Unit) {
-        preventRepeatedClick(View.OnClickListener {
+        preventRepeatedClick({
             click.invoke(it)
         })
     }
@@ -315,7 +311,7 @@ interface ViewEx {
      * @param time Long 间隔时间，默认是2秒
      */
     fun View.limitClickByTime(click: (v: View) -> Unit, time: Long = 2) {
-        preventRepeatedClick(View.OnClickListener {
+        preventRepeatedClick({
             click.invoke(it)
         }, time)
     }
@@ -404,6 +400,15 @@ interface ViewEx {
             this.visibility = View.VISIBLE
         } else {
             this.visibility = View.GONE
+        }
+        return this
+    }
+
+    fun <T : View> T.showOrHide(result: Boolean): T {
+        if (result) {
+            this.visibility = View.VISIBLE
+        } else {
+            this.visibility = View.INVISIBLE
         }
         return this
     }
@@ -678,7 +683,7 @@ interface ViewEx {
     /**
      * 设置ViewPager适配器
      */
-    fun ViewPager.setViewAdapter(count:Int, getPageView:(pos:Int)->View){
+    fun ViewPager.setViewAdapter(count: Int, getPageView: (pos: Int) -> View) {
         val pagerAdapter: PagerAdapter = object : PagerAdapter() {
             override fun getCount(): Int {
                 return count
@@ -704,10 +709,10 @@ interface ViewEx {
     /**
      * 为ViewPager绑定TabLayout
      */
-    fun ViewPager.bindTabLayout( tabLayout: TabLayout,
-                                 tabCount:Int,
-                                 isScroll: Boolean,
-                                 listener: (TabLayout.Tab?, Int)->Unit){
+    fun ViewPager.bindTabLayout(tabLayout: TabLayout,
+                                tabCount: Int,
+                                isScroll: Boolean,
+                                listener: (TabLayout.Tab?, Int) -> Unit) {
         if (isScroll) {
             tabLayout.tabMode = TabLayout.MODE_SCROLLABLE //设置滑动Tab模式
         } else {

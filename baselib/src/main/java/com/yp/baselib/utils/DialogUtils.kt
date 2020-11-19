@@ -55,6 +55,32 @@ object DialogUtils {
         return builder.create()
     }
 
+    fun createMessageBuilder(ctx: Context,
+                            message: String,
+                            title: String? = null,
+                            yes: String? = null,
+                            no: String? = null,
+                            yesCallback: ((dialog: DialogInterface) -> Unit)? = null,
+                            noCallback: ((dialog: DialogInterface) -> Unit)? = null
+    ): AlertDialog.Builder {
+        val builder = AlertDialog.Builder(ctx)
+        builder.setMessage(message)
+        if (title != null) {
+            builder.setTitle(title)
+        }
+        if (yes != null) {
+            builder.setPositiveButton(yes) { dialog, _ ->
+                yesCallback?.invoke(dialog!!)
+            }
+        }
+        if (no != null) {
+            builder.setNegativeButton(no) { dialog, _ ->
+                noCallback?.invoke(dialog!!)
+            }
+        }
+        return builder
+    }
+
     /**
      * 设置自定义视图弹窗
      */
@@ -67,6 +93,32 @@ object DialogUtils {
                                noCallback: ((dialog: DialogInterface) -> Unit)? = null): AlertDialog {
         val builder = AlertDialog.Builder(ctx)
         builder.setView(layoutId)
+        if (title != null) {
+            builder.setTitle(title)
+        }
+        if (yes != null) {
+            builder.setPositiveButton(yes) { dialog, _ ->
+                yesCallback?.invoke(dialog!!)
+            }
+        }
+        if (no != null) {
+            builder.setNegativeButton(no) { dialog, _ ->
+                noCallback?.invoke(dialog!!)
+            }
+        }
+        return builder.create()
+
+    }
+
+    fun createCustomViewDialog(ctx: Context,
+                               viewId: View,
+                               title: String? = null,
+                               yes: String? = null,
+                               no: String? = null,
+                               yesCallback: ((dialog: DialogInterface) -> Unit)? = null,
+                               noCallback: ((dialog: DialogInterface) -> Unit)? = null): AlertDialog {
+        val builder = AlertDialog.Builder(ctx)
+        builder.setView(viewId)
         if (title != null) {
             builder.setTitle(title)
         }

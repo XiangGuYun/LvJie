@@ -1,6 +1,5 @@
 package com.yxd.lvjie.activity
 
-import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
@@ -10,7 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import com.yp.baselib.annotation.Bus
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.base.BaseActivity
@@ -23,8 +21,11 @@ import com.yxd.lvjie.bean.MService
 import com.yxd.lvjie.constant.Constants
 import com.yxd.lvjie.constant.GattAttributes
 import com.yxd.lvjie.constant.MsgWhat
+import com.yxd.lvjie.constant.MsgWhat.DEVICE_DISCONNECT
 import com.yxd.lvjie.constant.Utils
+import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.service.BluetoothLeService
+import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_manager.*
 import org.greenrobot.eventbus.Subscribe
 
@@ -36,7 +37,6 @@ import org.greenrobot.eventbus.Subscribe
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
 
-    private lateinit var progressDialog: ProgressDialog
     private lateinit var currentDevAddress: String
     private lateinit var currentDevName: String
 
@@ -53,21 +53,26 @@ class HomeActivity : BaseActivity() {
         doConnectReceiverAndService()
     }
 
+    var cmdType = ""
+
     @Subscribe
     fun handle(msg: Message) {
         when (msg.what) {
             MsgWhat.CONNECT_DEVICE -> {
-                progressDialog.show()
+                BusUtils.post(MsgWhat.SHOW_DIALOG)
+                doDelayTask(10000) {
+                    BusUtils.post(MsgWhat.CONNECT_OVERTIME)
+                }
                 val device = msg.obj as BluetoothDevice
                 connectDevice(device)
             }
-            MsgWhat.NOTIFY ->{
+            MsgWhat.NOTIFY -> {
                 prepareBroadcastDataNotify(notifyCharacteristic)
             }
-            MsgWhat.STOP_NOTIFY ->{
+            MsgWhat.STOP_NOTIFY -> {
                 stopBroadcastDataNotify(notifyCharacteristic)
             }
-            MsgWhat.SEND_COMMAND ->{
+            MsgWhat.SEND_COMMAND -> {
                 val text = msg.obj.toString()
                 if (TextUtils.isEmpty(text)) {
                     return
@@ -75,6 +80,14 @@ class HomeActivity : BaseActivity() {
                 val command = text.replace(" ", "")
                 if (!Utils.isRightHexStr(command)) {
                     return
+                }
+                when (text) {
+                    "02 03 00 fa 00 04 64 0b" -> {
+                        cmdType = "强度和频率"
+                    }
+                    "02 03 00 d2 00 02 64 01" -> {
+                        cmdType = "电量"
+                    }
                 }
                 val array = Utils.hexStringToByteArray(command)
                 writeCharacteristic(writeCharacteristic, array)
@@ -97,8 +110,6 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun initView() {
-        progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("正在连接...")
         val listDeviceManager = listOf(
             R.mipmap.shebeilianjie to "设备连接",
             R.mipmap.shebeiliebiao to "设备列表",
@@ -119,6 +130,10 @@ class HomeActivity : BaseActivity() {
                 h.v(R.id.item).click {
                     when (p) {
                         0 -> goTo<DeviceConnectActivity>()
+                        1 -> {
+                            CmdUtils.getStrengthAndFrequency()
+                        }
+                        2 -> goTo<RealtimeDataActivity>()
                     }
                 }
             },
@@ -186,10 +201,11 @@ class HomeActivity : BaseActivity() {
     private val mGattUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // Status received when connected to GATT Server
+            intent.action?.logD("dasfsdfsfgre")
             //连接成功
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
-                    progressDialog.dismiss()
+                    BusUtils.post(MsgWhat.HIDE_DIALOG)
                     BusUtils.post(
                         MsgWhat.CONNECT_SUCCESS,
                         BtDevice(currentDevName, currentDevAddress)
@@ -202,18 +218,38 @@ class HomeActivity : BaseActivity() {
                 }
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     //connect break (连接断开)
+                    "设备断开了连接".logD("CmdTag")
+                    BusUtils.post(DEVICE_DISCONNECT)
                     listBonded.clear()
                     BusUtils.post(MsgWhat.CLEAR_BOUNDED_DEVICE)
-                    showDialog(R.string.conn_disconnected_home)
+                    if (actList.size == 1) {
+                        ProjectDialog(this@HomeActivity).setInfo(
+                            "设备已断开连接，请重新连接！", "确定",
+                            false
+                        ) {
+                            it.dismiss()
+                            goTo<DeviceConnectActivity>()
+                        }.show()
+                    }
                 }
                 BluetoothLeService.ACTION_DATA_AVAILABLE -> {
-                    Log.d("HomeTest", "2+++++++++++++++++")
-
                     val extras = intent.extras
                     if (extras!!.containsKey(Constants.EXTRA_BYTE_VALUE)) {
                         if (extras.containsKey(Constants.EXTRA_BYTE_UUID_VALUE)) {
                             val array = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE)
-                            Log.d("HomeTest", formatMsgContent(array))
+                            formatMsgContent(array)?.logD("CmdTag", "收到了反馈：")
+                            val hex = Utils.ByteArraytoHex(array).replace(" ", "")
+                            when (cmdType) {
+                                "强度和频率" -> {
+                                    val pair = CmdUtils.decodeStrengthAndFrequency(hex)
+                                    pair.toString().logD("CmdTag", "强度和频率：")
+                                    BusUtils.post(MsgWhat.CMD_STRENGTH_FREQ, pair)
+                                }
+                                "电量" -> {
+                                    val eq = CmdUtils.decodeElectricQuantity(hex)
+                                    BusUtils.post(MsgWhat.CMD_EQ, eq.toInt())
+                                }
+                            }
                         }
                     }
                 }
@@ -246,6 +282,7 @@ class HomeActivity : BaseActivity() {
         for (c in characteristics) {
             if (Utils.getPorperties(this, c) == "Notify") {
                 notifyCharacteristic = c
+                prepareBroadcastDataNotify(notifyCharacteristic)
                 continue
             }
             if (Utils.getPorperties(this, c) == "Write") {
@@ -253,7 +290,6 @@ class HomeActivity : BaseActivity() {
                 continue
             }
         }
-        ToastUtils.toast("准备完毕")
         BluetoothLeService.requestMtu(512)
     }
 
@@ -264,7 +300,6 @@ class HomeActivity : BaseActivity() {
                 characteristic,
                 bytes
             )
-            Log.d("HomeTest", "1++++++++++++++")
         } catch (e: Exception) {
             e.printStackTrace()
             ToastUtils.toast(e.localizedMessage)
@@ -275,6 +310,11 @@ class HomeActivity : BaseActivity() {
         super.onDestroy()
         unregisterReceiver(mGattUpdateReceiver)
         listBonded.clear()
+        stopBroadcastDataNotify(notifyCharacteristic)
+    }
+
+    override fun onBackPressedSupport() {
+        doExitVerify()
     }
 
 }

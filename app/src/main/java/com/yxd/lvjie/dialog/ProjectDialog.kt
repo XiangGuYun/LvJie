@@ -1,13 +1,13 @@
 package com.yxd.lvjie.dialog
 
 import android.app.Dialog
-import com.kotlinlib.common.Ctx
+import android.content.Context
 import com.kotlinlib.common.dialog.BaseDialog
 import com.yp.baselib.annotation.DialogInfo
 import com.yxd.lvjie.R
 
 @DialogInfo(270, 170, R.layout.dialog_project)
-class ProjectDialog(ctx: Ctx) : BaseDialog(ctx) {
+class ProjectDialog(ctx: Context) : BaseDialog(ctx) {
 
     init {
         dv.tv(R.id.tvCancel).click { dismiss() }

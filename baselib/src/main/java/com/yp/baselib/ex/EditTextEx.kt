@@ -7,8 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.kotlinlib.view.edittext.TextChanged
-import com.kotlinlib.view.textview.TextViewEx
+import com.yp.baselib.listener.TextChanged
 import com.yp.baselib.utils.RegexUtils
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
@@ -17,19 +16,18 @@ import java.util.regex.PatternSyntaxException
 /**
  * 输入框扩展类
  */
-interface EditTextEx: TextViewEx {
+interface EditTextEx : TextViewEx {
 
     /**
      * 设置文本
      */
-    infix fun <T : EditText> T.txt(text: String): T {
-        setText(text)
+    fun <T : EditText> T.txt(text: String?): T {
+        setText(text ?: "")
         return this
     }
 
     /**
      * 设置EditText输入的最大长度
-     * @param et EditText
      * @param max Int
      */
     fun EditText.setMaxLength(max: Int) {
@@ -108,7 +106,7 @@ interface EditTextEx: TextViewEx {
                     setSelection(str.length)
                 } else {
                     //TextView显示剩余字数
-                    tvWords.text = s.length.toString() + "/" + maxWords+"个字"
+                    tvWords.text = "${s.length}/${maxWords}个字"
                     selectionStart = selectionStart
                     selectionEnd = selectionEnd
                     if (wordNum.length > maxWords) {
@@ -192,7 +190,7 @@ interface EditTextEx: TextViewEx {
         val ss = SpannableString(getHint())
         val ass = AbsoluteSizeSpan(hintSize, true)
         ss.setSpan(ass, 0, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        setHint(SpannedString(ss))
+        hint = SpannedString(ss)
         return this
     }
 
@@ -202,17 +200,17 @@ interface EditTextEx: TextViewEx {
      * @param getResult 对搜索结果进行处理
      */
     @SuppressLint("CheckResult")
-    fun EditText.rxSearch(debounceTime:Long=1000, getResult:(keyWord:String)->Unit){
+    fun EditText.rxSearch(debounceTime: Long = 1000, getResult: (keyWord: String) -> Unit) {
         RxTextView.textChanges(this)//设置作用的EditText
-                .debounce(debounceTime, TimeUnit.MILLISECONDS)//只要600ms没有输入，就发送事件
+                .debounce(debounceTime, TimeUnit.MILLISECONDS)//只要debounceTime内没有输入，就发送事件
                 .map {
                     //获取用户当前输入的关键词
                     it.toString()
                 }
-                .subscribe{ keyWord->
+                .subscribe { keyWord ->
                     //对关键词进行处理
 //                    if(keyWord.isNotEmpty())
-                        getResult.invoke(keyWord)
+                    getResult.invoke(keyWord)
                 }
     }
 

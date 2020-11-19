@@ -1,7 +1,9 @@
-package base.jse
+package com.yp.baselib.ex
 
-import android.content.Context
-import java.io.*
+import java.io.File
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 import java.math.BigDecimal
 
 /**
@@ -9,7 +11,7 @@ import java.math.BigDecimal
  * 1.获取名称 name
  * 2.获取路径 path
  * 3.获取绝对路径 absolutePath
- * 4.获取父路径 parent
+ * 4.获取父路径 parent    
  * 5.获取父目录 parentFile
  * 6.判断File是否存在 exists
  * 7.判断File是否是文件 isFile

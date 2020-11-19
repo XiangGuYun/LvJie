@@ -1,4 +1,4 @@
-//package com.yp.baselib.utils.fragment
+package com.yp.baselib.utils.fragment.deprecated//package com.yp.baselib.utils.fragment
 //
 //import android.support.design.widget.TabLayout
 //import me.yokeyword.fragmentation.SupportActivity

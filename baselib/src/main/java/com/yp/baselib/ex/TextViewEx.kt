@@ -1,4 +1,4 @@
-package com.kotlinlib.view.textview
+package com.yp.baselib.ex
 
 import android.content.Context
 import android.graphics.Color
@@ -13,7 +13,6 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import com.kotlinlib.common.StringEx
 import com.yp.baselib.utils.DensityUtils
 
 
@@ -40,7 +39,7 @@ interface TextViewEx : StringEx {
     /**
      * 设置部分点击文本(仅限一部分)
      */
-    fun TextView.setClickText(txt: String, start: Int, end: Int, callback: () -> Unit){
+    fun TextView.setClickText(txt: String, start: Int, end: Int, callback: () -> Unit) {
         val ss = SpannableString(txt)
         ss.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -54,20 +53,14 @@ interface TextViewEx : StringEx {
     /**
      * 设置文本
      */
-    infix fun <T : TextView> T.text(text: String): T {
-        this.text = text
-        return this
-    }
-
     infix fun <T : TextView> T.txt(text: String?): T {
         this.text = text ?: ""
         return this
     }
 
 
-
-    infix fun <T : EditText> T.txtPhone(phone: String): T {
-        val chars = phone.toCharArray().toMutableList()
+    infix fun <T : EditText> T.txtPhone(phone: String?): T {
+        val chars = (phone ?: "").toCharArray().toMutableList()
         chars.add(3, ' ')
         chars.add(8, ' ')
         val builder = StringBuilder()
@@ -78,8 +71,8 @@ interface TextViewEx : StringEx {
         return this
     }
 
-    fun convertString2Phone(string: String): String {
-        if(string.length<11) return string
+    fun convertString2Phone(string: String?): String {
+        if (string == null || string.length < 11) return string?:""
         val chars = string.toCharArray().toMutableList()
         chars.add(3, ' ')
         chars.add(8, ' ')
@@ -91,24 +84,24 @@ interface TextViewEx : StringEx {
     }
 
 
-    infix fun <T : EditText> T.select(pos: Int): T {
-        setSelection(pos)
+    infix fun <T : EditText> T.select(pos: Int?): T {
+        setSelection(pos?:0)
         return this
     }
 
     /**
      * 设置提示
      */
-    infix fun <T : TextView> T.hint(text: String): T {
-        this.hint = text
+    infix fun <T : TextView> T.hint(text: String?): T {
+        this.hint = text?:""
         return this
     }
 
     /**
      * 设置颜色
      */
-    infix fun <T : TextView> T.color(color: Int): T {
-        setTextColor(color)
+    infix fun <T : TextView> T.color(color: Int?): T {
+        setTextColor(color?:Color.WHITE)
         return this
     }
 
@@ -164,21 +157,21 @@ interface TextViewEx : StringEx {
     /**
      * 设置上边图片
      */
-    fun TextView.setTopTVDrawable(id: Int){
+    fun TextView.setTopTVDrawable(id: Int) {
         this.setCompoundDrawables(null, context.tvDrawable(id), null, null)
     }
 
     /**
      * 设置下边图片
      */
-    fun TextView.setBtmTVDrawable(id: Int){
+    fun TextView.setBtmTVDrawable(id: Int) {
         this.setCompoundDrawables(null, null, null, context.tvDrawable(id))
     }
 
     /**
      * 取消设置图片
      */
-    fun TextView.setNullTVDrawable(){
+    fun TextView.setNullTVDrawable() {
         this.setCompoundDrawables(null, null, null, null)
     }
 
@@ -243,7 +236,7 @@ interface TextViewEx : StringEx {
     /**
      * 限制字符产的最大长度，包含...
      */
-    fun String.limit(max: Int):String{
+    fun String.limit(max: Int): String {
         return when {
             length > max -> "${substring(0, max - 1)}..."
             else -> this
@@ -255,35 +248,35 @@ interface TextViewEx : StringEx {
      * @param brokenList 最后一个字符的索引
      * @param sizeList 字体尺寸大小
      */
-    fun TextView.setDiffSizeText(text: String, brokenList: List<Int>, sizeList: List<Int>){
+    fun TextView.setDiffSizeText(text: String, brokenList: List<Int>, sizeList: List<Int>) {
         val textSpan = SpannableStringBuilder(text)
-        sizeList.forEachIndexed { i, it->
+        sizeList.forEachIndexed { i, it ->
             when {
                 i == 0 -> {
                     textSpan.setSpan(
-                        AbsoluteSizeSpan(
-                            DensityUtils.sp2px(
-                                context,
-                                sizeList[i].toFloat()
-                            )
-                        ), 0, brokenList[i] + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                            AbsoluteSizeSpan(
+                                    DensityUtils.sp2px(
+                                            context,
+                                            sizeList[i].toFloat()
+                                    )
+                            ), 0, brokenList[i] + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                     )
                 }
                 i != sizeList.lastIndex -> textSpan.setSpan(
-                    AbsoluteSizeSpan(
-                        DensityUtils.sp2px(
-                            context,
-                            sizeList[i].toFloat()
-                        )
-                    ), brokenList[i - 1], brokenList[i] + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                        AbsoluteSizeSpan(
+                                DensityUtils.sp2px(
+                                        context,
+                                        sizeList[i].toFloat()
+                                )
+                        ), brokenList[i - 1], brokenList[i] + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                 )
                 else -> textSpan.setSpan(
-                    AbsoluteSizeSpan(
-                        DensityUtils.sp2px(
-                            context,
-                            sizeList.last().toFloat()
-                        )
-                    ), text.length - 1, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                        AbsoluteSizeSpan(
+                                DensityUtils.sp2px(
+                                        context,
+                                        sizeList.last().toFloat()
+                                )
+                        ), text.length - 1, text.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                 )
             }
         }
@@ -293,7 +286,7 @@ interface TextViewEx : StringEx {
     /**
      * 设置自定义字体
      */
-    fun TextView.setFont(assetsPath:String): TextView {
+    fun TextView.setFont(assetsPath: String): TextView {
         val typeface = Typeface.createFromAsset(context.assets, assetsPath)
         this.typeface = typeface
         return this

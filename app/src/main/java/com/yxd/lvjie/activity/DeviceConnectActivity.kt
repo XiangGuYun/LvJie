@@ -1,5 +1,6 @@
 package com.yxd.lvjie.activity
 
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.yxd.lvjie.constant.GattAttributes
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.helper.BluetoothHelper
 import com.yxd.lvjie.test.GattDetailActivity
+import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_connect.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
@@ -34,9 +36,23 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 
     private lateinit var helper: BluetoothHelper
 
+    private lateinit var pd:ProgressDialog
+
     @Subscribe
     fun handle(msg:Message){
         when(msg.what){
+            MsgWhat.SHOW_DIALOG ->{
+                pd.show()
+            }
+            MsgWhat.HIDE_DIALOG ->{
+                pd.dismiss()
+            }
+            MsgWhat.CONNECT_OVERTIME ->{
+                if(pd.isShowing){
+                    pd.dismiss()
+                    "连接超时".toast()
+                }
+            }
             MsgWhat.CLEAR_BOUNDED_DEVICE->{
                 rvConnectedDevices.update()
                 tvNoBondedDevice.show()
@@ -55,13 +71,20 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     }
 
     override fun init(bundle: Bundle?) {
-        tvTitle.txt("设备连接").click {
-            BusUtils.post(MsgWhat.NOTIFY)
+        tvTitle.txt("设备连接")
+
+        tvSubTitle.show().txt("重新搜索").click {
+//            CmdUtils.getElectricQuantity()
+            if(!helper.isDiscovering()){
+                listUnBonded.clear()
+                rvDisconnectDevices.update()
+                helper.discoverDevices()
+            }
         }
 
-        tvSubTitle.show().txt("测试").click {
-            BusUtils.post(MsgWhat.SEND_COMMAND, "02 03 00 fa 00 04 64 0b")
-        }
+        pd = ProgressDialog(this)
+        pd.setMessage("正在连接...")
+        pd.setCanceledOnTouchOutside(false)
 
         helper = BluetoothHelper.getInstance()
 
@@ -133,22 +156,11 @@ class DeviceConnectActivity : ProjectBaseActivity() {
                 h, i, it ->
                 h.tv(R.id.tvName).txt(it.name)
                 h.tv(R.id.tvAddress).txt(it.address)
-                h.v(R.id.btnConn).click {
-                    "正在连接".toast()
+                h.v(R.id.btnConn).click { v->
+                    helper.cancelDiscoverDevices()
                     BusUtils.post(MsgWhat.CONNECT_DEVICE, it)
                 }
             }, null, R.layout.item_device1)
-//        rvDisconnectDevices.wrap.rvAdapter(
-//            listUnBonded,
-//            { h, p ->
-//                h.tv(R.id.tvName).txt(listUnBonded[p].name)
-//                h.tv(R.id.tvAddress).txt(listUnBonded[p].address)
-//                h.v(R.id.btnConn).click {
-//                    "正在连接".toast()
-//                    BusUtils.post(MsgWhat.CONNECT_DEVICE, listUnBonded[p])
-//                }
-//            }, R.layout.item_device1
-//        )
     }
 
     private fun doBondedDeviceList() {
@@ -172,6 +184,9 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        if(helper.isDiscovering()){
+            helper.cancelDiscoverDevices()
+        }
         helper.unRegisterSearchReceiver(this)
         loading.stop()
     }

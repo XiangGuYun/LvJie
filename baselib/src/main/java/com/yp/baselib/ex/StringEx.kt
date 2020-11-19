@@ -1,10 +1,12 @@
 @file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-package com.kotlinlib.common
+package com.yp.baselib.ex
 
 import android.graphics.Color
 import android.text.TextUtils
-import android.util.Log
+import com.google.gson.reflect.TypeToken
+import com.yp.baselib.base.BaseActivity
+import com.yp.baselib.utils.LogUtils
 import java.io.UnsupportedEncodingException
 import java.math.BigDecimal
 import java.net.URLEncoder
@@ -44,26 +46,30 @@ interface StringEx {
         return TextUtils.isEmpty(this)
     }
 
+    fun String?.e(): Boolean {
+        return TextUtils.isEmpty(this)
+    }
+
 
     /**
      * 打印日志
      */
     fun Any.logD(tag: String = "def", pre: String = "") {
-        Log.d(tag, pre + this.toString())
+        LogUtils.d(tag, pre + this.toString())
     }
 
     /**
      * 打印日志
      */
-    fun Any.logI(tag: String = "def") {
-        Log.i(tag, this.toString())
+    fun Any.logI(tag: String = "def", pre: String = "") {
+        LogUtils.i(tag, pre + this.toString())
     }
 
     /**
      * 打印日志
      */
     fun Any.logE(tag: String = "def", pre: String = "") {
-        Log.e(tag, pre + this.toString())
+        LogUtils.e(tag, pre + this.toString())
     }
 
     /**
@@ -93,6 +99,15 @@ interface StringEx {
      */
     fun String.reverseFmtDate(fmt: String): Long {
         return SimpleDateFormat(fmt, Locale.CHINA).parse(this).time
+    }
+
+    /**
+     * 将JSON字符串转换为数据列表
+     * @receiver String
+     * @return List<T>
+     */
+    fun <T> String.fmtJsonList(): List<T> {
+        return BaseActivity.gson.fromJson(this, object : TypeToken<List<T>>() {}.type) as List<T>
     }
 
     /**

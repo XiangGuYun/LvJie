@@ -66,12 +66,12 @@ object FileUtils {
     /**
      * 从文件读取对象
      */
-    fun <T> readObject(file: File): T {
+    fun <T> readObject(file: File): T? {
         if (!file.exists())
-            throw Exception("文件不存在")
+            return null
         val stream = ObjectInputStream(file.inputStream())
         @Suppress("UNCHECKED_CAST")
-        val t = stream.readObject() as T
+        val t = stream.readObject() as T?
         stream.close()
         return t
     }

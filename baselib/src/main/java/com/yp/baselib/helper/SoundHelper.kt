@@ -3,7 +3,7 @@ package com.yp.baselib.helper
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
-import com.kotlinlib.common.Ctx
+import com.yp.baselib.Ctx
 
 /**
  * 音效助手类

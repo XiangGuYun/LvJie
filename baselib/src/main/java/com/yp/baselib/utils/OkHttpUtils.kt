@@ -44,7 +44,7 @@ object OkHttpUtils {
             crossinline onSuccess: (data: T) -> Unit, //成功回调
             vararg pairs: Pair<String, String>//参数
     ) {
-        Log.d(TAG, "url is $url");
+        LogUtils.d(TAG, "url is $url");
         val mapJson = Gson().toJson(HashMap(pairs.toMap()).filterValues { it != OPTIONAL })
         val builder = OkHttpUtils
                 .postString()
@@ -52,7 +52,7 @@ object OkHttpUtils {
                 .content(mapJson)
                 .mediaType(MediaType.parse(MEDIA_TYPE))
 
-        Log.d(TAG, "mapJson is $mapJson");
+        LogUtils.d(TAG, "mapJson is $mapJson");
 
         builder.build()
                 .connTimeOut(6000)
@@ -61,12 +61,12 @@ object OkHttpUtils {
                 .execute(object : StringCallback() {
 
                     override fun onError(call: Call?, e: Exception?, id: Int) {
-                        Log.d(TAG, "error is ${e?.localizedMessage}");
+                        LogUtils.d(TAG, "error is ${e?.localizedMessage}");
                         call?.cancel()
                     }
 
                     override fun onResponse(response: String?, id: Int) {
-                        Log.d(TAG, response!!)
+                        LogUtils.d(TAG, response!!)
                         onSuccess.invoke(Gson().fromJson(response, T::class.java))
                     }
                 })
@@ -91,11 +91,11 @@ object OkHttpUtils {
         req.build()
                 .execute(object : StringCallback() {
                     override fun onError(call: Call?, e: java.lang.Exception?, id: Int) {
-                        Log.d(TAG, "error is ${e?.localizedMessage}");
+                        LogUtils.d(TAG, "error is ${e?.localizedMessage}");
                     }
 
                     override fun onResponse(response: String?, id: Int) {
-                        Log.d(TAG, response!!)
+                        LogUtils.d(TAG, response!!)
                         onSuccess.invoke(Gson().fromJson(response, T::class.java))
                     }
                 })

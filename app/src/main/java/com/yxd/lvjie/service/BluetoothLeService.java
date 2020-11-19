@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.yp.baselib.utils.LogUtils;
 import com.yp.baselib.utils.ToastUtils;
 import com.yxd.lvjie.constant.BloodPressureParser;
 import com.yxd.lvjie.constant.CSCParser;
@@ -766,6 +767,7 @@ public class BluetoothLeService extends Service {
         mBluetoothDeviceName = devicename;
 
         mConnectionState = STATE_CONNECTING;
+
     }
 
     public static boolean refreshDeviceCache(BluetoothGatt gatt) {
@@ -867,7 +869,7 @@ public class BluetoothLeService extends Service {
             Log.d("HomeTest", mBluetoothDeviceAddress + "\n" + characteristic.getInstanceId() + "\n"
                     + characteristic.getWriteType() + "\n" + Arrays.toString(characteristic.getValue()));
             boolean result = mBluetoothGatt.writeCharacteristic(characteristic);
-            ToastUtils.toast(result + "");
+            LogUtils.d("CmdTag", "写入命令是否成功？"+result);
         }
     }
 
@@ -897,7 +899,7 @@ public class BluetoothLeService extends Service {
             }
         }
         boolean result = mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-        ToastUtils.toast(result + "");
+        LogUtils.d("CmdTag", "Notify是否成功？"+result);
     }
 
 

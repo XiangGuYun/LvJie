@@ -8,19 +8,10 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.os.Parcelable
-import android.support.design.widget.BottomSheetDialog
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.RadioButton
-import base.jse.FileEx
-import com.yp.baselib.utils.DensityUtils
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStreamReader
+import com.yp.baselib.base.BaseActivity
 import java.io.Serializable
 import java.util.*
 
@@ -38,13 +29,6 @@ interface ContextEx {
 
     /** 内置缓存路径 */
     val Context.CACHE: String get() = "/data/data/${this.packageName}/cache"
-
-    /**
-     * 根据dp值获取px值
-     */
-    fun Context.dp2px(number: Number): Int {
-        return DensityUtils.dip2px(this, number.toFloat())
-    }
 
     /**
      * 获取屏幕宽度
@@ -71,14 +55,11 @@ interface ContextEx {
      * adjustPan:不会把底部的布局给挤上去
      * adjustResize:自适应的，会把底部的挤上去
      */
-    fun Activity.openKeyboardDelay(time: Long) {
-        Thread {
-            Thread.sleep(time)
-            runOnUiThread {
-                val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_FORCED)
-            }
-        }.start()
+    fun BaseActivity.openKeyboardDelay(time: Long) {
+        doDelayTask(time){
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_FORCED)
+        }
     }
 
     /**

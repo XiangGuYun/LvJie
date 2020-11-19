@@ -31,7 +31,7 @@ public class MD5Utils {
             md5_32 = result;
             md5_16 = buf.toString().substring(8, 24);
         } catch (NoSuchAlgorithmException e) {
-            System.out.println(e);
+            LogUtils.d("System.out", e.getLocalizedMessage());
         }
 
         return md5_32;

@@ -83,7 +83,7 @@ object BmpUtils {
                     }
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        Log.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
+                        LogUtils.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
                         return false
                     }
 
@@ -136,7 +136,7 @@ object BmpUtils {
                     }
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        Log.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
+                        LogUtils.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
                         return false
                     }
 
@@ -164,7 +164,7 @@ object BmpUtils {
                     }
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        Log.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
+                        LogUtils.d("Glide_Url", "==== " + e?.message + "===== " + e?.localizedMessage)
                         return false
                     }
 
@@ -407,7 +407,7 @@ object BmpUtils {
 
 
     /**
-     * 压缩Bitmap质量，知道文件小于某个目标KB大小为止
+     * 压缩Bitmap质量，直到文件小于某个目标KB大小为止
      * @param image
      * @param targetSize
      * @return

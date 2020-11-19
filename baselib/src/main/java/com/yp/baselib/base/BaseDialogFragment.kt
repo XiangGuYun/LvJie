@@ -1,6 +1,5 @@
 package com.yp.baselib.base
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,15 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.gson.Gson
-import com.kotlinlib.common.StringEx
-import com.kotlinlib.view.base.ViewEx
 import com.yp.baselib.annotation.Bus
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.ex.BaseEx
-import com.yp.baselib.ex.ContextEx
 import com.yp.baselib.utils.DensityUtils
 import org.greenrobot.eventbus.EventBus
-import java.util.*
 
 /**
  * DialogFragment的基类

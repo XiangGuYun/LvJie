@@ -15,7 +15,6 @@ public class BaseApplication extends Application {
         return sInstance;
     }
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
