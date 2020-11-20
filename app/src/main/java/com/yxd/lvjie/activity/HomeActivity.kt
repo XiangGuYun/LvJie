@@ -45,6 +45,11 @@ class HomeActivity : BaseActivity() {
 
     companion object {
         var listBonded = ArrayList<BtDevice>()
+
+        /**
+         * 命令类型
+         */
+        var cmdType = ""
     }
 
     override fun init(bundle: Bundle?) {
@@ -53,7 +58,6 @@ class HomeActivity : BaseActivity() {
         doConnectReceiverAndService()
     }
 
-    var cmdType = ""
 
     @Subscribe
     fun handle(msg: Message) {
@@ -81,19 +85,27 @@ class HomeActivity : BaseActivity() {
                 if (!Utils.isRightHexStr(command)) {
                     return
                 }
-                when (text) {
-                    Cmd.STRENGTH_FREQ -> {
-                        cmdType = "强度和频率"
-                    }
-                    Cmd.EQ -> {
-                        cmdType = "电量"
-                    }
-                    Cmd.DEVICE_NO -> {
-                        cmdType = "设备编号"
-                    }
-                    Cmd.IMEI -> {
-                        cmdType = "IMEI"
-                    }
+                cmdType = when (text) {
+                    Cmd.STRENGTH_FREQ -> "强度和频率"
+                    Cmd.EQ -> "电量"
+                    Cmd.DEVICE_NO -> "设备编号"
+                    Cmd.IMEI -> "IMEI"
+                    Cmd.STARTED_FREQ1 -> "标准频率1"
+                    Cmd.STARTED_FREQ2 -> "标准频率2"
+                    Cmd.STARTED_FREQ3 -> "标准频率3"
+                    Cmd.STARTED_FREQ4 -> "标准频率4"
+                    Cmd.STARTED_FREQ5 -> "标准频率5"
+                    Cmd.STARTED_VALUE1 -> "标准值1"
+                    Cmd.STARTED_VALUE2 -> "标准值2"
+                    Cmd.STARTED_VALUE3 -> "标准值3"
+                    Cmd.STARTED_VALUE4 -> "标准值4"
+                    Cmd.STARTED_VALUE5 -> "标准值5"
+                    Cmd.STARTED_TEST_VALUE1 -> "标准测试值1"
+                    Cmd.STARTED_TEST_VALUE2 -> "标准测试值2"
+                    Cmd.STARTED_TEST_VALUE3 -> "标准测试值3"
+                    Cmd.STARTED_TEST_VALUE4 -> "标准测试值4"
+                    Cmd.STARTED_TEST_VALUE5 -> "标准测试值5"
+                    else -> ""
                 }
                 val array = Utils.hexStringToByteArray(command)
                 writeCharacteristic(writeCharacteristic, array)
@@ -274,6 +286,24 @@ class HomeActivity : BaseActivity() {
                                             Utils.byteToASCII(sliceByteArray(array, 3, 20))
                                         )
                                     }
+                                }
+                                "标准频率1", "标准频率2", "标准频率3", "标准频率4", "标准频率5" -> {
+                                    BusUtils.post(
+                                        MsgWhat.CMD_STARTED_FREQ,
+                                        CmdUtils.hex2Float(hex.substring(6, 14))
+                                    )
+                                }
+                                "标准值1", "标准值2", "标准值3", "标准值4", "标准值5" -> {
+                                    BusUtils.post(
+                                        MsgWhat.CMD_STARTED_VALUE,
+                                        CmdUtils.hex2Float(hex.substring(6, 14))
+                                    )
+                                }
+                                "标准测试值1", "标准测试值2", "标准测试值3", "标准测试值4", "标准测试值5" -> {
+                                    BusUtils.post(
+                                        MsgWhat.CMD_STARTED_TEST_VALUE,
+                                        CmdUtils.hex2Float(hex.substring(6, 14))
+                                    )
                                 }
                             }
                         }

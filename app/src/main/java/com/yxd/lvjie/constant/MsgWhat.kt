@@ -58,4 +58,10 @@ object MsgWhat {
      * 获取IMEI
      */
     const val CMD_IMEI = 0x103
+
+    const val CMD_STARTED_FREQ = 0x104
+
+    const val CMD_STARTED_VALUE = 0x105
+
+    const val CMD_STARTED_TEST_VALUE = 0x106
 }

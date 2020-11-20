@@ -41,6 +41,15 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 tvStrength.txt("强度：${pair.first.toInt()}")
                 tvFreq.txt("频率：${pair.second.toInt()}Hz")
             }
+            MsgWhat.CMD_STARTED_FREQ -> {
+
+            }
+            MsgWhat.CMD_STARTED_VALUE -> {
+
+            }
+            MsgWhat.CMD_STARTED_TEST_VALUE -> {
+
+            }
         }
     }
 
