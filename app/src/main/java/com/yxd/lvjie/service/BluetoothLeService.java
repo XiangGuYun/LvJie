@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.yp.baselib.utils.BusUtils;
 import com.yp.baselib.utils.LogUtils;
 import com.yp.baselib.utils.ToastUtils;
 import com.yxd.lvjie.constant.BloodPressureParser;
@@ -62,6 +63,7 @@ import com.yxd.lvjie.constant.GattAttributes;
 import com.yxd.lvjie.constant.GlucoseParser;
 import com.yxd.lvjie.constant.HRMParser;
 import com.yxd.lvjie.constant.HTMParser;
+import com.yxd.lvjie.constant.MsgWhat;
 import com.yxd.lvjie.constant.RGBParser;
 import com.yxd.lvjie.constant.RSCParser;
 import com.yxd.lvjie.constant.SensorHubParser;
@@ -537,9 +539,10 @@ public class BluetoothLeService extends Service {
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
 //            super.onMtuChanged(gatt, mtu, status);
-            System.out.println("onMtuChanged-------------------->size:" + mtu);
+            LogUtils.d("CmdTag", "onMtuChanged-------------------->size:" + mtu);
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                System.out.println("onMtuChanged-------------------->设置成功");
+                LogUtils.d("CmdTag", "onMtuChanged-------------------->设置成功");
+                BusUtils.INSTANCE.post(MsgWhat.NOTIFY);
             }
         }
     };
@@ -942,8 +945,11 @@ public class BluetoothLeService extends Service {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static boolean requestMtu(int mtu) {
         if (mBluetoothGatt != null) {
-            return mBluetoothGatt.requestMtu(mtu);
+            boolean result = mBluetoothGatt.requestMtu(mtu);
+            LogUtils.d("CmdTag", "设置长度结果"+result);
+            return result;
         }
+        LogUtils.d("CmdTag", "设置长度结果失败。");
         return false;
     }
 

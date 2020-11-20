@@ -46,6 +46,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -59,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -298,7 +300,7 @@ public class Utils{
     }
 
     public static String byteToASCII(byte[] array) {
-
+//        Log.d("CmdTag", Arrays.toString(array));
         StringBuffer sb = new StringBuffer();
         for (byte byteChar : array) {
             if (byteChar >= 32 && byteChar < 127) {

@@ -12,6 +12,7 @@ import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_realtime_data.*
+import kotlinx.android.synthetic.main.item_device_list.*
 import org.greenrobot.eventbus.Subscribe
 
 /**
@@ -30,11 +31,10 @@ class RealtimeDataActivity : ProjectBaseActivity() {
                 ProjectDialog(this).setInfo("设备已断开连接，请重新连接！", "确定",
                     true){
                     it.dismiss()
-                    goTo<DeviceConnectActivity>(true)
+                    goTo<DeviceConnectActivity>()
                 }.show()
             }
             MsgWhat.CMD_STRENGTH_FREQ->{
-                "收到了".logD("CmdTag")
                 val pair = msg.obj as Pair<Float, Float>
                 tvQiangDu.txt("强度：${pair.first.toInt()}")
                 tvPinLv.txt("频率：${pair.second.toInt()}Hz")
@@ -42,14 +42,14 @@ class RealtimeDataActivity : ProjectBaseActivity() {
             MsgWhat.CMD_EQ->{
                 tvDianLiang.txt("电量：${msg.obj}%")
             }
+            MsgWhat.CMD_IMEI->{
+                tvSheBeiBianHao.txt("设备编号：${msg.obj}")
+            }
         }
     }
 
     override fun init(bundle: Bundle?) {
-        CmdUtils.getStrengthAndFrequency()
-        doDelayTask(500){
-            CmdUtils.getElectricQuantity()
-        }
+        sendCmd()
 
         timer = TimerUtils.countdown(Long.MAX_VALUE, 1000, {
             tvDianQianShiJian.txt("当前时间：${System.currentTimeMillis().fmtDate("yyyy-MM-dd HH:mm:ss")}")
@@ -57,9 +57,16 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         timer.start()
 
         btnRefresh.click {
-            CmdUtils.getStrengthAndFrequency()
-            doDelayTask(500){
-                CmdUtils.getElectricQuantity()
+            sendCmd()
+        }
+    }
+
+    private fun sendCmd() {
+        CmdUtils.getStrengthAndFrequency()
+        doDelayTask(300){
+            CmdUtils.getElectricQuantity()
+            doDelayTask(300){
+                CmdUtils.getDeviceIMEI()
             }
         }
     }

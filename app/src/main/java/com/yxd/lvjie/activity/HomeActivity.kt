@@ -18,14 +18,13 @@ import com.yxd.lvjie.R
 import com.yxd.lvjie.base.MyApplication
 import com.yxd.lvjie.bean.BtDevice
 import com.yxd.lvjie.bean.MService
-import com.yxd.lvjie.constant.Constants
-import com.yxd.lvjie.constant.GattAttributes
-import com.yxd.lvjie.constant.MsgWhat
+import com.yxd.lvjie.constant.*
 import com.yxd.lvjie.constant.MsgWhat.DEVICE_DISCONNECT
-import com.yxd.lvjie.constant.Utils
 import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.service.BluetoothLeService
 import com.yxd.lvjie.utils.CmdUtils
+import com.yxd.lvjie.utils.CmdUtils.formatMsgContent
+import com.yxd.lvjie.utils.CmdUtils.sliceByteArray
 import kotlinx.android.synthetic.main.activity_device_manager.*
 import org.greenrobot.eventbus.Subscribe
 
@@ -83,11 +82,17 @@ class HomeActivity : BaseActivity() {
                     return
                 }
                 when (text) {
-                    "02 03 00 fa 00 04 64 0b" -> {
+                    Cmd.STRENGTH_FREQ -> {
                         cmdType = "强度和频率"
                     }
-                    "02 03 00 d2 00 02 64 01" -> {
+                    Cmd.EQ -> {
                         cmdType = "电量"
+                    }
+                    Cmd.DEVICE_NO -> {
+                        cmdType = "设备编号"
+                    }
+                    Cmd.IMEI -> {
+                        cmdType = "IMEI"
                     }
                 }
                 val array = Utils.hexStringToByteArray(command)
@@ -134,13 +139,9 @@ class HomeActivity : BaseActivity() {
                         1 -> {
                         }
                         2 -> {
-                            if(!isConnectedDevice){
-                                "请先连接设备".toast()
-                                return@click
-                            }
                             goTo<RealtimeDataActivity>()
                         }
-                        8->{
+                        8 -> {
                             goTo<SettingActivity>()
                         }
                     }
@@ -210,6 +211,7 @@ class HomeActivity : BaseActivity() {
     private val mGattUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // Status received when connected to GATT Server
+            intent.action?.logD("Cmd", "action is ")
             // 连接成功
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
@@ -251,13 +253,27 @@ class HomeActivity : BaseActivity() {
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (cmdType) {
                                 "强度和频率" -> {
-                                    val pair = CmdUtils.decodeStrengthAndFrequency(hex)
-                                    pair.toString().logD("CmdTag", "强度和频率：")
-                                    BusUtils.post(MsgWhat.CMD_STRENGTH_FREQ, pair)
+                                    BusUtils.post(
+                                        MsgWhat.CMD_STRENGTH_FREQ,
+                                        CmdUtils.decodeStrengthAndFrequency(hex)
+                                    )
                                 }
                                 "电量" -> {
-                                    val eq = CmdUtils.decodeElectricQuantity(hex)
-                                    BusUtils.post(MsgWhat.CMD_EQ, eq.toInt())
+                                    BusUtils.post(
+                                        MsgWhat.CMD_EQ,
+                                        CmdUtils.decodeElectricQuantity(hex).toInt()
+                                    )
+                                }
+                                "设备编号" -> {
+                                    BusUtils.post(MsgWhat.CMD_DEVICE_NO, Utils.byteToASCII(array))
+                                }
+                                "IMEI" -> {
+                                    if (array.size > 23) {
+                                        BusUtils.post(
+                                            MsgWhat.CMD_IMEI,
+                                            Utils.byteToASCII(sliceByteArray(array, 3, 20))
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -265,12 +281,6 @@ class HomeActivity : BaseActivity() {
                 }
             }
         }
-
-
-    }
-
-    private fun formatMsgContent(data: ByteArray): String? {
-        return "HEX:" + Utils.ByteArraytoHex(data) + "  (ASSCII:" + Utils.byteToASCII(data) + ")"
     }
 
     private fun prepareData(gattServices: List<BluetoothGattService>?) {
@@ -288,19 +298,20 @@ class HomeActivity : BaseActivity() {
         myApp.services = list
         myApp.characteristics = list[0].service.characteristics
 
+
         val characteristics = myApp.characteristics
         for (c in characteristics) {
             if (Utils.getPorperties(this, c) == "Notify") {
                 notifyCharacteristic = c
-                prepareBroadcastDataNotify(notifyCharacteristic)
+                BluetoothLeService.requestMtu(512)
                 continue
             }
             if (Utils.getPorperties(this, c) == "Write") {
                 writeCharacteristic = c
+                writeCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE;
                 continue
             }
         }
-        BluetoothLeService.requestMtu(512)
     }
 
     private fun writeCharacteristic(characteristic: BluetoothGattCharacteristic, bytes: ByteArray) {

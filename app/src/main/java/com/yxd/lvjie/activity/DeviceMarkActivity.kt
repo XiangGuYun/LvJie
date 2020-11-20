@@ -34,7 +34,6 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 ) {
                     it.dismiss()
                     goTo<DeviceConnectActivity>(true)
-                    finishAllActivitiesExcept("HomeActivity", "DeviceConnectActivity")
                 }.show()
             }
             MsgWhat.CMD_STRENGTH_FREQ -> {

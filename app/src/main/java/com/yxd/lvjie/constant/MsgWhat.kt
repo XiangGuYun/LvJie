@@ -15,7 +15,7 @@ object MsgWhat {
      * 清空已连接的设备
      */
     const val CLEAR_BOUNDED_DEVICE = 0x003
-    
+
     const val NOTIFY = 0x004
 
     const val STOP_NOTIFY = 0x005
@@ -29,8 +29,14 @@ object MsgWhat {
 
     const val HIDE_DIALOG = 0x008
 
+    /**
+     * 设备连接超时
+     */
     const val CONNECT_OVERTIME = 0x009
 
+    /**
+     * 当设备断开连接
+     */
     const val DEVICE_DISCONNECT = 0x010
 
     /**
@@ -42,4 +48,14 @@ object MsgWhat {
      * 获取电量
      */
     const val CMD_EQ = 0x101
+
+    /**
+     * 获取设备编号
+     */
+    const val CMD_DEVICE_NO = 0x102
+
+    /**
+     * 获取IMEI
+     */
+    const val CMD_IMEI = 0x103
 }

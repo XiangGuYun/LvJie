@@ -71,7 +71,9 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     }
 
     override fun init(bundle: Bundle?) {
-        tvTitle.txt("设备连接")
+        tvTitle.txt("设备连接").click {
+            CmdUtils.getDeviceNumber()
+        }
 
         tvSubTitle.show().txt("重新搜索").click {
 //            CmdUtils.getElectricQuantity()

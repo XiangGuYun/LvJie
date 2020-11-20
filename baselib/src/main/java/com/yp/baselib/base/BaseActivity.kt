@@ -426,16 +426,17 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
      * @param callback Function0<Unit>
      */
     fun doDelayTask(delay: Long, callback: () -> Unit) {
-        if (!isRunTask) {
-            isRunTask = true
-            if (handler == null) {
-                handler = Handler()
-            }
-            handler?.postDelayed({
-                callback.invoke()
-                isRunTask = false
-            }, delay)
+//        if (!isRunTask) {
+//            isRunTask = true
+//
+//        }
+        if (handler == null) {
+            handler = Handler()
         }
+        handler?.postDelayed({
+            callback.invoke()
+//            isRunTask = false
+        }, delay)
     }
 
     var exitTime = 0L
