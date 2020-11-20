@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.base.BaseActivity
 import com.yxd.lvjie.R
+import com.yxd.lvjie.base.ProjectBaseActivity
 import kotlinx.android.synthetic.main.activity_device_detail.*
 import kotlinx.android.synthetic.main.header.*
 
@@ -11,13 +12,11 @@ import kotlinx.android.synthetic.main.header.*
  * 设备详情
  */
 @LayoutId(R.layout.activity_device_detail)
-class DeviceDetailActivity : BaseActivity() {
+class DeviceDetailActivity : ProjectBaseActivity() {
 
     var isEditable = true
 
     override fun init(bundle: Bundle?) {
-        tvTitle.text = "设备详情"
-
         tvSubTitle.show().txt("编辑").click {
 
         }
@@ -43,22 +42,22 @@ class DeviceDetailActivity : BaseActivity() {
             "安装方式："
         )
 
-        rvDeviceDetail.wrap.rvMultiAdapter(list,
-            {
-                h,p->
-                h.tv(R.id.tv1).txt(list[p])
+        rvDeviceDetail.wrap.generate(list,
+            { h, p, item ->
+                h.tv(R.id.tv1).txt(item)
             },
             {
-                when {
+                val i = when {
                     !isEditable -> 0
-                    it !in 8..9 -> {
-                        1
-                    }
-                    else -> {
-                        2
-                    }
+                    it !in 8..9 -> 1
+                    else -> 2
                 }
-            }, R.layout.item_deivie_detail1, R.layout.item_deivie_detail2, R.layout.item_deivie_detail3)
+                i
+            },
+            R.layout.item_deivie_detail1,
+            R.layout.item_deivie_detail2,
+            R.layout.item_deivie_detail3
+        )
     }
 
 }

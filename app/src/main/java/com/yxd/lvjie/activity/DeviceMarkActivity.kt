@@ -33,7 +33,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                     true
                 ) {
                     it.dismiss()
-                    goTo<DeviceConnectActivity>(true)
+                    goTo<DeviceConnectActivity>()
                 }.show()
             }
             MsgWhat.CMD_STRENGTH_FREQ -> {

@@ -54,6 +54,10 @@ class DeviceConnectActivity : ProjectBaseActivity() {
                 }
             }
             MsgWhat.CLEAR_BOUNDED_DEVICE->{
+                if(pd.isShowing){
+                    pd.dismiss()
+                    "连接失败，请重试".toast()
+                }
                 rvConnectedDevices.update()
                 tvNoBondedDevice.show()
             }
@@ -76,7 +80,6 @@ class DeviceConnectActivity : ProjectBaseActivity() {
         }
 
         tvSubTitle.show().txt("重新搜索").click {
-//            CmdUtils.getElectricQuantity()
             if(!helper.isDiscovering()){
                 listUnBonded.clear()
                 rvDisconnectDevices.update()
@@ -174,10 +177,10 @@ class DeviceConnectActivity : ProjectBaseActivity() {
                 h.tv(R.id.tvName).txt(listBonded[p].name)
                 h.tv(R.id.tvAddress).txt(listBonded[p].address)
                 h.itemClick {
-                    (application as MyApplication).characteristic = BluetoothGattCharacteristic(
-                        UUID.fromString(
-                        GattAttributes.USR_SERVICE),-1,-1)
-                    goTo<GattDetailActivity>()
+//                    (application as MyApplication).characteristic = BluetoothGattCharacteristic(
+//                        UUID.fromString(
+//                        GattAttributes.USR_SERVICE),-1,-1)
+//                    goTo<GattDetailActivity>()
 //                    goTo<CharacteristicsActivity>("is_usr_service" to true)
                 }
             }, R.layout.item_device

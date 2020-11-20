@@ -18,6 +18,12 @@ abstract class ProjectBaseActivity : BaseActivity() {
                     "DeviceListActivity" -> "设备列表"
                     "RealtimeDataActivity" -> "实时数据"
                     "DeviceMarkActivity" -> "设备标定"
+                    "HistoryDataActivity" -> "历史数据"
+                    "DeviceInfoActivity" -> "设备信息"
+                    "DeviceDetailActivity" -> "设备详情"
+                    "ArithmeticSelectActivity" -> "算法选择"
+                    "AdvancedSettingActivity" -> "进入高级设置"
+                    "TimeSetActivity" -> "时间设置"
                     else -> ""
                 }
             )
