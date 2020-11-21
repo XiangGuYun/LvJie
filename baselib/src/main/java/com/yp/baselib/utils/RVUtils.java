@@ -18,8 +18,8 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
-import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
-import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
+import com.yp.baselib.view.rv.YxdRVAdapter;
+import com.yp.baselib.view.rv.YxdRVHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class RVUtils {
 
     public RecyclerView rv;
     public Context context;
-    private EasyRVAdapter adapter;
+    private YxdRVAdapter adapter;
     public List dataList;
     public int gridSpanCount = 1;
     public boolean needHeader = false;
@@ -424,9 +424,9 @@ public class RVUtils {
             rv.setLayoutManager(new LinearLayoutManager(context));
         }
         this.dataList = list;
-        adapter = new EasyRVAdapter<T>(context, list, itemLayoutId) {
+        adapter = new YxdRVAdapter<T>(context, list, itemLayoutId) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, T item) {
+            protected void onBindData(YxdRVHolder viewHolder, int position, T item) {
                 data.bind(viewHolder, position);
             }
 
@@ -476,7 +476,7 @@ public class RVUtils {
         rv.setAdapter(adapter);
     }
 
-    public EasyRVAdapter getAdapter() {
+    public YxdRVAdapter getAdapter() {
         return adapter;
     }
 
@@ -484,7 +484,7 @@ public class RVUtils {
      * 绑定数据
      */
     public interface onBindData {
-        void bind(EasyRVHolder holder, int pos);
+        void bind(YxdRVHolder holder, int pos);
     }
 
     /**

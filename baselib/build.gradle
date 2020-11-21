@@ -59,9 +59,6 @@ dependencies {
     api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     api 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
 
-    // RecyclerView库
-    api 'com.yuyh.easyadapter:library:1.0.0'
-
     // 状态栏
     api 'com.githang:status-bar-compat:0.7'
     //api 'com.jaeger.statusbarutil:library:1.5.1'

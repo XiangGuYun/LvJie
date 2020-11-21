@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.yp.baselib.Holder
 import com.yp.baselib.utils.RVUtils
-import com.yuyh.easyadapter.recyclerview.EasyRVAdapter
-import com.yuyh.easyadapter.recyclerview.EasyRVHolder
+import com.yp.baselib.view.rv.YxdRVAdapter
+import com.yp.baselib.view.rv.YxdRVHolder
 
 /**
  * RecyclerView扩展类
@@ -26,16 +26,16 @@ interface RvEx : StringEx {
      */
     fun <T, R : List<T>> RVUtils.generate(
             data: R,
-            bindItemWithData: (h: Holder, i: Int, it: T) -> Unit,
+            bindItemWithData: (h: YxdRVHolder, i: Int, it: T) -> Unit,
             getLayoutIndex: ((i: Int) -> Int)? = null,
             vararg itemLayoutId: Int
     ) {
         if (rv.layoutManager == null) {
             rv.layoutManager = LinearLayoutManager(context)
         }
-        rv.adapter = object : EasyRVAdapter<T>(context, data, *itemLayoutId) {
+        rv.adapter = object : YxdRVAdapter<T>(context, data, *itemLayoutId) {
             override fun onBindData(
-                viewHolder: EasyRVHolder,
+                viewHolder: YxdRVHolder,
                 position: Int,
                 item: T
             ) {
@@ -84,21 +84,21 @@ interface RvEx : StringEx {
      * 设置适配器
      * @receiver RVUtils
      * @param data ArrayList<T> 数据集合
-     * @param fun1 (holder: EasyRVHolder, pos:Int)->Unit 绑定数据
+     * @param fun1 (holder: YxdRVHolder, pos:Int)->Unit 绑定数据
      * @param itemId Int 列表项ID
      * @return RVUtils
      */
     fun <T> RVUtils.rvAdapter(data: ArrayList<T>?,
                               fun1: (holder: Holder, pos: Int) -> Unit,
                               itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1), { 0 }, itemId)
+        adapter(data, RVUtils.onBindData(fun1), RVUtils.SetMultiCellView { 0 }, itemId)
         return this
     }
 
     fun <T> RVUtils.rvAdapter(data: List<T>?,
                               fun1: (holder: Holder, pos: Int) -> Unit,
                               itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1), { 0 }, itemId)
+        adapter(data, RVUtils.onBindData(fun1), RVUtils.SetMultiCellView{ 0 }, itemId)
         return this
     }
 

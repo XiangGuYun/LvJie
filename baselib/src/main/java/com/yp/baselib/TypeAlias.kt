@@ -5,12 +5,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.yuyh.easyadapter.recyclerview.EasyRVHolder
+import com.yp.baselib.view.rv.YxdRVHolder
 
 /**
  * 使用别称来简化代码
  */
-typealias Holder = EasyRVHolder
+typealias Holder = YxdRVHolder
 typealias Ctx = Context
 typealias LLLP = LinearLayout.LayoutParams
 typealias FLLP = FrameLayout.LayoutParams
