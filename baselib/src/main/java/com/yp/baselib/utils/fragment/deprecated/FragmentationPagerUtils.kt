@@ -2,22 +2,22 @@ package com.yp.baselib.utils.fragment.deprecated//package com.yp.baselib.utils.f
 //
 //import android.content.Context
 //import android.support.design.widget.TabLayout
-//import android.support.v4.app.Fragment
-//import android.support.v4.app.FragmentManager
-//import android.support.v4.app.FragmentPagerAdapter
+//import androidx.fragment.app.Fragment
+//import androidx.fragment.app.FragmentManager
+//import androidx.fragment.app.FragmentPagerAdapter
 //import android.support.v4.view.PagerAdapter
-//import android.support.v4.view.ViewPager
+//import androidx.viewpager.widget.ViewPager
 //import android.util.AttributeSet
 //import android.widget.FrameLayout
 //import android.widget.LinearLayout
 //import com.yp.baselib.utils.DensityUtils
 //import me.yokeyword.fragmentation.SupportActivity
 //import me.yokeyword.fragmentation.SupportFragment
-//import net.lucode.hackware.magicindicator.MagicIndicator
-//import net.lucode.hackware.magicindicator.ViewPagerHelper
-//import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
-//import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
-//import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+//import net.lucode.hackware.Yxdindicator.YxdIndicator
+//import net.lucode.hackware.Yxdindicator.ViewPagerHelper
+//import net.lucode.hackware.Yxdindicator.buildins.commonnavigator.CommonNavigator
+//import net.lucode.hackware.Yxdindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+//import net.lucode.hackware.Yxdindicator.buildins.commonnavigator.abs.IPagerTitleView
 //import java.lang.reflect.Field
 //
 //
@@ -95,7 +95,7 @@ package com.yp.baselib.utils.fragment.deprecated//package com.yp.baselib.utils.f
 //    abstract class TabView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
 //            FrameLayout(context, attrs, defStyleAttr), IPagerTitleView
 //
-//    fun addMagicIndicator(indicator: MagicIndicator, adapter: CommonNavigatorAdapter) {
+//    fun addYxdIndicator(indicator: YxdIndicator, adapter: CommonNavigatorAdapter) {
 //        val commonNavigator = CommonNavigator(ctx)
 //        commonNavigator.adapter = adapter
 //        indicator.navigator = commonNavigator

@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.support.design.widget.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 /**
  * 对话框工具类
@@ -21,7 +21,7 @@ object DialogUtils {
         val dialog = BottomSheetDialog(ctx)
         val dialogView = LayoutInflater.from(ctx).inflate(viewId, null)
         dialog.setContentView(dialogView)
-        dialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
+        dialog.delegate.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
                 ?.setBackgroundColor(ctx.resources.getColor(android.R.color.transparent))
         return dialog
     }

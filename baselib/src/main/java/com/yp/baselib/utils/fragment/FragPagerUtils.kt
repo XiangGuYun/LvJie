@@ -2,29 +2,29 @@ package com.yp.baselib.utils.fragment
 
 import android.content.Context
 import android.content.res.Resources
-import android.support.design.widget.TabLayout
-import android.support.v4.app.*
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
+import androidx.fragment.app.*
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.yp.baselib.LLLP
-import com.yp.baselib.ex.ViewEx
 import com.yp.baselib.base.BaseFragment
 import com.yp.baselib.ex.ContextEx
+import com.yp.baselib.ex.ViewEx
 import com.yp.baselib.utils.DensityUtils
-import net.lucode.hackware.magicindicator.MagicIndicator
-import net.lucode.hackware.magicindicator.ViewPagerHelper
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import com.yp.baselib.view.indicator.ViewPagerHelper
+import com.yp.baselib.view.indicator.YxdIndicator
+import com.yp.baselib.view.indicator.buildins.commonnavigator.CommonNavigator
+import com.yp.baselib.view.indicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import com.yp.baselib.view.indicator.buildins.commonnavigator.abs.IPagerIndicator
+import com.yp.baselib.view.indicator.buildins.commonnavigator.abs.IPagerTitleView
+import com.yp.baselib.view.indicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import java.lang.reflect.Field
 
 /**
- * Fragment搭配ViewPager以及TabLayout或MagicIndicator的工具类
+ * Fragment搭配ViewPager以及TabLayout或YxdIndicator的工具类
  * 如果无需ViewPager的翻转效果，可用NoScrollViewPager
  */
 class FragPagerUtils<T : Fragment?>(
@@ -82,7 +82,7 @@ class FragPagerUtils<T : Fragment?>(
     }
 
     /**
-     * 绑定MagicLayout和ViewPager
+     * 绑定YxdLayout和ViewPager
      * @param indicator
      * @param tabSize 标签数量
      * @param indicatorColor 指示器颜色
@@ -92,8 +92,8 @@ class FragPagerUtils<T : Fragment?>(
      * @param tabWidth 标签宽度，如果是-1，则表示根据标签数量来等分屏幕宽度
      * @param getTabView 返回标签的自定义View，该View必须实现IPagerTitleView接口
      */
-    fun bindMI(
-        indicator: MagicIndicator,
+    fun bindIndicator(
+        indicator: YxdIndicator,
         tabSize: Int,
         indicatorColor: Int,
         indicatorWidth: Int = -1,
@@ -216,7 +216,7 @@ class FragPagerUtils<T : Fragment?>(
     }
 
     inner class FragStateAdapter(
-        fm: FragmentManager?,
+        fm: FragmentManager,
         private val fragments: List<T>
     ) : FragmentStatePagerAdapter(fm) {
         override fun getItem(position: Int): Fragment {
@@ -234,7 +234,7 @@ class FragPagerUtils<T : Fragment?>(
     }
 
     inner class FragAdapter internal constructor(
-        fm: FragmentManager?,
+        fm: FragmentManager,
         private val fragments: List<T>
     ) : FragmentPagerAdapter(fm) {
         override fun getItem(position: Int): Fragment {

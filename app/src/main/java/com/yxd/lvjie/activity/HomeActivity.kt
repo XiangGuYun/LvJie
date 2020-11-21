@@ -150,6 +150,7 @@ class HomeActivity : BaseActivity() {
                 h.v(R.id.item).click {
                     when (item.second) {
                         "设备连接" -> goTo<DeviceConnectActivity>()
+                        "设备列表" -> goTo<DeviceListActivity>()
                         "实时数据" -> goTo<RealtimeDataActivity>()
                         "设备设置" -> goTo<SettingActivity>()
                     }

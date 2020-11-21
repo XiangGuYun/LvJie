@@ -1,10 +1,11 @@
 package com.yp.baselib.utils
 
 import com.google.gson.Gson
-import com.zhy.http.okhttp.OkHttpUtils
-import com.zhy.http.okhttp.callback.StringCallback
+import com.yp.baselib.utils.http.OkHttpUtils
+import com.yp.baselib.utils.http.callback.StringCallback
 import okhttp3.Call
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 /**
  * OKHTTP工具类
@@ -38,7 +39,7 @@ object OK {
                 .postString()
                 .url(url)
                 .content(mapJson)
-                .mediaType(MediaType.parse(MEDIA_TYPE))
+                .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
         builder.build()
                 .connTimeOut(6000)
@@ -90,7 +91,7 @@ object OK {
                 .postString()
                 .url(url)
                 .content(jsonString)
-                .mediaType(MediaType.parse(MEDIA_TYPE))
+                .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
         builder.build()
                 .connTimeOut(6000)

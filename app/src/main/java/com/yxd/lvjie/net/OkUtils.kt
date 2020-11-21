@@ -5,11 +5,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.yp.baselib.utils.LogUtils
 import com.yp.baselib.utils.ToastUtils
+import com.yp.baselib.utils.http.OkHttpUtils
+import com.yp.baselib.utils.http.callback.StringCallback
 import com.yxd.lvjie.helper.SPHelper
-import com.zhy.http.okhttp.OkHttpUtils
-import com.zhy.http.okhttp.callback.StringCallback
 import okhttp3.Call
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 /**
  * OKHTTP工具类
@@ -43,7 +44,7 @@ object OkUtils {
             .postString()
             .url(url)
             .content(mapJson)
-            .mediaType(MediaType.parse(MEDIA_TYPE))
+            .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
         builder.build()
             .connTimeOut(6000)
@@ -125,7 +126,7 @@ object OkUtils {
             .postString()
             .url(url)
             .content(jsonString)
-            .mediaType(MediaType.parse(MEDIA_TYPE))
+            .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
         builder.addHeader("token", SPHelper.getToken())
 

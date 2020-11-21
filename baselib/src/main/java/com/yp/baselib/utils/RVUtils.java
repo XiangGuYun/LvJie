@@ -6,13 +6,14 @@ package com.yp.baselib.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
@@ -216,8 +217,8 @@ public class RVUtils {
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 //判断是否是网格布局，是则上下左右都可拖动，否则只能上下拖动
-                if (recyclerView.getLayoutManager() instanceof GridLayoutManager||
-                        recyclerView.getLayoutManager() instanceof  StaggeredGridLayoutManager) {
+                if (recyclerView.getLayoutManager() instanceof GridLayoutManager ||
+                        recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
                     final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN |
                             ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
                     final int swipeFlags = 0;

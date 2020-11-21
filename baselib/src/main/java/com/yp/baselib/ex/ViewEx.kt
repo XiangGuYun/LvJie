@@ -8,17 +8,17 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.LAYER_TYPE_SOFTWARE
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.*
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.yp.baselib.listener.OnSeekBarChange
 import com.yp.baselib.utils.DensityUtils.Companion.dip2px
@@ -182,7 +182,7 @@ interface ViewEx {
         if (limitSecond == 0) {
             setOnClickListener(func)
         } else {
-            preventRepeatedClick({
+            preventRepeatedClick(View.OnClickListener{
                 func.invoke(it)
             }, 1)
         }
@@ -299,7 +299,7 @@ interface ViewEx {
      * 扩展: https://blog.csdn.net/hust_twj/article/details/78742453
      */
     fun View.limitClick(click: (v: View) -> Unit) {
-        preventRepeatedClick({
+        preventRepeatedClick(View.OnClickListener{
             click.invoke(it)
         })
     }
@@ -311,7 +311,7 @@ interface ViewEx {
      * @param time Long 间隔时间，默认是2秒
      */
     fun View.limitClickByTime(click: (v: View) -> Unit, time: Long = 2) {
-        preventRepeatedClick({
+        preventRepeatedClick(View.OnClickListener{
             click.invoke(it)
         }, time)
     }
@@ -600,7 +600,7 @@ interface ViewEx {
      * @return View?
      */
     infix fun TabLayout.Tab.cv(resId: Int): View {
-        customView = LayoutInflater.from(parent.context).inflate(resId, null)
+        customView = LayoutInflater.from(parent!!.context).inflate(resId, null)
         return customView!!
     }
 

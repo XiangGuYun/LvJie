@@ -1,12 +1,12 @@
 package com.yp.baselib.utils
 
-import android.util.Log
 import com.google.gson.Gson
 import com.yp.baselib.other.HttpsHelper
-import com.zhy.http.okhttp.OkHttpUtils
-import com.zhy.http.okhttp.callback.StringCallback
+import com.yp.baselib.utils.http.OkHttpUtils
+import com.yp.baselib.utils.http.callback.StringCallback
 import okhttp3.Call
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSession
@@ -14,14 +14,14 @@ import javax.net.ssl.SSLSession
 /**
  * OKHTTP工具类
  */
-object OkHttpUtils {
+object ProjectOK {
 
     fun initInApplication(){
         val okHttpClient = OkHttpClient.Builder()
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
-                .sslSocketFactory(HttpsHelper.createSSLSocketFactory())
-                .hostnameVerifier { hostname: String?, session: SSLSession? -> true }
+//                .sslSocketFactory(HttpsHelper.createSSLSocketFactory())
+//                .hostnameVerifier { hostname: String?, session: SSLSession? -> true }
                 .retryOnConnectionFailure(true) //其他配置
                 .build()
         OkHttpUtils.initClient(okHttpClient)
@@ -50,7 +50,7 @@ object OkHttpUtils {
                 .postString()
                 .url(url)
                 .content(mapJson)
-                .mediaType(MediaType.parse(MEDIA_TYPE))
+                .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
         LogUtils.d(TAG, "mapJson is $mapJson");
 

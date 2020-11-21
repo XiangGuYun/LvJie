@@ -4,7 +4,6 @@ import android.Manifest.permission.*
 import android.os.Bundle
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.annotation.Permission
-import com.yp.baselib.utils.PermissionUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.net.Req

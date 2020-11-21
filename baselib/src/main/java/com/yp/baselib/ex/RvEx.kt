@@ -1,11 +1,11 @@
 package com.yp.baselib.ex
 
-import android.support.v7.widget.*
 import android.text.Html
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.*
 import com.yp.baselib.Holder
 import com.yp.baselib.utils.RVUtils
 import com.yp.baselib.view.rv.YxdRVAdapter
@@ -472,7 +472,7 @@ interface RvEx : StringEx {
         })
     }
 
-    val RecyclerView.wrap: RVUtils get() = RVUtils(this)
+    val RecyclerView?.wrap: RVUtils get() = RVUtils(this)
 
     /**
      * 刷新RecyclerView

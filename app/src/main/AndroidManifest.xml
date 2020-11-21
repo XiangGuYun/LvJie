@@ -61,6 +61,10 @@
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
+        <activity
+            android:name=".activity.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" /> <!-- or android:screenOrientation="landscape"-->
     </application>
 
 </manifest>

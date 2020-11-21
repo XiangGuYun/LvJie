@@ -1,6 +1,6 @@
 package com.yp.baselib.listener
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 
 interface OnPageChange : ViewPager.OnPageChangeListener {
 
