@@ -1,6 +1,5 @@
 package com.yp.baselib.base
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -21,6 +20,7 @@ import com.yp.baselib.ex.BaseEx
 import com.yp.baselib.utils.DensityUtils
 import com.yp.baselib.utils.LogUtils
 import com.yp.baselib.utils.TimerUtils
+import com.yp.baselib.utils.*
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
 import java.util.*
@@ -39,6 +39,7 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
     var orientationInject: Orientation? = null//是否是竖直方向
     var notFitSystemWindowInject: NotFitSystemWindow? = null
     var noReqOrientation: NoReqOrientation? = null
+    var permission:Permission?=null
     var notFitSystemWindow = false
     var dont_reqest_orientation = false
     var immersion = false
@@ -94,6 +95,8 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
 
 
     private fun initAnnotation() {
+
+
         val annotations = this::class.annotations
         annotations.forEachIndexed { _, it ->
             when (it.annotationClass) {
@@ -106,6 +109,19 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
                 }
                 Orientation::class -> {
                     orientationInject = it as Orientation
+                }
+                Permission::class -> {
+                    permission = it as Permission
+                    val permissions = permission?.permissions
+                    permissions?.let {
+                        PermissionUtils.req(this, {
+                            granted()
+                        },{
+                            shouldShowRequestPermissionRationale()
+                        },{
+                            needGoToSettingsPage()
+                        }, *it )
+                    }
                 }
                 Bus::class -> {
                     startEventBus = true
@@ -129,6 +145,12 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
             }
         }
     }
+
+    open fun shouldShowRequestPermissionRationale(){}
+
+    open fun needGoToSettingsPage() {}
+
+    open fun granted() {}
 
     protected open fun beforeInit() {}
 
@@ -427,16 +449,11 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
      * @param callback Function0<Unit>
      */
     fun doDelayTask(delay: Long, callback: () -> Unit) {
-//        if (!isRunTask) {
-//            isRunTask = true
-//
-//        }
         if (handler == null) {
             handler = Handler()
         }
         handler?.postDelayed({
             callback.invoke()
-//            isRunTask = false
         }, delay)
     }
 

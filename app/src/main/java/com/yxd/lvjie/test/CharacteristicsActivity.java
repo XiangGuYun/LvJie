@@ -12,7 +12,7 @@ import android.widget.ListView;
 
 import com.yxd.lvjie.R;
 import com.yxd.lvjie.base.MyApplication;
-import com.yxd.lvjie.constant.GattAttributes;
+import com.yxd.lvjie.bluetooth.GattAttributes;
 
 import java.util.ArrayList;
 import java.util.List;

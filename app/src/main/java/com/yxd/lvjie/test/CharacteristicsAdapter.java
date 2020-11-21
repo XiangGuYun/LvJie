@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.yxd.lvjie.R;
-import com.yxd.lvjie.constant.GattAttributes;
-import com.yxd.lvjie.constant.Utils;
+import com.yxd.lvjie.bluetooth.GattAttributes;
+import com.yxd.lvjie.bluetooth.Utils;
 
 import java.util.List;
 

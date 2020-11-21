@@ -17,6 +17,9 @@ import com.yxd.lvjie.R
 import com.yxd.lvjie.base.MyApplication
 import com.yxd.lvjie.bean.BtDevice
 import com.yxd.lvjie.bean.MService
+import com.yxd.lvjie.bluetooth.Constants
+import com.yxd.lvjie.bluetooth.GattAttributes
+import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.*
 import com.yxd.lvjie.constant.MsgWhat.DEVICE_DISCONNECT
 import com.yxd.lvjie.dialog.ProjectDialog
@@ -207,7 +210,6 @@ class HomeActivity : BaseActivity() {
     private val mGattUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // 连接到GATT服务器时收到的状态
-            intent.action?.logD("CmdTag", "action is ")
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
                     // 连接成功

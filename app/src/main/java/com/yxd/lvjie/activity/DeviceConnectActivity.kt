@@ -2,7 +2,6 @@ package com.yxd.lvjie.activity
 
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattCharacteristic
 import android.os.Bundle
 import android.os.Message
 import com.yp.baselib.annotation.Bus
@@ -10,18 +9,14 @@ import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.utils.BusUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.activity.HomeActivity.Companion.listBonded
-import com.yxd.lvjie.base.MyApplication
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.BtDevice
-import com.yxd.lvjie.constant.GattAttributes
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.helper.BluetoothHelper
-import com.yxd.lvjie.test.GattDetailActivity
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_connect.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
-import java.util.*
 import kotlin.collections.ArrayList
 
 

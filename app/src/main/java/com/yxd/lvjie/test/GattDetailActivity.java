@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -35,9 +36,9 @@ import com.yxd.lvjie.R;
 import com.yxd.lvjie.base.MyApplication;
 import com.yxd.lvjie.bean.Message;
 import com.yxd.lvjie.bean.Option;
-import com.yxd.lvjie.constant.Constants;
-import com.yxd.lvjie.constant.GattAttributes;
-import com.yxd.lvjie.constant.Utils;
+import com.yxd.lvjie.bluetooth.Constants;
+import com.yxd.lvjie.bluetooth.GattAttributes;
+import com.yxd.lvjie.bluetooth.Utils;
 import com.yxd.lvjie.service.BluetoothLeService;
 
 import java.io.File;
@@ -45,8 +46,6 @@ import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class GattDetailActivity extends MyBaseActivity {
@@ -845,12 +844,10 @@ public class GattDetailActivity extends MyBaseActivity {
 
 
     private void showDialog(String info) {
-
-        final MaterialDialog dialog = new MaterialDialog(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(getString(R.string.alert))
                 .setMessage(info)
-                .setPositiveButton(R.string.ok, (View.OnClickListener) v ->
-                        dialog.dismiss());
+                .setPositiveButton(R.string.ok, (dialog1, which) -> dialog1.dismiss());
         dialog.show();
     }
 

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 
 import com.yxd.lvjie.R;
 import com.yxd.lvjie.bean.Option;
-import com.yxd.lvjie.constant.Utils;
+import com.yxd.lvjie.bluetooth.Utils;
 
 import java.util.List;
 

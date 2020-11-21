@@ -1,4 +1,3 @@
 include ':baselib'
-include ':MaterialDesignDialoglibrary'
 include ':app'
 rootProject.name = "LvJie"

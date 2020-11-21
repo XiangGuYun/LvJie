@@ -32,6 +32,8 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
                         "确定", false
                     ) {
                         it.dismiss()
+                        etPassword.txt("")
+                        openKeyboardDelay(100)
                     }.show()
                 }
             }
@@ -49,6 +51,8 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
                 }
             }
         }, null, R.layout.item_advanced_setting)
+
+        openKeyboardDelay(etPassword, 100)
 
     }
 

@@ -5,7 +5,7 @@ import com.yp.baselib.base.BaseActivity
 import com.yp.baselib.utils.BusUtils
 import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
-import com.yxd.lvjie.constant.Utils
+import com.yxd.lvjie.bluetooth.Utils
 
 /**
  * 蓝牙数据发送与处理的工具类
@@ -19,7 +19,7 @@ object CmdUtils {
     fun hex2Float(hex: String): Float {
         val result = java.lang.Float.intBitsToFloat(Integer.valueOf(hex.trim { it <= ' ' }, 16))
 //        val result = hex.toInt(16)
-        Log.d("CmdTag", "hex2Float is "+ result)
+//        Log.d("CmdTag", "hex2Float is "+ result)
         return result
     }
 

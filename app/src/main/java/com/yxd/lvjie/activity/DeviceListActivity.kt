@@ -6,7 +6,7 @@ import com.yp.baselib.utils.fragment.FragPagerUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.fragment.DeviceListFragment
-import com.yxd.lvjie.view.MsgCenterTabView
+import com.yxd.lvjie.view.TabView
 import kotlinx.android.synthetic.main.activity_device_list.*
 
 /**
@@ -32,7 +32,7 @@ class DeviceListActivity : ProjectBaseActivity() {
             2,
             1
         ) {
-            MsgCenterTabView(this).apply {
+            TabView(this).apply {
                 tv(R.id.tvCell).txt(tabList[it])
             }
         }

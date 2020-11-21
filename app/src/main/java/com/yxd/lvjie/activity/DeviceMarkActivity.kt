@@ -38,17 +38,22 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             }
             MsgWhat.CMD_STRENGTH_FREQ -> {
                 val pair = msg.obj as Pair<Float, Float>
-                tvStrength.txt("强度：${pair.first.toInt()}")
-                tvFreq.txt("频率：${pair.second.toInt()}Hz")
+//                tvStrength.txt("强度：${pair.first.toInt()}")
+                tvFreq.txt("频率：${pair.second}Hz")
             }
             MsgWhat.CMD_STARTED_FREQ -> {
-
+                tvMarkFreq.txt("${msg.obj.toString()}Hz")
             }
             MsgWhat.CMD_STARTED_VALUE -> {
-
+                tvMarkStrength.txt("${msg.obj}")
             }
             MsgWhat.CMD_STARTED_TEST_VALUE -> {
-
+                tvStrength.txt("原始强度：${msg.obj}")
+                tvMarkNumber.txt(
+                    (tvMarkStrength.str.toBigDecimal().divide(
+                        tvStrength.str.toBigDecimal()
+                    )).toString()
+                )
             }
         }
     }
@@ -56,6 +61,10 @@ class DeviceMarkActivity : ProjectBaseActivity() {
     override fun init(bundle: Bundle?) {
 
         CmdUtils.getStrengthAndFrequency()
+
+        doDelayTask(300){
+            CmdUtils.getMarkPoint(this, 0)
+        }
 
         flMarkPoint.post {
             pu = PopupUtils(this, R.layout.mark_point, flMarkPoint.width to 200.dp)
@@ -69,6 +78,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                             selectedIndex = i
                             pu.window.dismiss()
                             tvMarkPoint.txt(item)
+                            CmdUtils.getMarkPoint(this, selectedIndex)
                         }
                     }, null, R.layout.item_mark_point
                 )
