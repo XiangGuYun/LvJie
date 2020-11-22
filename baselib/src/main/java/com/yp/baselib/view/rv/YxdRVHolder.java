@@ -15,6 +15,11 @@ import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yp.baselib.utils.BmpUtils;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 public class YxdRVHolder extends RecyclerView.ViewHolder implements YxdViewHelper.RecyclerView<YxdRVHolder> {
 
     private SparseArray<View> mViews = new SparseArray<>();
@@ -115,8 +120,15 @@ public class YxdRVHolder extends RecyclerView.ViewHolder implements YxdViewHelpe
     }
 
     @Override
-    public YxdRVHolder setImageUrl(int viewId, String imgUrl) {
-        // TODO: Use Glide/Picasso/ImageLoader/Fresco
+    public YxdRVHolder setImageUrl(final int viewId, final String imgUrl) {
+        final ImageView view = getView(viewId);
+        BmpUtils.INSTANCE.url2Bmp(mContext, imgUrl, new Function1<Bitmap, Unit>() {
+            @Override
+            public Unit invoke(Bitmap bitmap) {
+                view.setImageBitmap(bitmap);
+                return null;
+            }
+        });
         return this;
     }
 
@@ -164,14 +176,7 @@ public class YxdRVHolder extends RecyclerView.ViewHolder implements YxdViewHelpe
 
     @Override
     public YxdRVHolder setAlpha(int viewId, float value) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getView(viewId).setAlpha(value);
-        } else {
-            AlphaAnimation alpha = new AlphaAnimation(value, value);
-            alpha.setDuration(0);
-            alpha.setFillAfter(true);
-            getView(viewId).startAnimation(alpha);
-        }
+        getView(viewId).setAlpha(value);
         return this;
     }
 

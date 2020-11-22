@@ -1,5 +1,6 @@
 package com.yp.baselib.helper
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,8 +12,9 @@ import android.net.ConnectivityManager
  */
 class NetStatusReceiver : BroadcastReceiver() {
 
+    private var mINetStatusListener: ((state: Int)->Unit)? = null
 
-    private var mINetStatusListener: INetStatusListener? = null
+    @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val mobileNetInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
@@ -38,18 +40,17 @@ class NetStatusReceiver : BroadcastReceiver() {
             }
         }
         if (mINetStatusListener != null) {
-            mINetStatusListener!!.getNetState(netStatus)
+            mINetStatusListener!!.invoke(netStatus)
         }
     }
 
-    fun setNetStateListener(listener: INetStatusListener?) {
+    fun setNetStateListener(listener: ((state: Int)->Unit)?) {
         mINetStatusListener = listener
     }
 
-      fun interface INetStatusListener {
-        fun getNetState(state: Int)
-    }
-
+//    fun interface INetStatusListener {
+//        fun getNetState(state: Int)
+//    }
 
     companion object {
         /**

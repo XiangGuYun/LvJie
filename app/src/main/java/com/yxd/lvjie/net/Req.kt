@@ -118,5 +118,15 @@ object Req {
         }
     }
 
+    /**
+     * 获取APK版本信息
+     * @param callback Function1<ApkUpdateBean, Unit>
+     */
+    fun getApkVersionInfo(callback: (ApkUpdateBean) -> Unit){
+        OkUtils.get<ApkUpdateBean>(URL.APK_UPDATE, {
+            callback.invoke(it)
+        })
+    }
+
 
 }

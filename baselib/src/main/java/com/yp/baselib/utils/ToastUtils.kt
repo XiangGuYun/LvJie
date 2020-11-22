@@ -26,10 +26,7 @@ object ToastUtils {
         Toast.makeText(
             BaseApplication.getInstance().context, str,
             if (isLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
-        )
-            .apply {
-                setGravity(gravity, xOffSet, yOffset)
-            }.show()
+        ).apply { setGravity(gravity, xOffSet, yOffset) }.show()
     }
 
 }

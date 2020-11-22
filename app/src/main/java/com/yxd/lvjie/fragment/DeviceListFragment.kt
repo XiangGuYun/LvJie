@@ -25,12 +25,6 @@ class DeviceListFragment : BaseFragment() {
         tv(R.id.tvPoint).txt("观察点").color("#FEA900".color)
     }
 
-//    @Rv(R.layout.item_device)
-//    fun rvDevice(h:Holder, i:Int, item:ClipData.Item): () -> Int {
-//        h.tv(R.id.tv).txt(item.htmlText)
-//        return { 0 }
-//    }
-
     override fun init() {
         rvDevice.wrap.generate(listOf(1, 1, 1),
             { h, i, it ->

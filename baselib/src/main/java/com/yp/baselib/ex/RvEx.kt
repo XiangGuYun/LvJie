@@ -25,10 +25,10 @@ interface RvEx : StringEx {
      * @param itemLayoutId 传入可变长度的布局id数组
      */
     fun <T, R : List<T>> RVUtils.generate(
-            data: R,
-            bindItemWithData: (h: YxdRVHolder, i: Int, it: T) -> Unit,
-            getLayoutIndex: ((i: Int) -> Int)? = null,
-            vararg itemLayoutId: Int
+        data: R,
+        bindItemWithData: (h: YxdRVHolder, i: Int, it: T) -> Unit,
+        getLayoutIndex: ((i: Int) -> Int)? = null,
+        vararg itemLayoutId: Int
     ) {
         if (rv.layoutManager == null) {
             rv.layoutManager = LinearLayoutManager(context)
@@ -45,106 +45,7 @@ interface RvEx : StringEx {
             override fun getLayoutIndex(layoutIndex: Int, item: T): Int {
                 return getLayoutIndex?.invoke(layoutIndex) ?: 0
             }
-
-            override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-                val layoutManager =
-                    recyclerView.layoutManager
-                if (layoutManager is GridLayoutManager) {
-                    layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (needHeader && !needFooter) {
-                                if (position == 0) {
-                                    gridSpanCount
-                                } else {
-                                    1
-                                }
-                            } else if (needHeader && needFooter) {
-                                if (position == 0 || position == dataList.size - 1) {
-                                    gridSpanCount
-                                } else {
-                                    1
-                                }
-                            } else if (!needHeader && needFooter) {
-                                if (position == dataList.size - 1) {
-                                    gridSpanCount
-                                } else {
-                                    1
-                                }
-                            } else {
-                                1
-                            }
-                        }
-                    }
-                }
-            }
         }
-    }
-
-    /**
-     * 设置适配器
-     * @receiver RVUtils
-     * @param data ArrayList<T> 数据集合
-     * @param fun1 (holder: YxdRVHolder, pos:Int)->Unit 绑定数据
-     * @param itemId Int 列表项ID
-     * @return RVUtils
-     */
-    fun <T> RVUtils.rvAdapter(data: ArrayList<T>?,
-                              fun1: (holder: Holder, pos: Int) -> Unit,
-                              itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1), RVUtils.SetMultiCellView { 0 }, itemId)
-        return this
-    }
-
-    fun <T> RVUtils.rvAdapter(data: List<T>?,
-                              fun1: (holder: Holder, pos: Int) -> Unit,
-                              itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1), RVUtils.SetMultiCellView{ 0 }, itemId)
-        return this
-    }
-
-
-    /**
-     * 遍历RecyclerView的子视图
-     * @receiver RecyclerView
-     * @param fun1 (i:Int,it:View)->Unit
-     */
-    fun RecyclerView.foreachIndexed(fun1: (i: Int, it: View) -> Unit) {
-        for (i in 0 until childCount) {
-            fun1.invoke(i, getChildAt(i))
-        }
-    }
-
-    fun RecyclerView.foreach(fun1: (it: View) -> Unit) {
-        for (i in 0 until childCount) {
-            fun1.invoke(getChildAt(i))
-        }
-    }
-
-    /**
-     * 设置多个列表项布局的适配器
-     * @receiver RVUtils
-     * @param data ArrayList<T>
-     * @param fun1 (holder: com.yp.baselib.Holder, pos:Int)->Unit
-     * @param fun2 (Int)->Int
-     * @param itemId IntArray 传入可变长度的ID数组
-     * @return RVUtils
-     */
-    fun <T> RVUtils.rvMultiAdapter(data: ArrayList<T>,
-                                   fun1: (holder: Holder, pos: Int) -> Unit,
-                                   fun2: (pos: Int) -> Int,
-                                   vararg itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView(fun2), *itemId)
-        return this
-    }
-
-    fun <T> RVUtils.rvMultiAdapter(data: List<T>,
-                                   fun1: (holder: Holder, pos: Int) -> Unit,
-                                   fun2: (pos: Int) -> Int,
-                                   vararg itemId: Int): RVUtils {
-        adapter(data, RVUtils.onBindData(fun1),
-                RVUtils.SetMultiCellView(fun2), *itemId)
-        return this
     }
 
     /**
@@ -157,20 +58,22 @@ interface RvEx : StringEx {
      * @param handleNormalLayoutIndex (pos:Int)->Int
      * @param itemId IntArray
      */
-    fun <T> RVUtils.rvAdapterH(data: List<T>,
-                               headerViewId: Int,
-                               handleHeaderView: (holder: Holder) -> Unit,
-                               handleNormalView: (holder: Holder, pos: Int) -> Unit,
-                               handleNormalLayoutIndex: (pos: Int) -> Int,
-                               vararg itemId: Int) {
+    fun <T, R : List<T>> RVUtils.generateH(
+        data: R,
+        headerViewId: Int,
+        handleHeaderView: (holder: Holder) -> Unit,
+        handleNormalView: (holder: Holder, pos: Int, item: T) -> Unit,
+        handleNormalLayoutIndex: (pos: Int) -> Int,
+        vararg itemId: Int
+    ) {
         needHeader = true
-        rvMultiAdapter(data, { holder, pos ->
+        generate(data, { holder, pos, item ->
             when (pos) {
                 0 -> {
                     handleHeaderView.invoke(holder)
                 }
                 else -> {
-                    handleNormalView.invoke(holder, pos)
+                    handleNormalView.invoke(holder, pos, item)
                 }
             }
         }, {
@@ -191,17 +94,19 @@ interface RvEx : StringEx {
      * @param handleNormalLayoutIndex (pos:Int)->Int
      * @param itemId IntArray
      */
-    fun <T> RVUtils.rvAdapterHF(data: List<T>,
-                                headerViewId: Int,
-                                handleHeaderView: (headerHolder: Holder) -> Unit,
-                                footerViewId: Int,
-                                handleFooterView: (footerHolder: Holder) -> Unit,
-                                handleNormalView: (normalHolder: Holder, pos: Int) -> Unit,
-                                handleNormalLayoutIndex: (pos: Int) -> Int,
-                                vararg itemId: Int): RVUtils {
+    fun <T, R : List<T>> RVUtils.generateHF(
+        data: R,
+        headerViewId: Int,
+        handleHeaderView: (headerHolder: Holder) -> Unit,
+        footerViewId: Int,
+        handleFooterView: (footerHolder: Holder) -> Unit,
+        handleNormalView: (normalHolder: Holder, pos: Int, item: T) -> Unit,
+        handleNormalLayoutIndex: (pos: Int) -> Int,
+        vararg itemId: Int
+    ): RVUtils {
         needHeader = true
         needFooter = true
-        rvMultiAdapter(data, { holder, pos ->
+        generate(data, { holder, pos, item ->
             when (pos) {
                 0 -> {
                     handleHeaderView.invoke(holder)
@@ -210,7 +115,7 @@ interface RvEx : StringEx {
                     handleFooterView.invoke(holder)
                 }
                 else -> {
-                    handleNormalView.invoke(holder, pos)
+                    handleNormalView.invoke(holder, pos, item)
                 }
             }
         }, {
@@ -221,6 +126,23 @@ interface RvEx : StringEx {
             }
         }, headerViewId, footerViewId, *itemId)
         return this
+    }
+
+    /**
+     * 遍历RecyclerView的子视图
+     * @receiver RecyclerView
+     * @param fun1 (i:Int,it:View)->Unit
+     */
+    fun RecyclerView.foreachIndexed(fun1: (i: Int, it: View) -> Unit) {
+        for (i in 0 until childCount) {
+            fun1.invoke(i, getChildAt(i))
+        }
+    }
+
+    fun RecyclerView.foreach(fun1: (it: View) -> Unit) {
+        for (i in 0 until childCount) {
+            fun1.invoke(getChildAt(i))
+        }
     }
 
     /**
@@ -322,7 +244,7 @@ interface RvEx : StringEx {
      *  简化ItemView的setOnLongClickListener，且返回Holder
      */
     fun Holder.itemLongClick(click: (view: View) -> Unit): Holder {
-        getItemView().setOnLongClickListener {
+        itemView.setOnLongClickListener {
             click.invoke(it)
             return@setOnLongClickListener true
         }
@@ -341,14 +263,22 @@ interface RvEx : StringEx {
      * 添加分割线
      */
     fun RVUtils.decorate(drawableId: Int, isVertical: Boolean = true): RVUtils {
-        val divider = DividerItemDecoration(context, if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL)
+        val divider = DividerItemDecoration(
+            context,
+            if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL
+        )
         divider.setDrawable(context.resources.getDrawable(drawableId))
         rv.addItemDecoration(divider)
         return this
     }
 
     fun RVUtils.decorate(isVertical: Boolean = true): RVUtils {
-        rv.addItemDecoration(DividerItemDecoration(context, if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL))
+        rv.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                if (isVertical) DividerItemDecoration.VERTICAL else DividerItemDecoration.HORIZONTAL
+            )
+        )
         return this
     }
 
@@ -391,24 +321,24 @@ interface RvEx : StringEx {
     /**
      * 设置Item增删动画
      *
-        Cool
-        LandingAnimator
+    Cool
+    LandingAnimator
 
-        Scale
-        ScaleInAnimator, ScaleInTopAnimator, ScaleInBottomAnimator
-        ScaleInLeftAnimator, ScaleInRightAnimator
+    Scale
+    ScaleInAnimator, ScaleInTopAnimator, ScaleInBottomAnimator
+    ScaleInLeftAnimator, ScaleInRightAnimator
 
-        Fade
-        FadeInAnimator, FadeInDownAnimator, FadeInUpAnimator
-        FadeInLeftAnimator, FadeInRightAnimator
+    Fade
+    FadeInAnimator, FadeInDownAnimator, FadeInUpAnimator
+    FadeInLeftAnimator, FadeInRightAnimator
 
-        Flip
-        FlipInTopXAnimator, FlipInBottomXAnimator
-        FlipInLeftYAnimator, FlipInRightYAnimator
+    Flip
+    FlipInTopXAnimator, FlipInBottomXAnimator
+    FlipInLeftYAnimator, FlipInRightYAnimator
 
-        Slide
-        SlideInLeftAnimator, SlideInRightAnimator, OvershootInLeftAnimator, OvershootInRightAnimator
-        SlideInUpAnimator, SlideInDownAnimator
+    Slide
+    SlideInLeftAnimator, SlideInRightAnimator, OvershootInLeftAnimator, OvershootInRightAnimator
+    SlideInUpAnimator, SlideInDownAnimator
      */
     fun <T : RecyclerView.ItemAnimator> RVUtils.anim(anim: T?): RVUtils {
         if (anim == null) {

@@ -166,9 +166,9 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     private fun doBondedDeviceList() {
         if (listBonded.isEmpty()) tvNoBondedDevice.show()
 
-        rvConnectedDevices.wrap.rvAdapter(
+        rvConnectedDevices.wrap.generate(
             listBonded,
-            { h, p ->
+            { h, p, it ->
                 h.tv(R.id.tvName).txt(listBonded[p].name)
                 h.tv(R.id.tvAddress).txt(listBonded[p].address)
                 h.itemClick {
@@ -178,7 +178,7 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 //                    goTo<GattDetailActivity>()
 //                    goTo<CharacteristicsActivity>("is_usr_service" to true)
                 }
-            }, R.layout.item_device
+            }, null, R.layout.item_device
         )
     }
 

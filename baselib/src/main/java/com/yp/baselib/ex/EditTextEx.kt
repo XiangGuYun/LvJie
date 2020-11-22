@@ -12,6 +12,7 @@ import com.yp.baselib.utils.RegexUtils
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
+import kotlin.jvm.Throws
 
 /**
  * 输入框扩展类

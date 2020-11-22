@@ -32,11 +32,6 @@ object URL {
     const val HISTORY_DATA_QUERY = "/system/equip/app/history"
 
     /**
-     * 【曲线图】
-     */
-    const val CURVE_GRAPH = "/system/equip/app/chart"
-
-    /**
      * 【设备标定】列表
      */
     const val DEVICE_MARK_LIST = "/system/equip-mark/list"
@@ -45,4 +40,9 @@ object URL {
      * 【设备标定】编辑
      */
     const val DEVICE_MARK_EDIT = "/system/equip-mark/app/edit"
+
+    /**
+     * APK版本更新
+     */
+    const val APK_UPDATE = "/system/app-version/nocheck/newest"
 }

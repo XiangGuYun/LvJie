@@ -24,8 +24,7 @@ class DeviceListActivity : ProjectBaseActivity() {
 
         FragPagerUtils(
             this, vpDeviceList, fragList
-        )
-            .bindIndicator(
+        ).bindIndicator(
                 indicator,
             tabList.size,
             "#3C79FB".color(),

@@ -1,16 +1,47 @@
 package com.yxd.lvjie.utils
 
-import android.util.Log
 import com.yp.baselib.base.BaseActivity
 import com.yp.baselib.utils.BusUtils
+import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
-import com.yxd.lvjie.bluetooth.Utils
 
 /**
  * 蓝牙数据发送与处理的工具类
  */
 object CmdUtils {
+
+    /**
+     * 写入数据
+     * @param writeValue Float
+     * @param h47 Int
+     * @param g47 String
+     * @return String
+     */
+    fun write(writeValue:Float, h47:Int, g47:String): String {
+        val first = "0210"
+        // 00fe
+        var second = h47.toBigDecimal().divide(2.toBigDecimal()).toInt().toString(16)
+        while(second.length < 4){
+            second = "0$second"
+        }
+        // 0002
+        var third = g47.toBigDecimal().divide(2.toBigDecimal()).toString()
+        while(third.length < 4){
+            third = "0$third"
+        }
+        // 04
+        var fourth = g47
+        while(fourth.length < 2){
+            fourth = "0$fourth"
+        }
+        // 42c80000
+        val fifth = float2Hex(writeValue)
+        // A5E7
+        val valueCrc16 = Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth")).toString(16)
+        val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray()).replace(" ", "")
+        return "$first$second$third$fourth$fifth$newValue"
+    }
 
     fun formatMsgContent(data: ByteArray): String? {
         return "HEX:" + Utils.ByteArraytoHex(data) + "  ASSCII:" + Utils.byteToASCII(data)

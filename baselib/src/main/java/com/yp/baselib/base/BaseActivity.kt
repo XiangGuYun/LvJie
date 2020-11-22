@@ -159,16 +159,6 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         currAct = javaClass.simpleName
     }
 
-    override fun onDestroy() {
-        LogUtils.d("ActivityName", "移除了 " + javaClass.simpleName)
-        actList.remove(this)
-        if (startEventBus) {
-            EventBus.getDefault().unregister(this)
-        }
-        handler?.removeCallbacksAndMessages(null)
-        super.onDestroy()
-    }
-
     protected abstract fun init(bundle: Bundle?)
 
     companion object {
@@ -310,42 +300,10 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
     /**
      * 方便在Activity中直接使用相关单位的数字
      */
-    fun Number.px2dp(): Int {
-        return DensityUtils.px2dip(this@BaseActivity, this.toFloat())
-    }
-
-    fun Number.dp2px(): Int {
-        return DensityUtils.dip2px(this@BaseActivity, this.toFloat())
-    }
-
     val Number.dp get() = DensityUtils.dip2px(this@BaseActivity, this.toFloat())
-
-    fun Number.px2sp(): Int {
-        return DensityUtils.px2sp(this@BaseActivity, this.toFloat())
-    }
-
-    fun Number.sp2px(): Int {
-        return DensityUtils.sp2px(this@BaseActivity, this.toFloat())
-    }
-
-    /**
-     * 设置窗口变灰
-     * @param alpha Float
-     */
-    fun setWindowAlpha(alpha: Float = 0.4f) {
-        val attr = window.attributes
-        attr.alpha = alpha
-        window.attributes = attr
-    }
-
-    /**
-     * 将JSON字符串转换为JSON对象数组
-     * @param jsonStr String
-     * @return List<T>
-     */
-    fun <T> strToJsonList(jsonStr: String): List<T> {
-        return gson.fromJson(jsonStr, object : TypeToken<List<T>>() {}.type) as List<T>
-    }
+    val Number.sp get() = DensityUtils.sp2px(this@BaseActivity, this.toFloat())
+    fun Number.px2dp(): Int = DensityUtils.px2dip(this@BaseActivity, this.toFloat())
+    fun Number.px2sp(): Int = DensityUtils.px2sp(this@BaseActivity, this.toFloat())
 
     /**
      * 启动Activity
@@ -420,23 +378,18 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         }
     }
 
-    fun inflate(id: Int): View {
-        return LayoutInflater.from(this).inflate(id, null)
+    /**
+     * 设置背景变灰
+     * @param alpha Float
+     */
+    fun setWindowAlpha(alpha: Float = 0.4f) {
+        val attr = window.attributes
+        attr.alpha = alpha
+        window.attributes = attr
     }
 
-    /**
-     * 执行延迟任务(使用Timer实现)
-     * @param delay Long
-     * @param callback Function0<Unit>
-     */
-    fun doDelayTask1(delay: Long, callback: () -> Unit) {
-        var countDownTimer: Timer? = null
-        countDownTimer = TimerUtils.schedule(delay) {
-            runOnUiThread {
-                callback.invoke()
-                countDownTimer?.cancel()
-            }
-        }
+    fun inflate(id: Int): View {
+        return LayoutInflater.from(this).inflate(id, null)
     }
 
     private var handler: Handler? = null
@@ -455,6 +408,31 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         handler?.postDelayed({
             callback.invoke()
         }, delay)
+    }
+
+    /**
+     * 执行延迟任务(使用Timer实现)
+     * @param delay Long
+     * @param callback Function0<Unit>
+     */
+    fun doDelayTask1(delay: Long, callback: () -> Unit) {
+        var countDownTimer: Timer? = null
+        countDownTimer = TimerUtils.schedule(delay) {
+            runOnUiThread {
+                callback.invoke()
+                countDownTimer?.cancel()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        LogUtils.d("ActivityName", "移除了 " + javaClass.simpleName)
+        actList.remove(this)
+        if (startEventBus) {
+            EventBus.getDefault().unregister(this)
+        }
+        handler?.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     var exitTime = 0L
