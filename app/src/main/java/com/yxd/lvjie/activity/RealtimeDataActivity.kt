@@ -62,11 +62,11 @@ class RealtimeDataActivity : ProjectBaseActivity() {
     }
 
     private fun sendCmd() {
-        CmdUtils.getStrengthAndFrequency()
+        CmdUtils.sendCmdForStrengthAndFrequency()
         doDelayTask(300){
-            CmdUtils.getElectricQuantity()
+            CmdUtils.sendCmdForElectricQuantity()
             doDelayTask(300){
-                CmdUtils.getDeviceIMEI()
+                CmdUtils.sendCmdForIMEI()
             }
         }
     }

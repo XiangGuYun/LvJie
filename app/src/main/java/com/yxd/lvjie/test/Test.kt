@@ -1,7 +1,6 @@
 package com.yxd.lvjie.test
 
 import com.yxd.lvjie.bluetooth.Utils
-import com.yxd.lvjie.utils.CmdUtils
 
 object Test {
 
@@ -13,7 +12,6 @@ object Test {
 //        println(CmdUtils.hex2Float("3F800000C4CF"))
 
         println(Utils.ByteArraytoHex(Utils.hexStringToByteArray("A5E7").reversedArray()).replace(" ", ""))
-
     }
 
 

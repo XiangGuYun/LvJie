@@ -60,10 +60,10 @@ class DeviceMarkActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
 
-        CmdUtils.getStrengthAndFrequency()
+        CmdUtils.sendCmdForStrengthAndFrequency()
 
         doDelayTask(300){
-            CmdUtils.getMarkPoint(this, 0)
+            CmdUtils.sendCmdForMarkPoint(this, 0)
         }
 
         flMarkPoint.post {
@@ -78,7 +78,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                             selectedIndex = i
                             pu.window.dismiss()
                             tvMarkPoint.txt(item)
-                            CmdUtils.getMarkPoint(this, selectedIndex)
+                            CmdUtils.sendCmdForMarkPoint(this, selectedIndex)
                         }
                     }, null, R.layout.item_mark_point
                 )

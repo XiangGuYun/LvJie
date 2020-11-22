@@ -20,7 +20,8 @@ public class Crc16Utils {
      * @param data 需要计算的数组
      * @return CRC16校验值
      */
-    public static int calcCrc16(byte[] data) {
+    public static int
+    calcCrc16(byte[] data) {
         return calcCrc16(data, 0, data.length);
     }
 

@@ -18,28 +18,31 @@ object CmdUtils {
      * @param g47 String
      * @return String
      */
-    fun write(writeValue:Float, h47:Int, g47:String): String {
+    fun write(writeValue: Float, h47: Int, g47: String): String {
         val first = "0210"
         // 00fe
         var second = h47.toBigDecimal().divide(2.toBigDecimal()).toInt().toString(16)
-        while(second.length < 4){
+        while (second.length < 4) {
             second = "0$second"
         }
         // 0002
         var third = g47.toBigDecimal().divide(2.toBigDecimal()).toString()
-        while(third.length < 4){
+        while (third.length < 4) {
             third = "0$third"
         }
         // 04
         var fourth = g47
-        while(fourth.length < 2){
+        while (fourth.length < 2) {
             fourth = "0$fourth"
         }
         // 42c80000
         val fifth = float2Hex(writeValue)
         // A5E7
-        val valueCrc16 = Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth")).toString(16)
-        val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray()).replace(" ", "")
+        val valueCrc16 =
+            Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth"))
+                .toString(16)
+        val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
+            .replace(" ", "")
         return "$first$second$third$fourth$fifth$newValue"
     }
 
@@ -48,10 +51,7 @@ object CmdUtils {
     }
 
     fun hex2Float(hex: String): Float {
-        val result = java.lang.Float.intBitsToFloat(Integer.valueOf(hex.trim { it <= ' ' }, 16))
-//        val result = hex.toInt(16)
-//        Log.d("CmdTag", "hex2Float is "+ result)
-        return result
+        return java.lang.Float.intBitsToFloat(Integer.valueOf(hex.trim { it <= ' ' }, 16))
     }
 
     fun float2Hex(f: Float): String {
@@ -75,38 +75,70 @@ object CmdUtils {
     }
 
     /**
-     * 获取IMEI
+     *  发送命令来获取IMEI
      */
-    fun getDeviceIMEI() {
+    fun sendCmdForIMEI() {
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.IMEI)
     }
 
     /**
-     * 获取设备编号
+     * 发送命令来获取设备编号
      */
-    fun getDeviceNumber() {
+    fun sendCmdForDeviceNumber() {
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.DEVICE_NO)
     }
 
     /**
-     * 获取电量
+     * 发送命令来获取电量
      */
-    fun getElectricQuantity() {
+    fun sendCmdForElectricQuantity() {
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.EQ)
     }
 
     /**
-     * 解析电量
+     *  发送命令来获取强度和频率
      */
-    fun decodeElectricQuantity(hex: String): Float {
-        return hex2Float(hex.substring(6, 14))
+    fun sendCmdForStrengthAndFrequency() {
+        BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.STRENGTH_FREQ)
     }
 
+    private val markPointFreqList = listOf(
+        Cmd.STARTED_FREQ1,
+        Cmd.STARTED_FREQ2,
+        Cmd.STARTED_FREQ3,
+        Cmd.STARTED_FREQ4,
+        Cmd.STARTED_FREQ5
+    )
+
+    private val markPointValueList = listOf(
+        Cmd.STARTED_VALUE1,
+        Cmd.STARTED_VALUE2,
+        Cmd.STARTED_VALUE3,
+        Cmd.STARTED_VALUE4,
+        Cmd.STARTED_VALUE5
+    )
+
+    private val markPointTestValue = listOf(
+        Cmd.STARTED_TEST_VALUE1,
+        Cmd.STARTED_TEST_VALUE2,
+        Cmd.STARTED_TEST_VALUE3,
+        Cmd.STARTED_TEST_VALUE4,
+        Cmd.STARTED_TEST_VALUE5
+    )
+
     /**
-     * 获取强度和频率
+     * 发送命令来获取标定点的数据
+     * @param activity BaseActivity
+     * @param index Int 标定点的索引位，标定点1对应0，标定点2对应1，以此类推
      */
-    fun getStrengthAndFrequency() {
-        BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.STRENGTH_FREQ)
+    fun sendCmdForMarkPoint(activity: BaseActivity, index: Int) {
+        BusUtils.post(MsgWhat.SEND_COMMAND, markPointFreqList[index])
+        activity.doDelayTask(350) {
+            BusUtils.post(MsgWhat.SEND_COMMAND, markPointValueList[index])
+            activity.doDelayTask(350) {
+                BusUtils.post(MsgWhat.SEND_COMMAND, markPointTestValue[index])
+            }
+        }
     }
 
     /**
@@ -121,43 +153,10 @@ object CmdUtils {
         return hex2Float(hexStrength) to hex2Float(hexFrequency)
     }
 
-    val markPointFreqList = listOf(
-        Cmd.STARTED_FREQ1,
-        Cmd.STARTED_FREQ2,
-        Cmd.STARTED_FREQ3,
-        Cmd.STARTED_FREQ4,
-        Cmd.STARTED_FREQ5
-    )
-
-    val markPointValueList = listOf(
-        Cmd.STARTED_VALUE1,
-        Cmd.STARTED_VALUE2,
-        Cmd.STARTED_VALUE3,
-        Cmd.STARTED_VALUE4,
-        Cmd.STARTED_VALUE5
-    )
-
-    val markPointTestValue = listOf(
-        Cmd.STARTED_TEST_VALUE1,
-        Cmd.STARTED_TEST_VALUE2,
-        Cmd.STARTED_TEST_VALUE3,
-        Cmd.STARTED_TEST_VALUE4,
-        Cmd.STARTED_TEST_VALUE5
-    )
-
     /**
-     * 获取标定点的数据
-     * @param activity BaseActivity
-     * @param index Int 标定点的索引位，标定点1对应0，标定点2对应1，以此类推
+     * 解析电量
      */
-    fun getMarkPoint(activity: BaseActivity, index:Int){
-        BusUtils.post(MsgWhat.SEND_COMMAND, markPointFreqList[index])
-        activity.doDelayTask(350){
-            BusUtils.post(MsgWhat.SEND_COMMAND, markPointValueList[index])
-            activity.doDelayTask(350){
-                BusUtils.post(MsgWhat.SEND_COMMAND, markPointTestValue[index])
-            }
-        }
+    fun decodeElectricQuantity(hex: String): Float {
+        return hex2Float(hex.substring(6, 14))
     }
-
 }
