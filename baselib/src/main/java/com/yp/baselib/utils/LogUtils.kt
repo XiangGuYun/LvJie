@@ -39,7 +39,7 @@ object LogUtils {
      */
     const val LOG_LEVEL_ALL = 5
 
-    var logLevel = LOG_LEVEL_ALL
+    var logLevel = LOG_LEVEL_NONE
 
     /**
      * 以级别为 d 的形式输出LOG,输出debug调试信息

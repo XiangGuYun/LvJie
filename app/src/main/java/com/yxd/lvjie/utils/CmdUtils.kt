@@ -18,7 +18,7 @@ object CmdUtils {
      * @param g47 String
      * @return String
      */
-    fun write(writeValue: Float, h47: Int, g47: String): String {
+    fun write(writeValue: Float, h47: Int, g47: String) {
         val first = "0210"
         // 00fe
         var second = h47.toBigDecimal().divide(2.toBigDecimal()).toInt().toString(16)
@@ -43,7 +43,7 @@ object CmdUtils {
                 .toString(16)
         val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
             .replace(" ", "")
-        return "$first$second$third$fourth$fifth$newValue"
+        BusUtils.post(MsgWhat.SEND_COMMAND, "$first$second$third$fourth$fifth$newValue")
     }
 
     fun formatMsgContent(data: ByteArray): String? {
@@ -132,11 +132,11 @@ object CmdUtils {
      * @param index Int 标定点的索引位，标定点1对应0，标定点2对应1，以此类推
      */
     fun sendCmdForMarkPoint(activity: BaseActivity, index: Int) {
-        BusUtils.post(MsgWhat.SEND_COMMAND, markPointFreqList[index])
-        activity.doDelayTask(350) {
+        BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.ORIGIN_STRENGTH)
+        activity.doDelayTask(1000) {
             BusUtils.post(MsgWhat.SEND_COMMAND, markPointValueList[index])
-            activity.doDelayTask(350) {
-                BusUtils.post(MsgWhat.SEND_COMMAND, markPointTestValue[index])
+            activity.doDelayTask(1000) {
+                BusUtils.post(MsgWhat.SEND_COMMAND, markPointFreqList[index])
             }
         }
     }
@@ -158,5 +158,12 @@ object CmdUtils {
      */
     fun decodeElectricQuantity(hex: String): Float {
         return hex2Float(hex.substring(6, 14))
+    }
+
+    /**
+     * 自校正
+     */
+    fun autoAdjust(){
+        BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.AUTO_ADJUST)
     }
 }

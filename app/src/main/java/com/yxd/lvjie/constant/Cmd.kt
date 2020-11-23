@@ -13,6 +13,17 @@ object Cmd {
 
     const val STRENGTH_FREQ = "02 03 00 fa 00 04 64 0b"
 
+    /**
+     * 原始强度
+     */
+    const val ORIGIN_STRENGTH = "02 03 01 00 00 02 C5 C4"
+
+    /**
+     * 自校准
+     */
+    const val AUTO_ADJUST = "02 10 00 c900 01 02 04 00 a1f9"
+
+
     // 标定频率1
     const val STARTED_FREQ1 = "02 03 01 08 00 02 44 06"
     // 标定值1

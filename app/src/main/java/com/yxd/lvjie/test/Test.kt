@@ -1,6 +1,8 @@
 package com.yxd.lvjie.test
 
 import com.yxd.lvjie.bluetooth.Utils
+import com.yxd.lvjie.utils.CmdUtils
+import java.math.BigDecimal
 
 object Test {
 
@@ -10,8 +12,8 @@ object Test {
 //        println(result.toString(16))
 
 //        println(CmdUtils.hex2Float("3F800000C4CF"))
+        println(1.toBigDecimal().divide(48.toBigDecimal(), 2, BigDecimal.ROUND_HALF_UP))
 
-        println(Utils.ByteArraytoHex(Utils.hexStringToByteArray("A5E7").reversedArray()).replace(" ", ""))
     }
 
 

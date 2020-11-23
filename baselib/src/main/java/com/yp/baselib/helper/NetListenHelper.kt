@@ -6,6 +6,11 @@ import android.net.ConnectivityManager
 
 /**
  * 监听网络连接状态帮助类
+ *
+ * 注意需要添加以下权限：
+ * <uses-permission android:name="android.permission.INTERNET" />
+ * <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ * <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
  * @author YXD
  */
 class NetListenHelper{

@@ -8,6 +8,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "30.0.1"
 
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.yxd.lvjie"
         minSdkVersion 21
@@ -43,5 +48,5 @@ dependencies {
     implementation 'com.contrarywind:Android-PickerView:4.0.1'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
     implementation 'com.victor:lib:1.0.4'
-    implementation 'cn.jzvd:jiaozivideoplayer:7.5.0'
+//    implementation 'cn.jzvd:jiaozivideoplayer:7.5.0'
 }

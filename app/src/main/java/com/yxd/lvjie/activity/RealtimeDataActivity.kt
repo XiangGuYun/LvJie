@@ -14,6 +14,7 @@ import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_realtime_data.*
 import kotlinx.android.synthetic.main.item_device_list.*
 import org.greenrobot.eventbus.Subscribe
+import java.math.RoundingMode
 
 /**
  * 实时数据
@@ -36,7 +37,7 @@ class RealtimeDataActivity : ProjectBaseActivity() {
             }
             MsgWhat.CMD_STRENGTH_FREQ->{
                 val pair = msg.obj as Pair<Float, Float>
-                tvQiangDu.txt("强度：${pair.first.toInt()}")
+                tvQiangDu.txt("强度：${pair.first.toBigDecimal().divide(1.toBigDecimal(), 2, RoundingMode.HALF_UP)}")
                 tvPinLv.txt("频率：${pair.second.toInt()}Hz")
             }
             MsgWhat.CMD_EQ->{

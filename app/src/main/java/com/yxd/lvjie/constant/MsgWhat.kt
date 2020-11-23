@@ -64,4 +64,6 @@ object MsgWhat {
     const val CMD_STARTED_VALUE = 0x105
 
     const val CMD_STARTED_TEST_VALUE = 0x106
+
+    const val ORIGIN_STRENGTH = 0x107
 }

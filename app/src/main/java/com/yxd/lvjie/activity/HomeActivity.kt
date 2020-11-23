@@ -29,6 +29,7 @@ import com.yxd.lvjie.utils.CmdUtils.formatMsgContent
 import com.yxd.lvjie.utils.CmdUtils.sliceByteArray
 import kotlinx.android.synthetic.main.activity_device_manager.*
 import org.greenrobot.eventbus.Subscribe
+import java.math.RoundingMode
 
 
 /**
@@ -118,6 +119,7 @@ class HomeActivity : BaseActivity() {
                     Cmd.EQ -> "电量"
                     Cmd.DEVICE_NO -> "设备编号"
                     Cmd.IMEI -> "IMEI"
+                    Cmd.ORIGIN_STRENGTH -> "原始强度"
                     Cmd.STARTED_FREQ1 -> "标准频率1"
                     Cmd.STARTED_FREQ2 -> "标准频率2"
                     Cmd.STARTED_FREQ3 -> "标准频率3"
@@ -257,6 +259,14 @@ class HomeActivity : BaseActivity() {
                                     BusUtils.post(
                                         MsgWhat.CMD_STRENGTH_FREQ,
                                         CmdUtils.decodeStrengthAndFrequency(hex)
+                                    )
+                                }
+                                "原始强度"->{
+                                    BusUtils.post(
+                                        MsgWhat.ORIGIN_STRENGTH,
+                                        CmdUtils.hex2Float(hex.substring(6, 14)).toBigDecimal().divide(
+                                            1.toBigDecimal(), 2, RoundingMode.HALF_UP
+                                        )
                                     )
                                 }
                                 "电量" -> {

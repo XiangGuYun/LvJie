@@ -1,5 +1,6 @@
 package com.yxd.lvjie.activity
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.Message
 import com.yp.baselib.annotation.Bus
@@ -12,6 +13,7 @@ import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_biao_ding.*
 import org.greenrobot.eventbus.Subscribe
+import java.math.BigDecimal
 
 /**
  * 设备标定
@@ -43,32 +45,50 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             }
             MsgWhat.CMD_STARTED_FREQ -> {
                 tvMarkFreq.txt("${msg.obj.toString()}Hz")
+                tvMarkNumber.txt(
+                    (tvMarkStrength.str.toBigDecimal().divide(
+                        tvStrength.str.replace("原始强度：", "").toBigDecimal(),
+                        2,
+                        BigDecimal.ROUND_HALF_UP
+                    )).toString()
+                )
             }
             MsgWhat.CMD_STARTED_VALUE -> {
                 tvMarkStrength.txt("${msg.obj}")
             }
-            MsgWhat.CMD_STARTED_TEST_VALUE -> {
+            MsgWhat.ORIGIN_STRENGTH -> {
                 tvStrength.txt("原始强度：${msg.obj}")
-                tvMarkNumber.txt(
-                    (tvMarkStrength.str.toBigDecimal().divide(
-                        tvStrength.str.toBigDecimal()
-                    )).toString()
-                )
             }
         }
     }
+
+    private val listMarkFreqAddress = listOf(
+        528, 540, 552, 564, 576
+    )
+
+    private val listMarkValueAddress = listOf(
+        532, 544, 556, 568, 580
+    )
+
+    private val listMarkTestValueAddress = listOf(
+        536, 548, 560, 572, 584
+    )
 
     override fun init(bundle: Bundle?) {
 
         CmdUtils.sendCmdForStrengthAndFrequency()
 
-        doDelayTask(300){
+        val pd = ProgressDialog(this)
+        pd.setMessage("正在保存...")
+        pd.setCanceledOnTouchOutside(false)
+
+        doDelayTask(1000) {
             CmdUtils.sendCmdForMarkPoint(this, 0)
         }
 
         flMarkPoint.post {
             pu = PopupUtils(this, R.layout.mark_point, flMarkPoint.width to 200.dp)
-            val list = (1..10).toList().map { "标定点$it" }
+            val list = (1..5).toList().map { "标定点$it" }
             pu.windowView.rv(R.id.rvMarkPoint).wrap.decorate()
                 .generate(
                     list,
@@ -90,13 +110,38 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         val dialogAutoAdjust = ProjectDialog(this).setInfo(
             "请确认是否开始设备自校准?", "确定", true
         ) {
-
+            CmdUtils.autoAdjust()
+            it.dismiss()
         }
 
         val dialogSaveSetting = ProjectDialog(this).setInfo(
             "请确认是否保存标定点设置?", "确定", true
         ) {
-
+            it.dismiss()
+            pd.show()
+            // 原始强度
+            CmdUtils.write(
+                tvStrength.str.replace("原始强度：", "").toFloat(),
+                listMarkTestValueAddress[selectedIndex],
+                "4"
+            )
+            doDelayTask(1000) {
+                // 标定强度
+                CmdUtils.write(
+                    tvMarkStrength.str.toFloat(),
+                    listMarkValueAddress[selectedIndex],
+                    "4"
+                )
+                doDelayTask(1000) {
+                    CmdUtils.write(
+                        // 标定频率
+                        tvMarkFreq.str.replace("Hz", "").toFloat(),
+                        listMarkFreqAddress[selectedIndex],
+                        "4"
+                    )
+                    pd.dismiss()
+                }
+            }
         }
 
         tvAutoAdjust.click {
@@ -108,5 +153,6 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         }
 
     }
+
 
 }
