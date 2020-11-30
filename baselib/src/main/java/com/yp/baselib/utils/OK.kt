@@ -17,7 +17,7 @@ object OK {
      */
     const val OPTIONAL = "optional"
 
-    const val TAG = "OK_Result"
+    const val TAG = "YXD_OK"
 
     const val MEDIA_TYPE = "application/json; charset=utf-8"
 

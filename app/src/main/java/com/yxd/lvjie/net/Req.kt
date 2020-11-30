@@ -43,10 +43,10 @@ object Req {
      * 设备编辑
      * @param callback Function1<DeviceEditBean, Unit>
      */
-    fun editDevice(callback: (DeviceEditBean) -> Unit) {
-        OkUtils.postForm<DeviceEditBean>(URL.DEVICE_EDIT, {
+    fun editDevice(bean : DeviceEditBean, callback: (DeviceMarkEditBean) -> Unit) {
+        OkUtils.post<DeviceMarkEditBean>(URL.DEVICE_EDIT, bean) {
             callback.invoke(it)
-        })
+        }
     }
 
     /**
@@ -65,9 +65,9 @@ object Req {
 
     /**
      * 设备列表
-     * @param installPattern String
+     * @param installPattern String 安装模式 0-固定点 1-流动点 2-观察点 全部则不传
      */
-    fun getDeviceList(installPattern: String, callback: (DeviceListBean) -> Unit) {
+    fun getDeviceList(installPattern: String = OK.OPTIONAL, callback: (DeviceListBean) -> Unit) {
         OkUtils.get<DeviceListBean>(URL.DEVICE_LIST, {
             callback.invoke(it)
         }, "installPattern" to installPattern)

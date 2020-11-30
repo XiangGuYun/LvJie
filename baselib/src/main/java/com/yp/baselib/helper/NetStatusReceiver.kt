@@ -30,7 +30,7 @@ class NetStatusReceiver : BroadcastReceiver() {
             }
         } else {
             netStatus = if (allNetInfo.isConnected || allNetInfo.isConnectedOrConnecting) {
-                if (mobileNetInfo!!.isConnected || mobileNetInfo.isConnectedOrConnecting) {
+                if (mobileNetInfo != null && (mobileNetInfo!!.isConnected || mobileNetInfo.isConnectedOrConnecting)) {
                     NETSTATUS_MOBILE
                 } else {
                     NETSTATUS_WIFI

@@ -1,27 +1,27 @@
 package com.yxd.lvjie.bean
 
 data class DeviceDetailBean(
-    val code: Int? = null,
-    val `data`: Data? = null,
-    val message: String? = null
+    var code: Int? = null,
+    var `data`: Data,
+    var message: String? = null
 ) {
     data class Data(
-        val company: String? = null,
-        val createTime: Long? = null,
-        val dataUpdateTime: Long? = null,
-        val equipModel: String? = null,
-        val equipNo: String? = null,
-        val id: Int? = null,
-        val installMode: Int? = null,
-        val installPattern: Int? = null,
-        val installPerson: String? = null,
-        val installTime: Long? = null,
-        val latitude: Int? = null,
-        val longitude: Int? = null,
-        val pipeCaliber: String? = null,
-        val pipeMaterial: String? = null,
-        val power: Double? = null,
-        val valveLocation: String? = null,
-        val valveNo: String? = null
+        var company: String? = null,
+        var createTime: Long? = null,
+        var dataUpdateTime: Long? = null,
+        var equipModel: String? = null,
+        var equipNo: String? = null,
+        var id: Int? = null,
+        var installMode: Int? = null,
+        var installPattern: Int? = null,
+        var installPerson: String? = null,
+        var installTime: Long? = null,
+        var latitude: String? = null,
+        var longitude: String? = null,
+        var pipeCaliber: String? = null,
+        var pipeMaterial: String? = null,
+        var power: Double? = null,
+        var valveLocation: String? = null,
+        var valveNo: String? = null
     )
 }

@@ -70,15 +70,15 @@ public class ExceptionHelper implements Thread.UncaughtExceptionHandler {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         String currentTime = sdf.format(System.currentTimeMillis());
         // 打印出错误日志
-        LogUtils.e("TEST_EX", "异常发生时间："+currentTime + "\n异常原因：" +result+"\n发生异常的设备信息：");
-        LogUtils.e("TEST_EX", "手机厂商：" + EquipmentUtils.getDeviceBrand());
-        LogUtils.e("TEST_EX", "手机型号：" + EquipmentUtils.getSystemModel());
-        LogUtils.e("TEST_EX", "手机当前系统语言：" + EquipmentUtils.getSystemLanguage());
-        LogUtils.e("TEST_EX", "Android系统版本号：" + EquipmentUtils.getSystemVersion());
+        LogUtils.e("YXD_EX", "异常发生时间："+currentTime + "\n异常原因：" +result+"\n发生异常的设备信息：");
+        LogUtils.e("YXD_EX", "手机厂商：" + EquipmentUtils.getDeviceBrand());
+        LogUtils.e("YXD_EX", "手机型号：" + EquipmentUtils.getSystemModel());
+        LogUtils.e("YXD_EX", "手机当前系统语言：" + EquipmentUtils.getSystemLanguage());
+        LogUtils.e("YXD_EX", "Android系统版本号：" + EquipmentUtils.getSystemVersion());
 
-        LogUtils.e("TEST_EX", "手机设备名：" + EquipmentUtils.getSystemDevice());
-        LogUtils.e("TEST_EX", "主板名：" + EquipmentUtils.getDeviceBoard());
-        LogUtils.e("TEST_EX", "手机厂商名：" + EquipmentUtils.getDeviceManufacturer());
+        LogUtils.e("YXD_EX", "手机设备名：" + EquipmentUtils.getSystemDevice());
+        LogUtils.e("YXD_EX", "主板名：" + EquipmentUtils.getDeviceBoard());
+        LogUtils.e("YXD_EX", "手机厂商名：" + EquipmentUtils.getDeviceManufacturer());
         return true;
     }
 

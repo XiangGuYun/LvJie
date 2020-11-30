@@ -22,7 +22,7 @@ object OkUtils {
      */
     const val OPTIONAL = "optional"
 
-    const val TAG = "OK_Result"
+    const val TAG = "YXD_OK"
 
     const val MEDIA_TYPE = "application/json; charset=utf-8"
 
@@ -317,7 +317,9 @@ object OkUtils {
             .url(URL.BASE_URL + url)
 
         params.forEach {
-            req.addParams(it.first, it.second)
+            if (it.second != OPTIONAL) {
+                req.addParams(it.first, it.second)
+            }
         }
 
         req.addHeader("token", SPHelper.getToken())
@@ -373,7 +375,11 @@ object OkUtils {
                         TAG,
                         "......................................................................................................................................."
                     )
-                    LogUtils.d(TAG, " URL：$url\nRESPONSE：$response")
+                    LogUtils.d(
+                        TAG, " URL：$url\nPARAMS：${
+                            params.toList().toTypedArray().contentToString()
+                        }\nRESPONSE：$response"
+                    )
                     val jp = JsonParser()
                     val jo = jp.parse(response) as JsonObject
                     if (jo.get("code").asInt == 0) {

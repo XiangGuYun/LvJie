@@ -1,9 +1,9 @@
 package com.yxd.lvjie.base;
 
-import android.app.Application;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.yp.baselib.base.BaseApplication;
+import com.yp.baselib.helper.ExceptionHelper;
 import com.yxd.lvjie.bean.MService;
 
 import java.util.ArrayList;
@@ -13,6 +13,12 @@ import java.util.List;
  * Created by USR_LJQ on 2015-11-17.
  */
 public class MyApplication extends BaseApplication {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        ExceptionHelper.getInstance().init();
+    }
 
     private  boolean clearflag;
 

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.text.TextUtils
+import androidx.annotation.NonNull
 import com.yp.baselib.annotation.Bus
 import com.yp.baselib.annotation.LayoutId
 import com.yp.baselib.base.BaseActivity
@@ -38,6 +39,8 @@ import java.math.RoundingMode
 @Bus
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
+
+
 
     private var isConnectedDevice = false
     private lateinit var currentDevAddress: String
@@ -82,7 +85,7 @@ class HomeActivity : BaseActivity() {
         var cmdType = ""
     }
 
-    override fun init(bundle: Bundle?) {
+    override fun init( bundle: Bundle?) {
         initView()
         // 处理连接蓝牙的服务和广播接收器
         doConnectReceiverAndService()
@@ -356,7 +359,7 @@ class HomeActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         listBonded.clear()
-        stopBroadcastDataNotify(notifyCharacteristic)
+//        stopBroadcastDataNotify(notifyCharacteristic)
         unregisterReceiver(mGattUpdateReceiver)
     }
 

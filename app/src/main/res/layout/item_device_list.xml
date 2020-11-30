@@ -47,7 +47,6 @@
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备位置：188,188"
             android:textColor="#ff666666"
             android:textSize="12sp"
             />

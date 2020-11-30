@@ -20,7 +20,6 @@
         android:id="@+id/tv2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="188，188"
         android:textColor="#ff333333"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"

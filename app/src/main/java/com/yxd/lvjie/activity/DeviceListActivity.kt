@@ -19,7 +19,12 @@ class DeviceListActivity : ProjectBaseActivity() {
         val tabList = listOf("全部", "固定", "流动", "观察")
 
         val fragList = (1..tabList.size).map {
-            DeviceListFragment.newInstance()
+            when(it){
+                1->DeviceListFragment.newInstance(DeviceListFragment.Type.QUAN_BU)
+                2->DeviceListFragment.newInstance(DeviceListFragment.Type.GU_DING_DIAN)
+                3->DeviceListFragment.newInstance(DeviceListFragment.Type.LIU_DONG_DIAN)
+                else->DeviceListFragment.newInstance(DeviceListFragment.Type.GUAN_CHA_DIAN)
+            }
         }
 
         FragPagerUtils(
