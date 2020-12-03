@@ -3,6 +3,7 @@ package com.yxd.lvjie.net
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.yp.baselib.base.BaseActivity
 import com.yp.baselib.utils.LogUtils
 import com.yp.baselib.utils.ToastUtils
 import com.yp.baselib.utils.http.OkHttpUtils
@@ -211,7 +212,7 @@ object OkUtils {
         handleResponseCode: Boolean = true
     ) {
 
-
+        BaseActivity.getStackTopActivity().showLoading()
         val builder = OkHttpUtils
             .post()
             .url(URL.BASE_URL + url)
@@ -231,6 +232,8 @@ object OkUtils {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
+                    BaseActivity.getStackTopActivity().hideLoading()
+                    BaseActivity.getStackTopActivity().onHttpError(e?.localizedMessage.toString())
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -260,6 +263,7 @@ object OkUtils {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
+                    BaseActivity.getStackTopActivity().hideLoading()
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."

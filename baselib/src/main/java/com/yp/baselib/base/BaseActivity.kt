@@ -14,12 +14,8 @@ import android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
 import android.widget.Toast
 import com.githang.statusbar.StatusBarCompat
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.yp.baselib.annotation.*
 import com.yp.baselib.ex.BaseEx
-import com.yp.baselib.utils.DensityUtils
-import com.yp.baselib.utils.LogUtils
-import com.yp.baselib.utils.TimerUtils
 import com.yp.baselib.utils.*
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
@@ -39,7 +35,7 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
     var orientationInject: Orientation? = null//是否是竖直方向
     var notFitSystemWindowInject: NotFitSystemWindow? = null
     var noReqOrientation: NoReqOrientation? = null
-    var permission:Permission?=null
+    var permission: Permission? = null
     var notFitSystemWindow = false
     var dont_reqest_orientation = false
     var immersion = false
@@ -116,11 +112,11 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
                     permissions?.let {
                         PermissionUtils.req(this, {
                             granted()
-                        },{
+                        }, {
                             shouldShowRequestPermissionRationale()
-                        },{
+                        }, {
                             needGoToSettingsPage()
-                        }, *it )
+                        }, *it)
                     }
                 }
                 Bus::class -> {
@@ -146,7 +142,7 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         }
     }
 
-    open fun shouldShowRequestPermissionRationale(){}
+    open fun shouldShowRequestPermissionRationale() {}
 
     open fun needGoToSettingsPage() {}
 
@@ -176,6 +172,14 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
          */
         fun containActivity(simpleName: String): Boolean {
             return actList.find { it.javaClass.simpleName == simpleName } != null
+        }
+
+        /**
+         * 获取位于栈顶的Activity
+         * @return BaseActivity
+         */
+        fun getStackTopActivity(): BaseActivity {
+            return actList.last()
         }
 
         /**
@@ -240,6 +244,33 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
             return actList.find { it.javaClass.simpleName == simpleName } as T
         }
 
+    }
+
+    /**
+     * 用于耗时操作前显示loading
+     */
+    var showLoadingCallback: (() -> Unit)? = null
+
+    /**
+     * 用于在耗时操作后结束loading
+     */
+    var hideLoadingCallback: (() -> Unit)? = null
+
+    /**
+     * 当HTTP请求失败时触发的回调
+     */
+    var onHttpErrorCallback: ((message:String) -> Unit)? = null
+
+    fun onHttpError(message: String) {
+        onHttpErrorCallback?.invoke(message)
+    }
+
+    fun showLoading() {
+        showLoadingCallback?.invoke()
+    }
+
+    fun hideLoading() {
+        hideLoadingCallback?.invoke()
     }
 
     /**
@@ -321,6 +352,7 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         anims: Pair<Int, Int> = 0 to 0,
         needFinish: Boolean = false
     ) {
+
         val intent = Intent(this, T::class.java)
         pairs.forEach {
             when (it.second) {
@@ -442,7 +474,7 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
      * @param msg String
      * @param time Long
      */
-    fun doExitVerify(msg: String = "再按一次退出应用", time:Long = 2000) {
+    fun doExitVerify(msg: String = "再按一次退出应用", time: Long = 2000) {
         if ((System.currentTimeMillis() - exitTime) > time) {
             msg.toast()
             exitTime = System.currentTimeMillis()

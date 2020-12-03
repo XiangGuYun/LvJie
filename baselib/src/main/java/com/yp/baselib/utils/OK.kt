@@ -1,6 +1,7 @@
 package com.yp.baselib.utils
 
 import com.google.gson.Gson
+import com.yp.baselib.base.BaseActivity
 import com.yp.baselib.utils.http.OkHttpUtils
 import com.yp.baselib.utils.http.callback.StringCallback
 import okhttp3.Call
@@ -34,6 +35,9 @@ object OK {
             crossinline onSuccess: (data: T) -> Unit, //成功回调
             vararg pairs: Pair<String, String>//参数
     ) {
+
+        BaseActivity.getStackTopActivity().showLoading()
+
         val mapJson = Gson().toJson(HashMap(pairs.toMap()).filterValues { it != OPTIONAL })
         val builder = OkHttpUtils
                 .postString()
@@ -48,6 +52,7 @@ object OK {
                 .execute(object : StringCallback() {
 
                     override fun onError(call: Call?, e: Exception?, id: Int) {
+                        BaseActivity.getStackTopActivity().hideLoading()
                         LogUtils.e(TAG, ".......................................................................................................................................")
                         LogUtils.e(TAG, "×                                                                                                                                  ×")
                         LogUtils.e(TAG, "                                                               请求失败（POST）                                                       ")
@@ -61,6 +66,7 @@ object OK {
                     }
 
                     override fun onResponse(response: String?, id: Int) {
+                        BaseActivity.getStackTopActivity().hideLoading()
                         LogUtils.d(TAG, ".......................................................................................................................................")
                         LogUtils.d(TAG, "√                                                                                                                                  √")
                         LogUtils.d(TAG, "                                                               请求成功（POST）                                                       ")

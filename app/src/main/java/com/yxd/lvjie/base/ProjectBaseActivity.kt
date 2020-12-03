@@ -27,7 +27,18 @@ abstract class ProjectBaseActivity : BaseActivity() {
                     else -> ""
                 }
             )
+        }
 
+        showLoadingCallback = {
+            "正在请求".toast()
+        }
+
+        hideLoadingCallback = {
+            "请求结束了".toast()
+        }
+
+        onHttpErrorCallback = {
+            "请求失败: $it".toast()
         }
 
     }
