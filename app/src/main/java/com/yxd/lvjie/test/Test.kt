@@ -12,8 +12,10 @@ object Test {
 //        println(result.toString(16))
 
 //        println(CmdUtils.hex2Float("3F800000C4CF"))
-        println(1.toBigDecimal().divide(48.toBigDecimal(), 2, BigDecimal.ROUND_HALF_UP))
+    //        println(1.toBigDecimal().divide(48.toBigDecimal(), 2, BigDecimal.ROUND_HALF_UP))
 
+        val byteArray = byteArrayOf(3 as Byte, 89 as Byte, 76 as Byte)
+        println(String(byteArray))
     }
 
 

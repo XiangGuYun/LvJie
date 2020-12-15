@@ -3,9 +3,9 @@ package com.yxd.lvjie.activity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Message
-import com.yp.baselib.annotation.Bus
-import com.yp.baselib.annotation.LayoutId
-import com.yp.baselib.utils.TimerUtils
+import com.yxd.baselib.annotation.Bus
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.TimerUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.constant.MsgWhat
@@ -57,7 +57,7 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         })
         timer.start()
 
-        btnRefresh.click {
+        btnRefresh.click(2) {
             sendCmd()
         }
     }

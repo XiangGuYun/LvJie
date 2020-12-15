@@ -4,4 +4,11 @@
         <attr name="corner_radius" format="dimension|reference"/>
         <attr name="clip_color" format="reference|color"/>
     </declare-styleable>
+    <declare-styleable name="YxdButton">
+        <attr name="bgCommonColor" format="reference|color"/>
+        <attr name="bgPressedColor" format="reference|color"/>
+        <attr name="cornerRadius" format="dimension|reference"/>
+        <attr name="strokeWidth" format="dimension|reference"/>
+        <attr name="strokeColor" format="reference|color"/>
+    </declare-styleable>
 </resources>

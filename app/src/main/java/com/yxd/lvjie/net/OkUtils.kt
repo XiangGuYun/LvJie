@@ -3,11 +3,11 @@ package com.yxd.lvjie.net
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.yp.baselib.base.BaseActivity
-import com.yp.baselib.utils.LogUtils
-import com.yp.baselib.utils.ToastUtils
-import com.yp.baselib.utils.http.OkHttpUtils
-import com.yp.baselib.utils.http.callback.StringCallback
+import com.yxd.baselib.base.BaseActivity
+import com.yxd.baselib.utils.LogUtils
+import com.yxd.baselib.utils.ToastUtils
+import com.yxd.baselib.utils.http.OkHttpUtils
+import com.yxd.baselib.utils.http.callback.StringCallback
 import com.yxd.lvjie.helper.SPHelper
 import okhttp3.Call
 import okhttp3.MediaType
@@ -125,7 +125,7 @@ object OkUtils {
 
         val builder = OkHttpUtils
             .postString()
-            .url(url)
+            .url(URL.BASE_URL + url)
             .content(jsonString)
             .mediaType(MEDIA_TYPE.toMediaTypeOrNull())
 
@@ -316,11 +316,15 @@ object OkUtils {
         crossinline onSuccess: (data: T) -> Unit,
         vararg params: Pair<String, String>
     ) {
+
+        val lastUrl = if(url.contains("history")) URL.BASE_URL1+url else URL.BASE_URL + url
+
         val req = OkHttpUtils
             .get()
-            .url(URL.BASE_URL + url)
+            .url(lastUrl)
 
         params.forEach {
+            LogUtils.d(TAG, "second is "+it.second)
             if (it.second != OPTIONAL) {
                 req.addParams(it.first, it.second)
             }
@@ -353,7 +357,7 @@ object OkUtils {
                     )
                     LogUtils.e(
                         TAG,
-                        " URL：$url\nMESSAGE：${e?.localizedMessage}"
+                        " URL：$lastUrl\nMESSAGE：${e?.localizedMessage}"
                     );
                     call?.cancel()
                 }
@@ -380,7 +384,7 @@ object OkUtils {
                         "......................................................................................................................................."
                     )
                     LogUtils.d(
-                        TAG, " URL：$url\nPARAMS：${
+                        TAG, " URL：$lastUrl\nPARAMS：${
                             params.toList().toTypedArray().contentToString()
                         }\nRESPONSE：$response"
                     )

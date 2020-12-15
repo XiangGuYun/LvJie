@@ -1,8 +1,8 @@
 package com.yxd.lvjie.activity
 
 import android.os.Bundle
-import com.yp.baselib.annotation.LayoutId
-import com.yp.baselib.utils.fragment.FragPagerUtils
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.fragment.FragPagerUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.fragment.DeviceListFragment

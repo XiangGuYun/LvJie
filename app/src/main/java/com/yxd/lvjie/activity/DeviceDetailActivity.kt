@@ -1,20 +1,30 @@
 package com.yxd.lvjie.activity
 
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Message
+import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
-import com.yp.baselib.annotation.LayoutId
+import com.bigkoo.pickerview.builder.TimePickerBuilder
+import com.yxd.baselib.annotation.Bus
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.DialogUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.DeviceDetailBean
 import com.yxd.lvjie.bean.DeviceEditBean
+import com.yxd.lvjie.constant.MsgWhat
+import com.yxd.lvjie.dialog.LonLatDialog
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_device_detail.*
 import kotlinx.android.synthetic.main.header.*
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * 设备详情
  */
+@Bus
 @LayoutId(R.layout.activity_device_detail)
 class DeviceDetailActivity : ProjectBaseActivity() {
 
@@ -24,13 +34,24 @@ class DeviceDetailActivity : ProjectBaseActivity() {
     private lateinit var currentData: DeviceDetailBean.Data
 
     private lateinit var etCompany: EditText
-    private lateinit var etLonLat: EditText
+    private lateinit var etLonLat: TextView
     private lateinit var etInstallPerson: EditText
     private lateinit var tvInstallTime: TextView
     private lateinit var etPipeCaliber: EditText
     private lateinit var etPipeMaterial: EditText
     private lateinit var etValveLocation: EditText
     private lateinit var etValveNo: EditText
+
+    @Subscribe
+    fun handle(msg: Message) {
+        when (msg.what) {
+            MsgWhat.UPDATE_LON_LAT -> {
+                etLonLat.text = msg.obj.toString()
+                currentData.longitude = msg.obj.toString().split(",")[0]
+                currentData.latitude = msg.obj.toString().split(",")[1]
+            }
+        }
+    }
 
     override fun init(bundle: Bundle?) {
 
@@ -42,33 +63,6 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                 isEditable = true
                 rvDeviceDetail.update()
             } else {
-//                Req.editDevice(
-//                    DeviceEditBean(
-//                        company = etCompany.str,
-//                        equipModel = etEquipModel.str,
-//                        equipNo = etEquipNo.str,
-//                        id = id.toInt(),
-//                        installMode = currentInstallMode,
-//                        installPattern = currentInstallPattern,
-//                        installPerson = etInstallPerson.str,
-//                        installTime = etInstallTime.str.reverseFmtDate("yyyy-MM-dd"),
-//                        latitude = etLatitude.str.toInt(),
-//                        longitude = etLongitude.str.toInt(),
-//                        pipeCaliber = etPipeCaliber.str,
-//                        pipeMaterial = etPipeMaterial.str,
-//                        valveLocation = etValveLocation.str,
-//                        valveNo = etValveNo.str,
-//                    )
-//                ) {
-//                    if (it.code == 0) {
-//                        "保存成功".toast()
-//                        isEditable = false
-//                        rvDeviceDetail.update()
-//                        tvSubTitle.txt("编辑")
-//                    } else {
-//                        "保存失败,${it.message}".toast()
-//                    }
-//                }
                 currentData.apply {
                     longitude = etLonLat.str.split(",")[0].trim()
                     latitude = etLonLat.str.split(",")[1].trim()
@@ -80,29 +74,55 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                     company = etCompany.str.trim()
                     installTime = tvInstallTime.str.reverseFmtDate("yyyy-MM-dd")
                 }
-                list.clear()
-                list.addAll(
-                    listOf(
-                        "设备位置：" to "设备位置：${currentData.longitude}, ${currentData.latitude}",
-                        "阀门编号：" to "阀门编号：${currentData.valveNo}",
-                        "阀门位置：" to "阀门位置：${currentData.valveLocation}",
-                        "管道材质：" to "管道材质：${currentData.pipeMaterial}",
-                        "管道口径：" to "管道口径：${currentData.pipeCaliber}",
-                        "安装人员：" to "安装人员：${currentData.installPerson}",
-                        "公        司：" to "公        司：${currentData.company}",
-                        "安装时间：" to "安装时间：${currentData.installTime?.fmtDate("yyyy-MM-dd")}",
-                        "安装模式：" to "安装模式：${getPattern(currentData.installPattern)}",
-                        "安装方式：" to "安装方式：${getModel(currentData.installMode)}"
+                Req.editDevice(
+                    DeviceEditBean(
+                        company = etCompany.str,
+                        equipModel = currentData.equipModel,
+                        equipNo = currentData.equipNo,
+                        id = id.toInt(),
+                        installMode = currentData.installMode,
+                        installPattern = currentData.installPattern,
+                        installPerson = etInstallPerson.str,
+                        installTime = currentData.installTime,
+                        latitude = currentData.latitude,
+                        longitude = currentData.longitude,
+                        pipeCaliber = etPipeCaliber.str,
+                        pipeMaterial = etPipeMaterial.str,
+                        valveLocation = etValveLocation.str,
+                        valveNo = etValveNo.str,
                     )
-                )
-                tvSubTitle.txt("编辑")
-                isEditable = false
-                rvDeviceDetail.update()
+                ) {
+                    if (it.code == 0) {
+                        "保存成功".toast()
+                        list.clear()
+                        list.addAll(
+                            listOf(
+                                "设备位置：" to "设备位置：${currentData.longitude}, ${currentData.latitude}",
+                                "阀门编号：" to "阀门编号：${currentData.valveNo}",
+                                "阀门位置：" to "阀门位置：${currentData.valveLocation}",
+                                "管道材质：" to "管道材质：${currentData.pipeMaterial}",
+                                "管道口径：" to "管道口径：${currentData.pipeCaliber}",
+                                "安装人员：" to "安装人员：${currentData.installPerson}",
+                                "公        司：" to "公        司：${currentData.company}",
+                                "安装时间：" to "安装时间：${currentData.installTime?.fmtDate("yyyy-MM-dd")}",
+                                "安装模式：" to "安装模式：${getPattern(currentData.installPattern)}",
+                                "安装方式：" to "安装方式：${getModel(currentData.installMode)}"
+                            )
+                        )
+                        isEditable = false
+                        rvDeviceDetail.update()
+                        tvSubTitle.txt("编辑")
+                    } else {
+                        "保存失败,${it.message}".toast()
+                    }
+                }
             }
         }
 
+
         Req.getDeviceDetail(id) {
             currentData = it.data
+
 
             tvXingHao.txt("型号：${currentData.equipModel}")
 
@@ -123,17 +143,32 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                 "安装模式：" to "安装模式：${getPattern(currentData.installPattern)}",
                 "安装方式：" to "安装方式：${getModel(currentData.installMode)}"
             )
-            
+
+            val pvTime = TimePickerBuilder(this)
+            { date, v ->
+                currentData.installTime = date.time
+                tvInstallTime.txt(date.time.fmtDate("yyyy-MM-dd"))
+            }.setType(booleanArrayOf(true, true, true, false, false, false))
+                .setTitleBgColor(Color.WHITE)
+                .build()
+
             rvDeviceDetail.wrap.generate(
                 list,
                 { h, p, item ->
                     h.tv(R.id.tv1).txt(if (isEditable) item.first else item.second)
                     if (h.vNull(R.id.tv2) != null && h.v(R.id.tv2) is EditText) {
                         val et = h.et(R.id.tv2)
-                        when(h.tv(R.id.tv1).str){
+                        when (h.tv(R.id.tv1).str) {
                             "设备位置：" -> {
                                 etLonLat = et
                                 etLonLat.txt("${currentData.longitude},${currentData.latitude}")
+                                et.isFocusable = false
+                                et.isFocusableInTouchMode = false
+                                et.inputType = InputType.TYPE_NULL
+                                etLonLat.click {
+                                    goTo<MapActivity>("isDetail" to true, "lon" to currentData.longitude!!,
+                                        "lat" to currentData.latitude!!)
+                                }
                             }
                             "阀门编号：" -> {
                                 etValveNo = et
@@ -161,24 +196,44 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                             }
                         }
                     }
-                    if(h.tvNull(R.id.tv3) != null){
+                    if (h.tvNull(R.id.tv3) != null) {
                         val tv = h.tv(R.id.tv3)
-                        when(h.tv(R.id.tv1).str){
+                        when (h.tv(R.id.tv1).str) {
                             "安装时间：" -> {
                                 tvInstallTime = tv
                                 tvInstallTime.txt(currentData.installTime?.fmtDate("yyyy-MM-dd"))
                                 h.v(R.id.flTV3).click {
-                                    "选择时间".toast()
+                                    pvTime.show()
                                 }
                             }
                             "安装模式：" -> {
                                 tv.txt(getPattern(currentData.installPattern))
+                                h.v(R.id.flTV3).click {
+                                    val arr = arrayOf("固定点", "流动点", "观察点")
+                                    DialogUtils.createOptionsDialog(
+                                        this, arr,
+                                        currentData.installPattern!!, {
+                                            currentData.installPattern = it
+                                            tv.txt(arr[it])
+                                        }, "选择安装模式"
+                                    ).show()
+                                }
                             }
                             "安装方式：" -> {
                                 tv.txt(getModel(currentData.installMode))
+                                h.v(R.id.flTV3).click {
+                                    val arr = arrayOf("直接吸附阀门", "直接吸附管道", "抱箍固定安装管道", "其它")
+                                    DialogUtils.createOptionsDialog(
+                                        this, arr,
+                                        currentData.installMode!!, {
+                                            currentData.installMode = it
+                                            tv.txt(arr[it])
+                                        }, "选择安装方式"
+                                    ).show()
+                                }
                             }
                         }
-                       
+
                     }
                 },
                 {
@@ -224,7 +279,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
             0 -> "直接吸附阀门"
             1 -> "直接吸附管道"
             2 -> "抱箍固定安装管道"
-            else -> "其他"
+            else -> "其它"
         }
     }
 

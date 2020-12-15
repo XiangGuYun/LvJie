@@ -1,15 +1,14 @@
 package com.yxd.lvjie.helper
 
-import com.yp.baselib.base.BaseApplication
-import com.yp.baselib.utils.SPUtils
+import com.yxd.baselib.utils.SPUtils
 
 object SPHelper {
 
     fun getToken(): String {
-        return SPUtils.getString(BaseApplication.getInstance().context, "token", "")
+        return SPUtils.getString("token", "")
     }
 
     fun putToken(token: String) {
-        SPUtils.put(BaseApplication.getInstance().context, "token", token)
+        SPUtils.put("token", token)
     }
 }

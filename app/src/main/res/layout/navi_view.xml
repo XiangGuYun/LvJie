@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="160dp"
+    android:minHeight="100dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:orientation="horizontal"
+    android:background="@color/transparent">
+   <TextView
+       android:id="@+id/tvLoc"
+       android:text="20202200071235453453"
+       android:padding="5dp"
+       android:textColor="#3F7BFB"
+       android:textSize="12sp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center_horizontal"
+       android:background="@drawable/bg_rect_blue"/>
+   <ImageView
+       android:layout_gravity="center"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="20dp"
+       android:src="@mipmap/marker"/>
+</FrameLayout>

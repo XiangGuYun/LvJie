@@ -3,7 +3,7 @@ package com.yxd.lvjie.dialog
 import android.app.Dialog
 import android.content.Context
 import com.kotlinlib.common.dialog.BaseDialog
-import com.yp.baselib.annotation.DialogInfo
+import com.yxd.baselib.annotation.DialogInfo
 import com.yxd.lvjie.R
 
 @DialogInfo(270, 170, R.layout.dialog_project)

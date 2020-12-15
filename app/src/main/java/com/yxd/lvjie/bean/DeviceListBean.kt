@@ -15,8 +15,8 @@ data class DeviceListBean(
             val id: Int? = null,
             val installPattern: Int? = null,
             val installTime: Long? = null,
-            val latitude: Int? = null,
-            val longitude: Int? = null,
+            val latitude: String? = null,
+            val longitude: String? = null,
             val power: Int? = null
         )
     }

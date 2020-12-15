@@ -22,6 +22,10 @@ object Cmd {
      * 自校准
      */
     const val AUTO_ADJUST = "02 10 00 c900 01 02 04 00 a1f9"
+    
+    const val GET_HISTORY_DATA = "02 41 01 00 00 10 3D C6"
+
+    const val DEVICE_AWAKE_TIME = "02 03 00 d0 00 02 C5 C1"
 
 
     // 标定频率1

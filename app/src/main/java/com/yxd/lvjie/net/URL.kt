@@ -2,7 +2,11 @@ package com.yxd.lvjie.net
 
 object URL {
 
-    const val BASE_URL = "http://119.3.66.45/api"
+    const val ALL_DEVICES = "/system/equip/app/list"
+
+    const val BASE_URL1 = "http://47.96.4.50/api" // http://119.3.66.45/api"
+
+    const val BASE_URL = "http://47.96.4.50/api"
 
     const val LOGIN = "/user/admin/app/login"
 
@@ -29,7 +33,7 @@ object URL {
     /**
      * 【历史数据查询】
      */
-    const val HISTORY_DATA_QUERY = "/system/equip/app/history"
+    const val HISTORY_DATA_QUERY = "/system/equip/history"
 
     /**
      * 【设备标定】列表

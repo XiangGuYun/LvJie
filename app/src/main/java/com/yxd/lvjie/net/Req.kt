@@ -1,7 +1,7 @@
 package com.yxd.lvjie.net
 
-import com.yp.baselib.utils.MD5Utils
-import com.yp.baselib.utils.OK
+import com.yxd.baselib.utils.MD5Utils
+import com.yxd.baselib.utils.OK
 import com.yxd.lvjie.bean.*
 import com.yxd.lvjie.helper.SPHelper
 
@@ -43,7 +43,7 @@ object Req {
      * 设备编辑
      * @param callback Function1<DeviceEditBean, Unit>
      */
-    fun editDevice(bean : DeviceEditBean, callback: (DeviceMarkEditBean) -> Unit) {
+    fun editDevice(bean: DeviceEditBean, callback: (DeviceMarkEditBean) -> Unit) {
         OkUtils.post<DeviceMarkEditBean>(URL.DEVICE_EDIT, bean) {
             callback.invoke(it)
         }
@@ -81,14 +81,21 @@ object Req {
      * @param callback Function1<HistoryDataBean, Unit>
      */
     fun getHistoryData(
-        id: String,
+        equipNo: String,
+        pageNum: Int,
         startTime: String = OK.OPTIONAL,
         endTime: String = OK.OPTIONAL,
         callback: (HistoryDataBean) -> Unit
     ) {
-        OkUtils.get<HistoryDataBean>(URL.HISTORY_DATA_QUERY, {
-            callback.invoke(it)
-        }, "id" to id, "startTime" to startTime, "endTime" to endTime)
+        OkUtils.get<HistoryDataBean>(
+            URL.HISTORY_DATA_QUERY, {
+                callback.invoke(it)
+            }, "equipNo" to equipNo,
+            "startTime" to if (startTime == "0") OK.OPTIONAL else startTime,
+            "endTime" to if (endTime == "0") OK.OPTIONAL else endTime,
+            "pageNum" to pageNum.toString(),
+            "pageSize" to "20"
+        )
     }
 
     /**
@@ -122,8 +129,14 @@ object Req {
      * 获取APK版本信息
      * @param callback Function1<ApkUpdateBean, Unit>
      */
-    fun getApkVersionInfo(callback: (ApkUpdateBean) -> Unit){
+    fun getApkVersionInfo(callback: (ApkUpdateBean) -> Unit) {
         OkUtils.get<ApkUpdateBean>(URL.APK_UPDATE, {
+            callback.invoke(it)
+        })
+    }
+
+    fun getAllDevices(callback: (AllDevices) -> Unit){
+        OkUtils.get<AllDevices>(URL.ALL_DEVICES, {
             callback.invoke(it)
         })
     }

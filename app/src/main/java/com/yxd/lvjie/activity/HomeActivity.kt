@@ -10,10 +10,15 @@ import android.os.Bundle
 import android.os.Message
 import android.text.TextUtils
 import androidx.annotation.NonNull
-import com.yp.baselib.annotation.Bus
-import com.yp.baselib.annotation.LayoutId
-import com.yp.baselib.base.BaseActivity
-import com.yp.baselib.utils.BusUtils
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
+import com.yxd.baselib.annotation.Bus
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.base.BaseActivity
+import com.yxd.baselib.utils.BusUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.MyApplication
 import com.yxd.lvjie.bean.BtDevice
@@ -40,8 +45,6 @@ import java.math.RoundingMode
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
 
-
-
     private var isConnectedDevice = false
     private lateinit var currentDevAddress: String
     private lateinit var currentDevName: String
@@ -64,7 +67,7 @@ class HomeActivity : BaseActivity() {
         R.mipmap.ditufenbu to "地图分布",
         R.mipmap.xiangguanjisuan to "相关计算",
         R.mipmap.gongshitongji to "工时统计",
-        R.mipmap.loudiantongji to "漏电统计"
+        R.mipmap.loudiantongji to "漏点统计"
     )
 
     private val listBusinessHandle = listOf(
@@ -74,6 +77,7 @@ class HomeActivity : BaseActivity() {
     )
 
     companion object {
+
         /**
          * 已绑定的设备
          */
@@ -118,6 +122,7 @@ class HomeActivity : BaseActivity() {
                     return
                 }
                 cmdType = when (text) {
+                    Cmd.DEVICE_AWAKE_TIME -> "设备唤醒时间"
                     Cmd.STRENGTH_FREQ -> "强度和频率"
                     Cmd.EQ -> "电量"
                     Cmd.DEVICE_NO -> "设备编号"
@@ -158,6 +163,7 @@ class HomeActivity : BaseActivity() {
                         "设备列表" -> goTo<DeviceListActivity>()
                         "实时数据" -> goTo<RealtimeDataActivity>()
                         "设备设置" -> goTo<SettingActivity>()
+                        "历史数据" -> goTo<HistoryDataActivity>()
                     }
                 }
             }, null, R.layout.item_device_manager
@@ -168,6 +174,11 @@ class HomeActivity : BaseActivity() {
             { h, p, item ->
                 h.iv(R.id.ivIcon).sIR(item.first)
                 h.tv(R.id.tvName).txt(item.second)
+                h.itemClick {
+                    when(item.second){
+                        "地图分布"->goTo<MapActivity>()
+                    }
+                }
             }, null, R.layout.item_device_manager
         )
 
@@ -235,7 +246,7 @@ class HomeActivity : BaseActivity() {
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     // 连接断开
                     isConnectedDevice = false
-                    "设备断开了连接".logD("CmdTag")
+                    "设备断开了连接".logD("YXD_Cmd")
                     BusUtils.post(DEVICE_DISCONNECT)
                     listBonded.clear()
                     BusUtils.post(MsgWhat.CLEAR_BOUNDED_DEVICE)
@@ -255,9 +266,15 @@ class HomeActivity : BaseActivity() {
                     if (extras!!.containsKey(Constants.EXTRA_BYTE_VALUE)) {
                         if (extras.containsKey(Constants.EXTRA_BYTE_UUID_VALUE)) {
                             val array = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE)
-                            formatMsgContent(array)?.logD("CmdTag", "收到了反馈：")
+                            formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：")
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (cmdType) {
+                                "设备唤醒时间"->{
+                                    BusUtils.post(
+                                        MsgWhat.CMD_DEVICE_AWAKE_TIME,
+                                        ""
+                                    )
+                                }
                                 "强度和频率" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STRENGTH_FREQ,
@@ -279,7 +296,7 @@ class HomeActivity : BaseActivity() {
                                     )
                                 }
                                 "设备编号" -> {
-                                    BusUtils.post(MsgWhat.CMD_DEVICE_NO, Utils.byteToASCII(array))
+                                    BusUtils.post(MsgWhat.CMD_DEVICE_NO, String(array.sliceArray(23..37)))
                                 }
                                 "IMEI" -> {
                                     if (array.size > 23) {

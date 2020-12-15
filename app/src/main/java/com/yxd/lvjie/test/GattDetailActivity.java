@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.yp.baselib.utils.ToastUtils;
+import com.yxd.baselib.utils.ToastUtils;
 import com.yxd.lvjie.R;
 import com.yxd.lvjie.base.MyApplication;
 import com.yxd.lvjie.bean.Message;

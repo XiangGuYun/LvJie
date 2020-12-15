@@ -29,6 +29,8 @@ object MsgWhat {
 
     const val HIDE_DIALOG = 0x008
 
+    const val UPDATE_LON_LAT = 0x009
+
     /**
      * 设备连接超时
      */
@@ -66,4 +68,6 @@ object MsgWhat {
     const val CMD_STARTED_TEST_VALUE = 0x106
 
     const val ORIGIN_STRENGTH = 0x107
+
+    const val CMD_DEVICE_AWAKE_TIME = 0x108
 }

@@ -1,44 +1,46 @@
 package com.yxd.lvjie.base
 
+import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.kotlinlib.common.ResUtils
-import com.yp.baselib.base.BaseActivity
+import com.yxd.baselib.base.BaseActivity
+import com.yxd.baselib.utils.DialogUtils
 
 abstract class ProjectBaseActivity : BaseActivity() {
 
-    override fun beforeInit() {
-        findViewById<View>(ResUtils.getId(this, "ivBack"))?.click {
+    override fun beforeInit(savedInstanceState: Bundle?) {
+        vNull(ResUtils.getId("ivBack"))?.click {
             finish()
         }
 
-        findViewById<TextView>(ResUtils.getId(this, "tvTitle"))?.let {
-            it.txt(
-                when (javaClass.simpleName) {
-                    "DeviceListActivity" -> "设备列表"
-                    "RealtimeDataActivity" -> "实时数据"
-                    "DeviceMarkActivity" -> "设备标定"
-                    "HistoryDataActivity" -> "历史数据"
-                    "DeviceInfoActivity" -> "设备信息"
-                    "DeviceDetailActivity" -> "设备详情"
-                    "ArithmeticSelectActivity" -> "算法选择"
-                    "AdvancedSettingActivity" -> "进入高级设置"
-                    "TimeSetActivity" -> "时间设置"
-                    else -> ""
-                }
-            )
-        }
+        tvNull(ResUtils.getId("tvTitle"))?.txt(
+            when (javaClass.simpleName) {
+                "DeviceListActivity" -> "设备列表"
+                "RealtimeDataActivity" -> "实时数据"
+                "DeviceMarkActivity" -> "设备标定"
+                "HistoryDataActivity" -> "历史数据"
+                "DeviceInfoActivity" -> "设备信息"
+                "DeviceDetailActivity" -> "设备详情"
+                "ArithmeticSelectActivity" -> "算法选择"
+                "AdvancedSettingActivity" -> "进入高级设置"
+                "TimeSetActivity" -> "时间设置"
+                else -> ""
+            }
+        )
+
+        val dialog = DialogUtils.createProgressDialog(this, "正在请求...")
 
         showLoadingCallback = {
-            "正在请求".toast()
+            dialog.show()
         }
 
         hideLoadingCallback = {
-            "请求结束了".toast()
+            dialog.dismiss()
         }
 
         onHttpErrorCallback = {
-            "请求失败: $it".toast()
+            dialog.dismiss()
         }
 
     }

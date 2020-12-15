@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LunchTheme" parent="Theme.AppCompat">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--下面这句如果你加上觉得好看就加，不好看就不加咯-->
+        <!--<item name="android:navigationBarColor">@color/transparent</item>-->
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!--<item name="android:windowBackground">@drawable/welcome</item>-->
+    </style>
+
+    <style name="BottomDialog" parent="@android:style/Theme.Dialog">
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+    <!-- ActionSheet进出动画 -->
+    <style name="DialogAnimation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_out</item>
+    </style>
+
+    <declare-styleable name="YxdImageView">
+        <attr name="corner_radius_iv" format="dimension|reference" />
+        <attr name="tl_corner_radius_iv" format="dimension|reference" />
+        <attr name="tr_corner_radius_iv" format="dimension|reference" />
+        <attr name="bl_corner_radius_iv" format="dimension|reference" />
+        <attr name="br_corner_radius_iv" format="dimension|reference" />
+        <attr name="corner_radius_percent_iv" format="float" />
+        <attr name="tl_corner_radius_percent_iv" format="float" />
+        <attr name="tr_corner_radius_percent_iv" format="float" />
+        <attr name="bl_corner_radius_percent_iv" format="float" />
+        <attr name="br_corner_radius_percent_iv" format="float" />
+        <attr name="corner_type_iv" format="enum">
+            <enum name="cut" value="1" />
+            <enum name="rounded" value="2" />
+        </attr>
+        <attr name="tl_corner_type_iv" format="enum">
+            <enum name="cut" value="1" />
+            <enum name="rounded" value="2" />
+        </attr>
+        <attr name="tr_corner_type_iv" format="enum">
+            <enum name="cut" value="1" />
+            <enum name="rounded" value="2" />
+        </attr>
+        <attr name="bl_corner_type_iv" format="enum">
+            <enum name="cut" value="1" />
+            <enum name="rounded" value="2" />
+        </attr>
+        <attr name="br_corner_type_iv" format="enum">
+            <enum name="cut" value="1" />
+            <enum name="rounded" value="2" />
+        </attr>
+        <attr name="isCircle" format="boolean|reference" />
+    </declare-styleable>
+</resources>

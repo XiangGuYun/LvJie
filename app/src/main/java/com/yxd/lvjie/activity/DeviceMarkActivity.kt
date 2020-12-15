@@ -3,15 +3,16 @@ package com.yxd.lvjie.activity
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.Message
-import com.yp.baselib.annotation.Bus
-import com.yp.baselib.annotation.LayoutId
-import com.yp.baselib.utils.PopupUtils
+import com.yxd.baselib.annotation.Bus
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.PopupUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_biao_ding.*
+import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
 import java.math.BigDecimal
 
@@ -76,6 +77,15 @@ class DeviceMarkActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
 
+        tvSubTitle.show().txt("刷新").click(3) {
+            // 读取强度和频率
+            CmdUtils.sendCmdForStrengthAndFrequency()
+            doDelayTask(1000) {
+                // 读取标定点数据
+                CmdUtils.sendCmdForMarkPoint(this, 0)
+            }
+        }
+
         CmdUtils.sendCmdForStrengthAndFrequency()
 
         val pd = ProgressDialog(this)
@@ -125,21 +135,27 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 listMarkTestValueAddress[selectedIndex],
                 "4"
             )
-            doDelayTask(1000) {
+            doDelayTask(1500) {
                 // 标定强度
                 CmdUtils.write(
                     tvMarkStrength.str.toFloat(),
                     listMarkValueAddress[selectedIndex],
                     "4"
                 )
-                doDelayTask(1000) {
+                doDelayTask(1500) {
                     CmdUtils.write(
                         // 标定频率
-                        tvMarkFreq.str.replace("Hz", "").toFloat(),
+                        tvFreq.str.replace("Hz", "").replace("频率：","").toFloat(),
                         listMarkFreqAddress[selectedIndex],
                         "4"
                     )
                     pd.dismiss()
+                    tvMarkNumber.txt(
+                        (tvMarkStrength.str.toBigDecimal().divide(
+                            tvStrength.str.replace("原始强度：", "").toBigDecimal(),
+                            2,
+                            BigDecimal.ROUND_HALF_UP
+                        )).toString())
                 }
             }
         }
@@ -151,6 +167,10 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         tvSaveSetting.click {
             dialogSaveSetting.show()
         }
+
+    }
+
+    private fun refresh() {
 
     }
 

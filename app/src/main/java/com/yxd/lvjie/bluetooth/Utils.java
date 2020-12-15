@@ -300,7 +300,7 @@ public class Utils{
     }
 
     public static String byteToASCII(byte[] array) {
-//        Log.d("CmdTag", Arrays.toString(array));
+//        Log.d("YXD_Cmd", Arrays.toString(array));
         StringBuffer sb = new StringBuffer();
         for (byte byteChar : array) {
             if (byteChar >= 32 && byteChar < 127) {

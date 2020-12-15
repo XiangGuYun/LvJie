@@ -2,16 +2,20 @@ package com.yxd.lvjie.fragment
 
 import android.os.Bundle
 import android.util.Log
-import com.yp.baselib.Holder
-import com.yp.baselib.annotation.LayoutId
-import com.yp.baselib.base.BaseFragment
-import com.yp.baselib.utils.OK
+import com.yxd.baselib.Holder
+import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.base.BaseFragment
+import com.yxd.baselib.utils.OK
 import com.yxd.lvjie.R
 import com.yxd.lvjie.activity.DeviceDetailActivity
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.fragment_device_list.*
 import java.io.Serializable
 
+/**
+ *
+ * @author
+ */
 @LayoutId(R.layout.fragment_device_list)
 class DeviceListFragment : BaseFragment() {
 

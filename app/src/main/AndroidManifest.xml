@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yxd.lvjie">
     <!-- 应用使用蓝牙的权限 -->
@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -23,6 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LvJie">
+        <activity android:name=".test.TestActivity">
+
+        </activity>
         <activity android:name=".activity.TimeSetActivity">
 
         </activity>
@@ -33,12 +36,12 @@
 
         </activity>
         <activity android:name=".activity.DeviceInfoActivity" />
-        <activity android:name=".activity.AdvancedSettingActivity" >
+        <activity android:name=".activity.AdvancedSettingActivity">
 
         </activity>
         <activity android:name=".activity.DeviceDetailActivity" />
         <activity android:name=".activity.RealtimeDataActivity" />
-        <activity android:name=".activity.HistoryDataActivity" >
+        <activity android:name=".activity.HistoryDataActivity">
 
         </activity>
         <activity android:name=".activity.DeviceConnectActivity">
@@ -46,9 +49,8 @@
         </activity>
         <activity android:name=".activity.DeviceMarkActivity" />
         <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.HomeActivity">
-        </activity>
-        <activity android:name=".activity.LoginActivity" >
+        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,6 +60,7 @@
         <activity android:name=".test.ServicesActivity" />
         <activity android:name=".test.CharacteristicsActivity" />
         <activity android:name=".test.GattDetailActivity" />
+
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
@@ -65,6 +68,30 @@
             android:name=".activity.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" /> <!-- or android:screenOrientation="landscape"-->
+
+        <!-- 高德地图 -->
+        <!-- 添加APIKEY -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="e3139789d2c17ddab35790f84c2839c3" />
+
+        <activity android:name="com.yxd.lvjie.activity.MapActivity" />
+        <activity android:name="com.yxd.lvjie.activity.Vp2Activity">
+
+        </activity>
+
+        <activity android:name=".activity.LvJieHtmlActivity"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.yxd.lvjie.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                 android:name="android.support.FILE_PROVIDER_PATHS"
+                 android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

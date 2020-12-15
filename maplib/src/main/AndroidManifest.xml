@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yxd.maplib">
+
+
+<!--    <meta-data-->
+<!--        android:name="com.amap.api.v2.apikey"-->
+<!--        android:value="e432f524d6ee7f2cce19a8bd8412c2e3" />-->
+
+</manifest>

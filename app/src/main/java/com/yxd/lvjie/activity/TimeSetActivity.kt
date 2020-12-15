@@ -3,7 +3,7 @@ package com.yxd.lvjie.activity
 import android.graphics.Color
 import android.os.Bundle
 import com.bigkoo.pickerview.builder.TimePickerBuilder
-import com.yp.baselib.annotation.LayoutId
+import com.yxd.baselib.annotation.LayoutId
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import kotlinx.android.synthetic.main.activity_time_set.*

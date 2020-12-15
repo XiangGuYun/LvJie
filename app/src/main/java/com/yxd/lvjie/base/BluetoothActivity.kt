@@ -6,8 +6,8 @@ import android.bluetooth.BluetoothGattService
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.yp.baselib.base.BaseActivity
-import com.yp.baselib.utils.BusUtils
+import com.yxd.baselib.base.BaseActivity
+import com.yxd.baselib.utils.BusUtils
 import com.yxd.lvjie.activity.DeviceConnectActivity
 import com.yxd.lvjie.activity.HomeActivity
 import com.yxd.lvjie.bean.BtDevice
@@ -83,7 +83,7 @@ abstract class BluetoothActivity : BaseActivity() {
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     // 连接断开
                     isConnectedDevice = false
-                    "设备断开了连接".logD("CmdTag")
+                    "设备断开了连接".logD("YXD_Cmd")
                     BusUtils.post(MsgWhat.DEVICE_DISCONNECT)
                     HomeActivity.listBonded.clear()
                     BusUtils.post(MsgWhat.CLEAR_BOUNDED_DEVICE)
@@ -103,7 +103,7 @@ abstract class BluetoothActivity : BaseActivity() {
                     if (extras!!.containsKey(Constants.EXTRA_BYTE_VALUE)) {
                         if (extras.containsKey(Constants.EXTRA_BYTE_UUID_VALUE)) {
                             val array = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE)
-                            CmdUtils.formatMsgContent(array)?.logD("CmdTag", "收到了反馈：")
+                            CmdUtils.formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：")
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (HomeActivity.cmdType) {
                                 "强度和频率" -> {

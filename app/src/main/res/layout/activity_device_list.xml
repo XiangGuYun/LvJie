@@ -8,7 +8,7 @@
 
     <include layout="@layout/header"/>
 
-    <com.yp.baselib.view.indicator.YxdIndicator
+    <com.yxd.baselib.view.indicator.YxdIndicator
         android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="40dp"/>

@@ -51,8 +51,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.yp.baselib.utils.BusUtils;
-import com.yp.baselib.utils.LogUtils;
+import com.yxd.baselib.utils.BusUtils;
+import com.yxd.baselib.utils.LogUtils;
 import com.yxd.lvjie.bluetooth.BloodPressureParser;
 import com.yxd.lvjie.bluetooth.CSCParser;
 import com.yxd.lvjie.bluetooth.CapSenseParser;
@@ -538,9 +538,9 @@ public class BluetoothLeService extends Service {
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
 //            super.onMtuChanged(gatt, mtu, status);
-            LogUtils.d("CmdTag", "onMtuChanged-------------------->size:" + mtu);
+            LogUtils.d("YXD_Cmd", "onMtuChanged-------------------->size:" + mtu);
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                LogUtils.d("CmdTag", "onMtuChanged-------------------->设置成功");
+                LogUtils.d("YXD_Cmd", "onMtuChanged-------------------->设置成功");
                 BusUtils.INSTANCE.post(MsgWhat.NOTIFY);
             }
         }
@@ -871,7 +871,7 @@ public class BluetoothLeService extends Service {
             Log.d("HomeTest", mBluetoothDeviceAddress + "\n" + characteristic.getInstanceId() + "\n"
                     + characteristic.getWriteType() + "\n" + Arrays.toString(characteristic.getValue()));
             boolean result = mBluetoothGatt.writeCharacteristic(characteristic);
-            LogUtils.d("CmdTag", "写入命令是否成功？"+result);
+            LogUtils.d("YXD_Cmd", "写入命令是否成功？"+result);
         }
     }
 
@@ -901,7 +901,7 @@ public class BluetoothLeService extends Service {
             }
         }
         boolean result = mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-        LogUtils.d("CmdTag", "Notify是否成功？"+result);
+        LogUtils.d("YXD_Cmd", "Notify是否成功？"+result);
     }
 
 
@@ -945,10 +945,10 @@ public class BluetoothLeService extends Service {
     public static boolean requestMtu(int mtu) {
         if (mBluetoothGatt != null) {
             boolean result = mBluetoothGatt.requestMtu(mtu);
-            LogUtils.d("CmdTag", "设置长度结果"+result);
+            LogUtils.d("YXD_Cmd", "设置长度结果"+result);
             return result;
         }
-        LogUtils.d("CmdTag", "设置长度结果失败。");
+        LogUtils.d("YXD_Cmd", "设置长度结果失败。");
         return false;
     }
 
