@@ -16,6 +16,7 @@ import com.yxd.baselib.annotation.Permission
 import com.yxd.baselib.utils.SnackBarUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
+import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_login.*
 
 @Permission([ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE])
@@ -27,20 +28,14 @@ class LoginActivity : ProjectBaseActivity() {
         etAccount.txt("admin")
         etPassword.txt("Aa111111")
 
-        drawer.setLeftMenu(R.layout.menu_left, 300.dp)
-
         btnLogin.click {
-            drawer.openLeftMenu()
+            if (etAccount.isEmpty || etPassword.isEmpty) {
+                return@click
+            }
+            Req.login(etAccount.str, etPassword.str) {
+                goTo<HomeActivity>(true)
+            }
         }
-
-//        btnLogin.click {
-//            if (etAccount.isEmpty || etPassword.isEmpty) {
-//                return@click
-//            }
-//            Req.login(etAccount.str, etPassword.str) {
-//                goTo<HomeActivity>(true)
-//            }
-//        }
     }
 
 }

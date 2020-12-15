@@ -141,5 +141,11 @@ object Req {
         })
     }
 
+    fun syncHistoryData(imei:String, number:String, appData:String, callback: (DeviceMarkEditBean) -> Unit){
+        OkUtils.get<DeviceMarkEditBean>("/system/history/app/add", {
+            callback.invoke(it)
+        }, "imei" to imei, "number" to number, "appData" to appData)
+    }
+
 
 }
