@@ -37,7 +37,7 @@ object OK {
         vararg pairs: Pair<String, String>//参数
     ) {
 
-        BaseActivity.getStackTopActivity().showLoading()
+        BaseActivity.getStackTopActivity()?.showLoading()
 
         val mapJson = Gson().toJson(HashMap(pairs.toMap()).filterValues { it != OPTIONAL })
         val builder = OkHttpUtils
@@ -55,7 +55,8 @@ object OK {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
-                    BaseActivity.getStackTopActivity().hideLoading()
+                    ToastUtils.toastDebug(" URL：$url\nJSON：$mapJson\nMessage：${e?.localizedMessage}")
+                    BaseActivity.getStackTopActivity()?.hideLoading()
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -84,7 +85,8 @@ object OK {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
-                    BaseActivity.getStackTopActivity().hideLoading()
+                    ToastUtils.toastDebug(" URL：$url\nJSON：$mapJsonTest\nRESPONSE：$response")
+                    BaseActivity.getStackTopActivity()?.hideLoading()
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."
@@ -139,6 +141,7 @@ object OK {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nJSON：$jsonString\nMessage：${e?.localizedMessage}")
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -167,6 +170,7 @@ object OK {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nJSON：$jsonString\nRESPONSE：$response")
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."
@@ -226,6 +230,7 @@ object OK {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nPARAMS：$pairs\nMessage：${e?.localizedMessage}")
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -254,6 +259,7 @@ object OK {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nPARAMS：$pairs\nRESPONSE：$response")
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."
@@ -304,6 +310,7 @@ object OK {
         req.build()
             .execute(object : StringCallback() {
                 override fun onError(call: Call?, e: java.lang.Exception?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nMESSAGE：${e?.localizedMessage}")
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -332,6 +339,7 @@ object OK {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
+                    ToastUtils.toastDebug(" URL：$url\nRESPONSE：$response")
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."

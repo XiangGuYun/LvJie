@@ -1,15 +1,19 @@
 package com.yxd.lvjie.activity
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Message
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.DialogUtils
 import com.yxd.baselib.utils.TimerUtils
 import com.yxd.lvjie.R
+import com.yxd.lvjie.activity.HomeActivity.Companion.isConnectedDevice
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.ProjectDialog
+import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_realtime_data.*
 import kotlinx.android.synthetic.main.item_device_list.*
@@ -41,15 +45,21 @@ class RealtimeDataActivity : ProjectBaseActivity() {
                 tvPinLv.txt("频率：${pair.second.toInt()}Hz")
             }
             MsgWhat.CMD_EQ->{
+                dialogRefresh.dismiss()
                 tvDianLiang.txt("电量：${msg.obj}%")
             }
-            MsgWhat.CMD_IMEI->{
+            MsgWhat.CMD_DEVICE_NO->{
                 tvSheBeiBianHao.txt("设备编号：${msg.obj}")
             }
         }
     }
 
+    lateinit var dialogRefresh: ProgressDialog
+
     override fun init(bundle: Bundle?) {
+        flDisconnect.showOrGone(!isConnectedDevice)
+        dialogRefresh = DialogUtils.createProgressDialog(this, "正在刷新...")
+        tvSheBeiBianHao.txt("设备编号：${SPHelper.getEquipNo()}")
         sendCmd()
 
         timer = TimerUtils.countdown(Long.MAX_VALUE, 1000, {
@@ -58,6 +68,7 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         timer.start()
 
         btnRefresh.click(2) {
+            dialogRefresh.show()
             sendCmd()
         }
     }
@@ -66,9 +77,6 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         CmdUtils.sendCmdForStrengthAndFrequency()
         doDelayTask(300){
             CmdUtils.sendCmdForElectricQuantity()
-            doDelayTask(300){
-                CmdUtils.sendCmdForIMEI()
-            }
         }
     }
 

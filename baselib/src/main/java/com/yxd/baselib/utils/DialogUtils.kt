@@ -196,7 +196,7 @@ object DialogUtils : ViewEx {
         checkedItem: Int,
         onChecked: (Int) -> Unit,
         title: String? = null,
-        isMaterial: Boolean = true
+        isMaterial: Boolean = false
     ): AlertDialog {
         val builder = if (isMaterial) {
             MaterialAlertDialogBuilder(ctx)

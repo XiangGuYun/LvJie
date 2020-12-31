@@ -13,6 +13,7 @@ import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.BtDevice
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.helper.BluetoothHelper
+import com.yxd.lvjie.service.BluetoothLeService
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_connect.*
 import kotlinx.android.synthetic.main.header.*
@@ -158,6 +159,11 @@ class DeviceConnectActivity : ProjectBaseActivity() {
                 h.tv(R.id.tvAddress).txt(it.address)
                 h.v(R.id.btnConn).click { v->
                     helper.cancelDiscoverDevices()
+                    if(HomeActivity.isConnectedDevice){
+                        BluetoothLeService.disconnect()
+                        listBonded.clear()
+                        rvConnectedDevices.update()
+                    }
                     BusUtils.post(MsgWhat.CONNECT_DEVICE, it)
                 }
             }, null, R.layout.item_device1)
@@ -177,6 +183,13 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 //                        GattAttributes.USR_SERVICE),-1,-1)
 //                    goTo<GattDetailActivity>()
 //                    goTo<CharacteristicsActivity>("is_usr_service" to true)
+                }
+                h.itemLongClick {
+                    HomeActivity.isConnectedDevice = false
+                    BluetoothLeService.disconnect()
+                    listBonded.clear()
+                    rvConnectedDevices.update()
+                    tvNoBondedDevice.show()
                 }
             }, null, R.layout.item_device
         )

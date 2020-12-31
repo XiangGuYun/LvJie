@@ -8,11 +8,12 @@
     <ImageView
         android:id="@+id/ivBack"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:src="@mipmap/back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:paddingRight="20dp"
         android:paddingLeft="15dp"/>
 
     <TextView

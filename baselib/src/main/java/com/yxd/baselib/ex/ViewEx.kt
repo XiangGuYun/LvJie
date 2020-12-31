@@ -123,16 +123,6 @@ interface ViewEx {
     }
 
     /**
-     * 显示1~N个View
-     * @param views Array<out T>
-     */
-    fun <T : View> show(vararg views: T) {
-        views.forEach {
-            it.show()
-        }
-    }
-
-    /**
      * 隐藏1~N个View
      * @param views Array<out T>
      */

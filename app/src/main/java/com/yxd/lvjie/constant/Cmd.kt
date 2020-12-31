@@ -1,5 +1,7 @@
 package com.yxd.lvjie.constant
 
+import com.yxd.lvjie.utils.CmdUtils
+
 /**
  * 管理所有指令
  */
@@ -27,35 +29,83 @@ object Cmd {
 
     const val DEVICE_AWAKE_TIME = "02 03 00 d0 00 02 C5 C1"
 
+    const val DEVICE_INFO = "02 03 00 00 00 3c 45 E8"
+
+    const val READ_ARITHMETIC = "02 03 01 12 00 01 25 C0"
+
+    val WRITE_ARITHMETIC1 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x01))
+
+    val WRITE_ARITHMETIC2 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x02))
+
+    val WRITE_ARITHMETIC3 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x03))
 
     // 标定频率1
-    const val STARTED_FREQ1 = "02 03 01 08 00 02 44 06"
+    val STARTED_FREQ1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x15, 0x00, 0x02))
     // 标定值1
-    const val STARTED_VALUE1= "02 03 01 0a 00 02 E5 C6"
+    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02))
     // 标定测试值1
-    const val STARTED_TEST_VALUE1 = "02 03 01 0c 00 02 05 C7"
+    val STARTED_TEST_VALUE1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x19, 0x00, 0x02))
+
     // 标定频率2
-    const val STARTED_FREQ2 = "02 03 01 0e 00 02 A4 07"
+    val STARTED_FREQ2 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x1b, 0x00, 0x02))
     // 标定值2
-    const val STARTED_VALUE2 = "02 03 01 10 00 02 C4 01"
+    val STARTED_VALUE2 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x1d, 0x00, 0x02))
     // 标定测试值2
-    const val STARTED_TEST_VALUE2 = "02 03 01 12 00 02  65 C1"
+    val STARTED_TEST_VALUE2 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x1f, 0x00, 0x02))
+
     // 标定频率3
-    const val STARTED_FREQ3 = "02 03 01 14 00 02  85 C0"
+    val STARTED_FREQ3 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x21, 0x00, 0x02))
     // 标定值3
-    const val STARTED_VALUE3 = "02 03 01 16 00 02 24 00"
+    val STARTED_VALUE3 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x23, 0x00, 0x02))
     // 标定测试值3
-    const val STARTED_TEST_VALUE3 = "02 03 01 18 00 02 45 C3"
+    val STARTED_TEST_VALUE3 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x25, 0x00, 0x02))
+
     // 标定频率4
-    const val STARTED_FREQ4 = "02 03 01 1a 00 02 E4 03"
+    val STARTED_FREQ4 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x27, 0x00, 0x02))
     // 标定值4
-    const val STARTED_VALUE4 = "02 03 01 1c 00 02 04 02"
+    val STARTED_VALUE4 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x29, 0x00, 0x02))
     // 标定测试值4
-    const val STARTED_TEST_VALUE4 = "02 03 01 1e 00 02 A5 C2"
+    val STARTED_TEST_VALUE4 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x2b, 0x00, 0x02))
+
     // 标定频率5
-    const val STARTED_FREQ5 = "02 03 01 20 00 02 C4 0E"
+    val STARTED_FREQ5 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x2d, 0x00, 0x02))
     // 标定值5
-    const val STARTED_VALUE5 = "02 03 01 22 00 02 65 CE"
+    val STARTED_VALUE5 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x2f, 0x00, 0x02))
     // 标定测试值5
-    const val STARTED_TEST_VALUE5 = "02 03 01 24 00 02 85 CF"
+    val STARTED_TEST_VALUE5 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x31, 0x00, 0x02))
+
+    // 标定频率6
+    val STARTED_FREQ6 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x33, 0x00, 0x02))
+    // 标定值6
+    val STARTED_VALUE6= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x35, 0x00, 0x02))
+    // 标定测试值6
+    val STARTED_TEST_VALUE6 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x37, 0x00, 0x02))
+
+    // 标定频率7
+    val STARTED_FREQ7 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x39, 0x00, 0x02))
+    // 标定值7
+    val STARTED_VALUE7 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x3b, 0x00, 0x02))
+    // 标定测试值7
+    val STARTED_TEST_VALUE7 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x3d, 0x00, 0x02))
+
+    // 标定频率8
+    val STARTED_FREQ8 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x3f, 0x00, 0x02))
+    // 标定值3
+    val STARTED_VALUE8 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x41, 0x00, 0x02))
+    // 标定测试值3
+    val STARTED_TEST_VALUE8 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x43, 0x00, 0x02))
+
+    // 标定频率9
+    val STARTED_FREQ9 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x45, 0x00, 0x02))
+    // 标定值4
+    val STARTED_VALUE9 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x47, 0x00, 0x02))
+    // 标定测试值4
+    val STARTED_TEST_VALUE9 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x49, 0x00, 0x02))
+
+    // 标定频率10
+    val STARTED_FREQ10 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x4b, 0x00, 0x02))
+    // 标定值5
+    val STARTED_VALUE10 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x4d, 0x00, 0x02))
+    // 标定测试值5
+    val STARTED_TEST_VALUE10 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x4f, 0x00, 0x02))
 }

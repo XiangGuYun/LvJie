@@ -6,9 +6,9 @@
     android:background="#F7F7FB"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.yxd.baselib.view.comb.RefreshRV
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rvDevice"/>
+        android:id="@+id/refreshDevice"/>
 
 </LinearLayout>

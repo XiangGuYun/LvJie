@@ -10,6 +10,7 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.utils.DialogUtils
+import com.yxd.baselib.utils.KeyboardUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.DeviceDetailBean
@@ -94,6 +95,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                 ) {
                     if (it.code == 0) {
                         "保存成功".toast()
+                        closeKeyboard()
                         list.clear()
                         list.addAll(
                             listOf(
@@ -126,7 +128,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
 
             tvXingHao.txt("型号：${currentData.equipModel}")
 
-            tvDianLiang.txt("电量：${currentData.power}")
+            tvDianLiang.txt("电量：${currentData.power}%")
 
             tvSheBeiBianHao.txt("设备编号：${currentData.equipNo} ")
 
@@ -203,12 +205,14 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                                 tvInstallTime = tv
                                 tvInstallTime.txt(currentData.installTime?.fmtDate("yyyy-MM-dd"))
                                 h.v(R.id.flTV3).click {
+                                    KeyboardUtils.closeKeyboard(this)
                                     pvTime.show()
                                 }
                             }
                             "安装模式：" -> {
                                 tv.txt(getPattern(currentData.installPattern))
                                 h.v(R.id.flTV3).click {
+                                    KeyboardUtils.closeKeyboard(this)
                                     val arr = arrayOf("固定点", "流动点", "观察点")
                                     DialogUtils.createOptionsDialog(
                                         this, arr,
@@ -222,6 +226,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                             "安装方式：" -> {
                                 tv.txt(getModel(currentData.installMode))
                                 h.v(R.id.flTV3).click {
+                                    KeyboardUtils.closeKeyboard(this)
                                     val arr = arrayOf("直接吸附阀门", "直接吸附管道", "抱箍固定安装管道", "其它")
                                     DialogUtils.createOptionsDialog(
                                         this, arr,

@@ -11,4 +11,31 @@ object SPHelper {
     fun putToken(token: String) {
         SPUtils.put("token", token)
     }
+
+    fun putAccount(account: String) {
+        SPUtils.put("account", account)
+    }
+
+    fun getAccount(): String {
+        return SPUtils.getString("account", "")
+    }
+
+    fun putPassword(password: String) {
+        SPUtils.put("password", password)
+    }
+
+    fun getPassword(): String {
+        return SPUtils.getString("password", "")
+    }
+
+    fun putEquipNo(equipNo: String) {
+        SPUtils.put("equipNo", equipNo)
+    }
+
+    fun getEquipNo(): String {
+        return SPUtils.getString("equipNo", "")
+    }
+
+
+
 }

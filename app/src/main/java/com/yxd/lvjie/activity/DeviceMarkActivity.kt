@@ -5,13 +5,19 @@ import android.os.Bundle
 import android.os.Message
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.PopupUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
+import com.yxd.lvjie.bean.DeviceMarkEditJson
+import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.ProjectDialog
+import com.yxd.lvjie.helper.SPHelper
+import com.yxd.lvjie.net.Req
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_biao_ding.*
+import kotlinx.android.synthetic.main.activity_realtime_data.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
 import java.math.BigDecimal
@@ -45,7 +51,9 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 tvFreq.txt("频率：${pair.second}Hz")
             }
             MsgWhat.CMD_STARTED_FREQ -> {
+                // 标定频率
                 tvMarkFreq.txt("${msg.obj.toString()}Hz")
+                // 标定值
                 tvMarkNumber.txt(
                     (tvMarkStrength.str.toBigDecimal().divide(
                         tvStrength.str.replace("原始强度：", "").toBigDecimal(),
@@ -55,9 +63,11 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 )
             }
             MsgWhat.CMD_STARTED_VALUE -> {
+                // 标定强度
                 tvMarkStrength.txt("${msg.obj}")
             }
             MsgWhat.ORIGIN_STRENGTH -> {
+                // 原始强度
                 tvStrength.txt("原始强度：${msg.obj}")
             }
         }
@@ -77,12 +87,17 @@ class DeviceMarkActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
 
+        val pdRefresh = ProgressDialog(this)
+        pdRefresh.setMessage("正在刷新...")
+        pdRefresh.setCanceledOnTouchOutside(false)
+
         tvSubTitle.show().txt("刷新").click(3) {
+            pdRefresh.show()
             // 读取强度和频率
-            CmdUtils.sendCmdForStrengthAndFrequency()
-            doDelayTask(1000) {
-                // 读取标定点数据
-                CmdUtils.sendCmdForMarkPoint(this, 0)
+            BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.ORIGIN_STRENGTH)
+            doDelayTask(1000){
+                pdRefresh.dismiss()
+                CmdUtils.sendCmdForStrengthAndFrequency()
             }
         }
 
@@ -98,7 +113,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
 
         flMarkPoint.post {
             pu = PopupUtils(this, R.layout.mark_point, flMarkPoint.width to 200.dp)
-            val list = (1..5).toList().map { "标定点$it" }
+            val list = (1..10).toList().map { "标定点$it" }
             pu.windowView.rv(R.id.rvMarkPoint).wrap.decorate()
                 .generate(
                     list,
@@ -129,33 +144,46 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         ) {
             it.dismiss()
             pd.show()
-            // 原始强度
-            CmdUtils.write(
-                tvStrength.str.replace("原始强度：", "").toFloat(),
-                listMarkTestValueAddress[selectedIndex],
-                "4"
+            Req.editDeviceMark(DeviceMarkEditJson(
+                equipNo = SPHelper.getEquipNo(),
+                frequency = tvFreq.str.replace("Hz", "").replace("频率：",""),
+                number = selectedIndex+1,
+                ratio = (tvMarkStrength.str.toBigDecimal().divide(
+                    tvStrength.str.replace("原始强度：", "").toBigDecimal(),
+                    2,
+                    BigDecimal.ROUND_HALF_UP
+                )).toString(),
+                strength = tvMarkStrength.str
             )
-            doDelayTask(1500) {
-                // 标定强度
+            ) {
+                // 原始强度
                 CmdUtils.write(
-                    tvMarkStrength.str.toFloat(),
-                    listMarkValueAddress[selectedIndex],
+                    tvStrength.str.replace("原始强度：", "").toFloat(),
+                    listMarkTestValueAddress[selectedIndex],
                     "4"
                 )
                 doDelayTask(1500) {
+                    // 标定强度
                     CmdUtils.write(
-                        // 标定频率
-                        tvFreq.str.replace("Hz", "").replace("频率：","").toFloat(),
-                        listMarkFreqAddress[selectedIndex],
+                        tvMarkStrength.str.toFloat(),
+                        listMarkValueAddress[selectedIndex],
                         "4"
                     )
-                    pd.dismiss()
-                    tvMarkNumber.txt(
-                        (tvMarkStrength.str.toBigDecimal().divide(
-                            tvStrength.str.replace("原始强度：", "").toBigDecimal(),
-                            2,
-                            BigDecimal.ROUND_HALF_UP
-                        )).toString())
+                    doDelayTask(1500) {
+                        CmdUtils.write(
+                            // 标定频率
+                            tvFreq.str.replace("Hz", "").replace("频率：","").toFloat(),
+                            listMarkFreqAddress[selectedIndex],
+                            "4"
+                        )
+                        pd.dismiss()
+                        tvMarkNumber.txt(
+                            (tvMarkStrength.str.toBigDecimal().divide(
+                                tvStrength.str.replace("原始强度：", "").toBigDecimal(),
+                                2,
+                                BigDecimal.ROUND_HALF_UP
+                            )).toString())
+                    }
                 }
             }
         }

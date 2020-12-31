@@ -189,8 +189,8 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
          * @return BaseActivity
          */
         @JvmStatic
-        fun getStackTopActivity(): BaseActivity {
-            return actList.last()
+        fun getStackTopActivity(): BaseActivity? {
+            return if(actList.isEmpty()) null else actList.last()
         }
 
         /**

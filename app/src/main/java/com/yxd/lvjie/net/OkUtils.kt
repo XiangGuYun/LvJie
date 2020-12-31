@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.yxd.baselib.base.BaseActivity
+import com.yxd.baselib.utils.FileUtils
 import com.yxd.baselib.utils.LogUtils
 import com.yxd.baselib.utils.ToastUtils
 import com.yxd.baselib.utils.http.OkHttpUtils
@@ -138,6 +139,8 @@ object OkUtils {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
+                    val fileDebug = FileUtils.newSDCardFile("接口日志.txt")
+                    fileDebug.writeText(" URL：$url\nJSON：$jsonString\nMessage：${e?.localizedMessage}")
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -158,7 +161,7 @@ object OkUtils {
                         TAG,
                         "......................................................................................................................................."
                     )
-                    LogUtils.e(
+                    LogUtils.printLongLog(
                         TAG,
                         " URL：$url\nJSON：$jsonString\nMessage：${e?.localizedMessage}"
                     );
@@ -166,6 +169,8 @@ object OkUtils {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
+                    val fileDebug = FileUtils.newSDCardFile("同步接口日志.txt")
+                    fileDebug.writeText(" URL：$url\nJSON：$jsonString\nRESPONSE：$response")
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."
@@ -186,7 +191,7 @@ object OkUtils {
                         TAG,
                         "......................................................................................................................................."
                     )
-                    LogUtils.d(TAG, " URL：$url\nJSON：$jsonString\nRESPONSE：$response")
+                    LogUtils.printLongLog(TAG, " URL：$url\nJSON：$jsonString\nRESPONSE：$response")
                     val jp = JsonParser()
                     val jo = jp.parse(response) as JsonObject
                     if (jo.get("code").asInt == 0) {
@@ -212,7 +217,7 @@ object OkUtils {
         handleResponseCode: Boolean = true
     ) {
 
-        BaseActivity.getStackTopActivity().showLoading()
+        BaseActivity.getStackTopActivity()?.showLoading()
         val builder = OkHttpUtils
             .post()
             .url(URL.BASE_URL + url)
@@ -232,8 +237,8 @@ object OkUtils {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
-                    BaseActivity.getStackTopActivity().hideLoading()
-                    BaseActivity.getStackTopActivity().onHttpError(e?.localizedMessage.toString())
+                    BaseActivity.getStackTopActivity()?.hideLoading()
+                    BaseActivity.getStackTopActivity()?.onHttpError(e?.localizedMessage.toString())
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -263,7 +268,7 @@ object OkUtils {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
-                    BaseActivity.getStackTopActivity().hideLoading()
+                    BaseActivity.getStackTopActivity()?.hideLoading()
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."

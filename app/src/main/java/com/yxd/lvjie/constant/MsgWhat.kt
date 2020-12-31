@@ -70,4 +70,23 @@ object MsgWhat {
     const val ORIGIN_STRENGTH = 0x107
 
     const val CMD_DEVICE_AWAKE_TIME = 0x108
+
+    const val CMD_DEVICE_INFO_1 = 0x109
+
+    const val CMD_DEVICE_INFO_2 = 0x110
+
+    const val CMD_DEVICE_INFO_3 = 0x111
+
+    const val CMD_DEVICE_INFO_4 = 0x112
+
+    const val CMD_DEVICE_INFO_5 = 0x113
+
+    const val CMD_DEVICE_INFO_6 = 0x114
+
+    const val CMD_HISTORY_DATA = 0x115
+
+    const val CMD_DEVICE_NAME = 0x116
+
+    const val CMD_READ_ARTH = 0x117
+
 }

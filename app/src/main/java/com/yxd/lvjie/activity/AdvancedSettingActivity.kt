@@ -1,5 +1,6 @@
 package com.yxd.lvjie.activity
 
+import android.app.TabActivity
 import android.os.Bundle
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.lvjie.R
@@ -45,9 +46,7 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
             h.itemClick {
                 when (p) {
                     0 -> goTo<DeviceMarkActivity>()
-                    1 -> {
-
-                    }
+                    1 -> goTo<TableActivity>()
                 }
             }
         }, null, R.layout.item_advanced_setting)

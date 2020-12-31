@@ -250,4 +250,8 @@ interface StringEx {
         return "file:////android_asset/$this.html"
     }
 
+    fun String.addZero(): String {
+        return if(this.length == 1) "0$this" else this
+    }
+
 }

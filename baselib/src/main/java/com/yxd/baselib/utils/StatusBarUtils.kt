@@ -33,7 +33,7 @@ object StatusBarUtils {
     /**
      * 隐藏或显示状态栏
      */
-    fun hideStatusBar(activity: Activity = BaseActivity.getStackTopActivity(), isHide: Boolean = true) {
+    fun hideStatusBar(activity: Activity = BaseActivity.getStackTopActivity()!!, isHide: Boolean = true) {
         if (!isHide) { //显示状态栏
             val lp = activity.window.attributes
             lp.flags = lp.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN

@@ -67,10 +67,14 @@ object Req {
      * 设备列表
      * @param installPattern String 安装模式 0-固定点 1-流动点 2-观察点 全部则不传
      */
-    fun getDeviceList(installPattern: String = OK.OPTIONAL, callback: (DeviceListBean) -> Unit) {
+    fun getDeviceList(
+        pageNum: Int,
+        installPattern: String = OK.OPTIONAL,
+        callback: (DeviceListBean) -> Unit
+    ) {
         OkUtils.get<DeviceListBean>(URL.DEVICE_LIST, {
             callback.invoke(it)
-        }, "installPattern" to installPattern)
+        }, "installPattern" to installPattern, "pageNum" to pageNum.toString())
     }
 
     /**
@@ -135,16 +139,16 @@ object Req {
         })
     }
 
-    fun getAllDevices(callback: (AllDevices) -> Unit){
+    fun getAllDevices(callback: (AllDevices) -> Unit) {
         OkUtils.get<AllDevices>(URL.ALL_DEVICES, {
             callback.invoke(it)
         })
     }
 
-    fun syncHistoryData(imei:String, number:String, appData:String, callback: (DeviceMarkEditBean) -> Unit){
-        OkUtils.get<DeviceMarkEditBean>("/system/history/app/add", {
+    fun syncHistoryData(dataList: List<HistoryData>, callback: (DeviceMarkEditBean) -> Unit) {
+        OkUtils.post<DeviceMarkEditBean>("/system/history/app/add", dataList) {
             callback.invoke(it)
-        }, "imei" to imei, "number" to number, "appData" to appData)
+        }
     }
 
 

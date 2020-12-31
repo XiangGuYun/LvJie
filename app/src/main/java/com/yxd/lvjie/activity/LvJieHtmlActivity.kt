@@ -16,6 +16,11 @@ import kotlinx.android.synthetic.main.header.*
 class LvJieHtmlActivity : BaseWebActivity() {
 
     override fun beforeInitWebView() {
+
+        ivBack.click {
+            finish()
+        }
+
         setOnGetTitle {
             tvTitle.txt(it)
         }

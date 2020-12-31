@@ -18,7 +18,6 @@ import java.util.List;
  * 使得YxdIndicator在FragmentContainer中使用
  * Created by hackware on 2016/9/4.
  */
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class FragmentContainerHelper {
     private List<YxdIndicator> mYxdIndicators = new ArrayList<>();

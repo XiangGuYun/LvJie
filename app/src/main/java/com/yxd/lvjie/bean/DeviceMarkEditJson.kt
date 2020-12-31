@@ -1,9 +1,9 @@
 package com.yxd.lvjie.bean
 
 data class DeviceMarkEditJson(
-    val equipId: Int? = null,
-    val frequency: Int? = null,
-    val number: Int? = null,
-    val ratio: Int? = null,
-    val strength: Int? = null
+    val equipNo: String = "",
+    val frequency: String = "",
+    val number: Int = 0,
+    val ratio: String = "",
+    val strength: String = "",
 )

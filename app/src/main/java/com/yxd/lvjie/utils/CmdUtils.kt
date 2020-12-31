@@ -2,21 +2,98 @@ package com.yxd.lvjie.utils
 
 import com.yxd.baselib.base.BaseActivity
 import com.yxd.baselib.utils.BusUtils
+import com.yxd.baselib.utils.LogUtils
 import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 蓝牙数据发送与处理的工具类
  */
 object CmdUtils {
 
+    fun add0(num: Int): String {
+        return if (num < 10)
+            "0$num"
+        else
+            num.toString()
+    }
+
+    /**
+     * 写入当前时间并校准
+     */
+    fun writeCurrentTime(activity: BaseActivity) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR).toString().slice(2..3).toInt()
+        val month = SimpleDateFormat("MM").format(System.currentTimeMillis()).toInt()
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        val ba = byteArrayOf(
+            0x02.toByte(), 0x10.toByte(), 0x00.toByte(),
+            0xcd.toByte(), 0x00.toByte(),
+            0x03.toByte(), 0x06.toByte(),
+            Integer.parseInt(year.toString(), 16).toByte(),
+            Integer.parseInt(month.toString(), 16).toByte(),
+            Integer.parseInt(day.toString(), 16).toByte(),
+            Integer.parseInt(hour.toString(), 16).toByte(),
+            Integer.parseInt(minute.toString(), 16).toByte(),
+            Integer.parseInt(second.toString(), 16).toByte()
+        )
+
+        val valueCrc16 = Crc16Utils.calcCrc16(ba).toString(16)
+        val checkCode = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
+            .replace(" ", "")
+
+        val command =
+            "02 10 00 cd 00 03 06 $year ${add0(month)} ${add0(day)} ${add0(hour)} ${add0(minute)} ${
+                add0(second)
+            } $checkCode"
+        BusUtils.post(MsgWhat.SEND_COMMAND, command)
+        activity.doDelayTask(1000) {
+            BusUtils.post(MsgWhat.SEND_COMMAND, "02 10 00 c9 00 01 02 03 00 A3 C9")
+        }
+    }
+
+    fun writeTime(hour: Int, minute: Int, second: Int) {
+        val hour1 = if (hour < 10) "0$hour" else hour
+        val minute1 = if (minute < 10) "0$minute" else minute
+        val second1 = if (second < 10) "0$second" else second
+
+        val cmd = "021000d0000204${hour1}${minute1}${second1}00"
+
+        // 生成校验码
+        val valueCrc16 = Crc16Utils.calcCrc16(Utils.hexStringToByteArray(cmd)).toString(16)
+        val checkCode = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
+            .replace(" ", "")
+
+        val command = "$cmd$checkCode"
+
+        LogUtils.d("YXD_", command)
+
+        BusUtils.post(MsgWhat.SEND_COMMAND, command)
+    }
+
+    fun mark(originCmd: ByteArray): String {
+        // 生成校验码
+        val valueCrc16 = Crc16Utils.calcCrc16(originCmd).toString(16)
+        val checkCode = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
+            .replace(" ", "")
+
+        val command = "${Utils.ByteArraytoHex(originCmd)}$checkCode"
+        LogUtils.d("YXD_CMD", command)
+        return command
+    }
+
     /**
      * 写入数据
      * @param writeValue Float
      * @param h47 Int
      * @param g47 String
-     * @return String
      */
     fun write(writeValue: Float, h47: Int, g47: String) {
         val first = "0210"
@@ -26,7 +103,8 @@ object CmdUtils {
             second = "0$second"
         }
         // 0002
-        var third = g47.toBigDecimal().divide(2.toBigDecimal()).toString()
+        var third =
+            maxOf(1f, g47.toBigDecimal().divide(2.toBigDecimal()).toFloat()).toInt().toString()
         while (third.length < 4) {
             third = "0$third"
         }
@@ -37,13 +115,14 @@ object CmdUtils {
         }
         // 42c80000
         val fifth = float2Hex(writeValue)
-        // A5E7
+
         val valueCrc16 =
             Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth"))
                 .toString(16)
         val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
             .replace(" ", "")
-        BusUtils.post(MsgWhat.SEND_COMMAND, "$first$second$third$fourth$fifth$newValue")
+        val command = "$first$second$third$fourth$fifth$newValue"
+        BusUtils.post(MsgWhat.SEND_COMMAND, command)
     }
 
     fun formatMsgContent(data: ByteArray): String? {
@@ -53,7 +132,7 @@ object CmdUtils {
     fun hex2Float(hex: String): Float {
         var returnValue = 0f
         returnValue = try {
-            java.lang.Float.intBitsToFloat(Integer.valueOf(hex.trim { it <= ' ' }, 16))
+            java.lang.Float.intBitsToFloat(Integer.valueOf(hex.replace(" ", ""), 16))
         } catch (e: NumberFormatException) {
             1f
         }
@@ -113,7 +192,12 @@ object CmdUtils {
         Cmd.STARTED_FREQ2,
         Cmd.STARTED_FREQ3,
         Cmd.STARTED_FREQ4,
-        Cmd.STARTED_FREQ5
+        Cmd.STARTED_FREQ5,
+        Cmd.STARTED_FREQ6,
+        Cmd.STARTED_FREQ7,
+        Cmd.STARTED_FREQ8,
+        Cmd.STARTED_FREQ9,
+        Cmd.STARTED_FREQ10
     )
 
     private val markPointValueList = listOf(
@@ -121,7 +205,12 @@ object CmdUtils {
         Cmd.STARTED_VALUE2,
         Cmd.STARTED_VALUE3,
         Cmd.STARTED_VALUE4,
-        Cmd.STARTED_VALUE5
+        Cmd.STARTED_VALUE5,
+        Cmd.STARTED_VALUE6,
+        Cmd.STARTED_VALUE7,
+        Cmd.STARTED_VALUE8,
+        Cmd.STARTED_VALUE9,
+        Cmd.STARTED_VALUE10,
     )
 
     private val markPointTestValue = listOf(
@@ -129,7 +218,12 @@ object CmdUtils {
         Cmd.STARTED_TEST_VALUE2,
         Cmd.STARTED_TEST_VALUE3,
         Cmd.STARTED_TEST_VALUE4,
-        Cmd.STARTED_TEST_VALUE5
+        Cmd.STARTED_TEST_VALUE5,
+        Cmd.STARTED_TEST_VALUE6,
+        Cmd.STARTED_TEST_VALUE7,
+        Cmd.STARTED_TEST_VALUE8,
+        Cmd.STARTED_TEST_VALUE9,
+        Cmd.STARTED_TEST_VALUE10,
     )
 
     /**
@@ -172,44 +266,5 @@ object CmdUtils {
     fun autoAdjust() {
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.AUTO_ADJUST)
     }
-
-    /**
-     * 02 41 01 00 00 10 44 20 11 06 00 22 40 00 00 00 00 44 87 80 00 01 44 20 11 06 00 22 41 00 00 00 00 43 88 00 00 01 44 20 11 06 00 22 42 42 55 51 78 43 DE 00 00 01 44 20 11 06 00 22 43 42 55 51 78 44 AD 00 00 01 44 20 11 06 00 22 44 42 52 E8 A9 44 3F 00 00 01 44 20 11 06 00 22 45 42 52 E8 A9 44 BC 80
-     */
-    fun decodeHistoryData(hex:List<String>): HistoryData {
-        return HistoryData(
-            hex2Float(hex[1]),
-            hex2Float(hex[2]),
-            hex2Float(hex[3]),
-            hex2Float(hex[4]),
-            hex2Float(hex[5]),
-            hex2Float(hex[6]),
-            hex2Float(hex[7]).toString(),
-            hex2Float(hex[8]).toString(),
-            hex2Float(hex[9]).toString(),
-            hex2Float(hex[10]).toString(),
-            hex2Float(hex[11]).toString(),
-            hex2Float(hex[12]).toString(),
-            hex2Float(hex[13]).toString(),
-            hex2Float(hex[14]).toString(),
-        )
-    }
-
-    data class HistoryData(
-        val year: Float = 0f, // 字节2
-        val month: Float = 0f, // 字节3
-        val day: Float = 0f, // 字节4
-        val hour: Float = 0f, // 字节5
-        val minute: Float = 0f, // 字节6
-        val second: Float = 0f, // 字节7
-        val strength1: String = "", // 字节8
-        val strength2: String = "", // 字节9
-        val strength3: String = "", // 字节10
-        val strength4: String = "", // 字节11
-        val freq1: String = "", // 字节12
-        val freq2: String = "", // 字节13
-        val freq3: String = "", // 字节14
-        val freq4: String = "", // 字节15
-    )
 
 }

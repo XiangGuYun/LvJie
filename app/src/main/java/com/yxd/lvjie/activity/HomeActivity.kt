@@ -9,12 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.text.TextUtils
-import androidx.annotation.NonNull
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.base.BaseActivity
@@ -29,6 +23,7 @@ import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.*
 import com.yxd.lvjie.constant.MsgWhat.DEVICE_DISCONNECT
 import com.yxd.lvjie.dialog.ProjectDialog
+import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.service.BluetoothLeService
 import com.yxd.lvjie.utils.CmdUtils
 import com.yxd.lvjie.utils.CmdUtils.formatMsgContent
@@ -36,6 +31,8 @@ import com.yxd.lvjie.utils.CmdUtils.sliceByteArray
 import kotlinx.android.synthetic.main.activity_device_manager.*
 import org.greenrobot.eventbus.Subscribe
 import java.math.RoundingMode
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -45,7 +42,6 @@ import java.math.RoundingMode
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
 
-    private var isConnectedDevice = false
     private lateinit var currentDevAddress: String
     private lateinit var currentDevName: String
     private lateinit var notifyCharacteristic: BluetoothGattCharacteristic
@@ -78,6 +74,8 @@ class HomeActivity : BaseActivity() {
 
     companion object {
 
+        var isConnectedDevice = false
+
         /**
          * 已绑定的设备
          */
@@ -89,7 +87,7 @@ class HomeActivity : BaseActivity() {
         var cmdType = ""
     }
 
-    override fun init( bundle: Bundle?) {
+    override fun init(bundle: Bundle?) {
         initView()
         // 处理连接蓝牙的服务和广播接收器
         doConnectReceiverAndService()
@@ -113,6 +111,9 @@ class HomeActivity : BaseActivity() {
                 stopBroadcastDataNotify(notifyCharacteristic)
             }
             MsgWhat.SEND_COMMAND -> {
+                if(msg.obj == null){
+                    "发生空指针异常".toast()
+                }
                 val text = msg.obj.toString()
                 if (TextUtils.isEmpty(text)) {
                     return
@@ -122,27 +123,45 @@ class HomeActivity : BaseActivity() {
                     return
                 }
                 cmdType = when (text) {
+                    Cmd.GET_HISTORY_DATA -> "历史数据同步"
+                    Cmd.DEVICE_INFO -> "设备信息"
                     Cmd.DEVICE_AWAKE_TIME -> "设备唤醒时间"
                     Cmd.STRENGTH_FREQ -> "强度和频率"
                     Cmd.EQ -> "电量"
                     Cmd.DEVICE_NO -> "设备编号"
                     Cmd.IMEI -> "IMEI"
+                    Cmd.READ_ARITHMETIC -> "算法读取"
                     Cmd.ORIGIN_STRENGTH -> "原始强度"
                     Cmd.STARTED_FREQ1 -> "标准频率1"
                     Cmd.STARTED_FREQ2 -> "标准频率2"
                     Cmd.STARTED_FREQ3 -> "标准频率3"
                     Cmd.STARTED_FREQ4 -> "标准频率4"
                     Cmd.STARTED_FREQ5 -> "标准频率5"
+                    Cmd.STARTED_FREQ6 -> "标准频率6"
+                    Cmd.STARTED_FREQ7 -> "标准频率7"
+                    Cmd.STARTED_FREQ8 -> "标准频率8"
+                    Cmd.STARTED_FREQ9 -> "标准频率9"
+                    Cmd.STARTED_FREQ10 -> "标准频率10"
                     Cmd.STARTED_VALUE1 -> "标准值1"
                     Cmd.STARTED_VALUE2 -> "标准值2"
                     Cmd.STARTED_VALUE3 -> "标准值3"
                     Cmd.STARTED_VALUE4 -> "标准值4"
                     Cmd.STARTED_VALUE5 -> "标准值5"
+                    Cmd.STARTED_VALUE6 -> "标准值6"
+                    Cmd.STARTED_VALUE7 -> "标准值7"
+                    Cmd.STARTED_VALUE8 -> "标准值8"
+                    Cmd.STARTED_VALUE9 -> "标准值9"
+                    Cmd.STARTED_VALUE10 -> "标准值10"
                     Cmd.STARTED_TEST_VALUE1 -> "标准测试值1"
                     Cmd.STARTED_TEST_VALUE2 -> "标准测试值2"
                     Cmd.STARTED_TEST_VALUE3 -> "标准测试值3"
                     Cmd.STARTED_TEST_VALUE4 -> "标准测试值4"
                     Cmd.STARTED_TEST_VALUE5 -> "标准测试值5"
+                    Cmd.STARTED_TEST_VALUE6 -> "标准测试值6"
+                    Cmd.STARTED_TEST_VALUE7 -> "标准测试值7"
+                    Cmd.STARTED_TEST_VALUE8 -> "标准测试值8"
+                    Cmd.STARTED_TEST_VALUE9 -> "标准测试值9"
+                    Cmd.STARTED_TEST_VALUE10 -> "标准测试值10"
                     else -> ""
                 }
                 val array = Utils.hexStringToByteArray(command)
@@ -175,8 +194,8 @@ class HomeActivity : BaseActivity() {
                 h.iv(R.id.ivIcon).sIR(item.first)
                 h.tv(R.id.tvName).txt(item.second)
                 h.itemClick {
-                    when(item.second){
-                        "地图分布"->goTo<MapActivity>()
+                    when (item.second) {
+                        "地图分布" -> goTo<MapActivity>()
                     }
                 }
             }, null, R.layout.item_device_manager
@@ -238,6 +257,12 @@ class HomeActivity : BaseActivity() {
                     )
                     // 搜索服务
                     BluetoothLeService.discoverServices()
+                    doDelayTask(1000){
+                        CmdUtils.sendCmdForDeviceNumber()
+                        doDelayTask(1000){
+                            CmdUtils.writeCurrentTime(this@HomeActivity)
+                        }
+                    }
                 }
                 BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED -> {
                     // 搜索到GATT服务
@@ -266,13 +291,62 @@ class HomeActivity : BaseActivity() {
                     if (extras!!.containsKey(Constants.EXTRA_BYTE_VALUE)) {
                         if (extras.containsKey(Constants.EXTRA_BYTE_UUID_VALUE)) {
                             val array = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE)
-                            formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：")
+                            formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：字节数组长度是${array.size}")
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (cmdType) {
-                                "设备唤醒时间"->{
+                                "算法读取" -> {
+                                    BusUtils.post(
+                                        MsgWhat.CMD_READ_ARTH,
+                                        array[4].toInt()
+                                    )
+                                }
+                                "历史数据同步" -> {
+                                    if (array.size == 100 || Utils.ByteArraytoHex(array).trim() == "02 41 01 FF FF 10 4C 06")
+                                        BusUtils.post(
+                                            MsgWhat.CMD_HISTORY_DATA,
+                                            Utils.ByteArraytoHex(array).trim()
+                                        )
+                                }
+                                "设备信息" -> {
+                                    if (array.size == 100) {
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_1,
+                                            Utils.byteToASCII(array.sliceArray(2..19))
+                                        )
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_2,
+                                            Utils.byteToASCII(array.sliceArray(23..38))
+                                        )
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_3,
+                                            Utils.byteToASCII(array.sliceArray(43..61))
+                                        )
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_4,
+                                            Utils.byteToASCII(array.sliceArray(63..77))
+                                        )
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_5,
+                                            Utils.byteToASCII(array.sliceArray(83..97))
+                                        )
+                                    } else {
+                                        BusUtils.post(
+                                            MsgWhat.CMD_DEVICE_INFO_6,
+                                            Utils.byteToASCII(array.sliceArray(0..20))
+                                        )
+                                    }
+                                }
+                                "设备唤醒时间" -> {
+                                    val list = array.sliceArray(3..5).toList()
                                     BusUtils.post(
                                         MsgWhat.CMD_DEVICE_AWAKE_TIME,
-                                        ""
+                                        appendStr(list, ":") {
+                                            when (it) {
+                                                0 -> list[0].toString(16).addZero()
+                                                1 -> list[1].toString(16).addZero()
+                                                else -> list[2].toString(16).addZero()
+                                            }
+                                        }
                                     )
                                 }
                                 "强度和频率" -> {
@@ -281,12 +355,13 @@ class HomeActivity : BaseActivity() {
                                         CmdUtils.decodeStrengthAndFrequency(hex)
                                     )
                                 }
-                                "原始强度"->{
+                                "原始强度" -> {
                                     BusUtils.post(
                                         MsgWhat.ORIGIN_STRENGTH,
-                                        CmdUtils.hex2Float(hex.substring(6, 14)).toBigDecimal().divide(
-                                            1.toBigDecimal(), 2, RoundingMode.HALF_UP
-                                        )
+                                        CmdUtils.hex2Float(hex.substring(6, 14)).toBigDecimal()
+                                            .divide(
+                                                1.toBigDecimal(), 2, RoundingMode.HALF_UP
+                                            )
                                     )
                                 }
                                 "电量" -> {
@@ -296,7 +371,15 @@ class HomeActivity : BaseActivity() {
                                     )
                                 }
                                 "设备编号" -> {
-                                    BusUtils.post(MsgWhat.CMD_DEVICE_NO, String(array.sliceArray(23..37)))
+                                    BusUtils.post(
+                                        MsgWhat.CMD_DEVICE_NO,
+                                        String(array.sliceArray(23..37))
+                                    )
+                                    SPHelper.putEquipNo(String(array.sliceArray(23..37)))
+                                    BusUtils.post(
+                                        MsgWhat.CMD_DEVICE_NAME,
+                                        String(array.sliceArray(3..20))
+                                    )
                                 }
                                 "IMEI" -> {
                                     if (array.size > 23) {
@@ -306,19 +389,22 @@ class HomeActivity : BaseActivity() {
                                         )
                                     }
                                 }
-                                "标准频率1", "标准频率2", "标准频率3", "标准频率4", "标准频率5" -> {
+                                "标准频率1", "标准频率2", "标准频率3", "标准频率4", "标准频率5",
+                                "标准频率6", "标准频率7", "标准频率8", "标准频率9", "标准频率10"-> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_FREQ,
                                         CmdUtils.hex2Float(hex.substring(6, 14))
                                     )
                                 }
-                                "标准值1", "标准值2", "标准值3", "标准值4", "标准值5" -> {
+                                "标准值1", "标准值2", "标准值3", "标准值4", "标准值5",
+                                "标准值6", "标准值7", "标准值8", "标准值9", "标准值10"-> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_VALUE,
                                         CmdUtils.hex2Float(hex.substring(6, 14))
                                     )
                                 }
-                                "标准测试值1", "标准测试值2", "标准测试值3", "标准测试值4", "标准测试值5" -> {
+                                "标准测试值1", "标准测试值2", "标准测试值3", "标准测试值4", "标准测试值5",
+                                "标准测试值6", "标准测试值7", "标准测试值8", "标准测试值9", "标准测试值10"-> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_TEST_VALUE,
                                         CmdUtils.hex2Float(hex.substring(6, 14))

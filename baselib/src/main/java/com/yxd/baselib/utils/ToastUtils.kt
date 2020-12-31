@@ -44,7 +44,7 @@ object ToastUtils {
     fun toast(
         str: String,
         isLong: Boolean = false,
-        gravity: Int = Gravity.BOTTOM,
+        gravity: Int = Gravity.CENTER,
         xOffSet: Int = 0,
         yOffset: Int = 0
     ) {

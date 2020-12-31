@@ -25,6 +25,8 @@ abstract class ProjectBaseActivity : BaseActivity() {
                 "ArithmeticSelectActivity" -> "算法选择"
                 "AdvancedSettingActivity" -> "进入高级设置"
                 "TimeSetActivity" -> "时间设置"
+                "TableActivity" -> "主控制板寄存器表"
+                "SettingActivity" -> "设备设置"
                 else -> ""
             }
         )

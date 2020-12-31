@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,100 +9,132 @@
 
     <include layout="@layout/header"/>
 
-    <FrameLayout
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
+    <LinearLayout
+        android:layout_marginTop="44dp"
         android:layout_width="match_parent"
-        android:layout_height="77dp">
-        <TextView
-            android:id="@+id/tvSheBeiBianHao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设备编号："
-            android:textColor="#ff333333"
-            android:textSize="14sp"
-            />
-        <TextView
-            android:id="@+id/tvDianQianShiJian"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:textColor="#ff666666"
-            android:textSize="12sp"
-            />
-        <TextView
-            android:id="@+id/tvDianLiang"
-            android:text="电量："
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ff666666"
-            android:textSize="12sp"
-            android:layout_gravity="right|bottom"
-            />
-    </FrameLayout>
-
-    <include layout="@layout/line_5dp"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="37dp"
-            android:src="@mipmap/guang_qiang_du"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="50dp"/>
-
-        <TextView
-            android:id="@+id/tvQiangDu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="强度："
-            android:textColor="#ff333333"
-            android:textSize="24sp"
-            android:layout_marginLeft="102dp"
-            android:layout_marginTop="54dp"
-            />
-
-        <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:src="@mipmap/pin_lv_big"
-            android:layout_marginLeft="45dp"
-            android:layout_marginTop="127dp"/>
-
-        <TextView
-            android:id="@+id/tvPinLv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="频率："
-            android:textColor="#ff333333"
-            android:textSize="24sp"
-            android:layout_marginLeft="102dp"
-            android:layout_marginTop="128dp"
-            />
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <FrameLayout
-            android:id="@+id/btnRefresh"
-            android:layout_marginTop="251dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/bg_circle_blue1"
-            android:layout_width="117dp"
-            android:layout_height="117dp">
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="77dp">
             <TextView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:text="刷新"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_circle_blue"
+                android:id="@+id/tvSheBeiBianHao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备编号："
+                android:textColor="#ff333333"
+                android:textSize="14sp"
+                />
+            <TextView
+                android:id="@+id/tvDianQianShiJian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:id="@+id/tvDianLiang"
+                android:text="电量："
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                android:layout_gravity="right|bottom"
                 />
         </FrameLayout>
+
+        <include layout="@layout/line_5dp"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="37dp"
+                android:src="@mipmap/guang_qiang_du"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="50dp"/>
+
+            <TextView
+                android:id="@+id/tvQiangDu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="强度："
+                android:textColor="#ff333333"
+                android:textSize="24sp"
+                android:layout_marginLeft="102dp"
+                android:layout_marginTop="54dp"
+                />
+
+            <ImageView
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:src="@mipmap/pin_lv_big"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="127dp"/>
+
+            <TextView
+                android:id="@+id/tvPinLv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="频率："
+                android:textColor="#ff333333"
+                android:textSize="24sp"
+                android:layout_marginLeft="102dp"
+                android:layout_marginTop="128dp"
+                />
+
+            <FrameLayout
+                android:id="@+id/btnRefresh"
+                android:layout_marginTop="251dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_circle_blue1"
+                android:layout_width="117dp"
+                android:layout_height="117dp">
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:text="刷新"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_circle_blue"
+                    />
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flDisconnect"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="44dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/bt"
+            android:layout_marginTop="77dp"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="192dp"
+            android:layout_height="34dp"
+            android:text="暂无数据\n请先将设备与手机蓝牙连接读取数据"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="183dp"
+            android:textColor="#ffbdbdbd"
+            android:textSize="12sp"
+            />
     </FrameLayout>
 
-</LinearLayout>
+
+
+</FrameLayout>

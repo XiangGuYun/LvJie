@@ -41,7 +41,6 @@
             android:textColorHint="#BDBDBD"
             android:textSize="18sp"
             android:background="@null"
-            android:text="Aa111111"
             />
 
         <View
