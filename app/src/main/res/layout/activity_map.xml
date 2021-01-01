@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/flParent"
+    tools:context=".activity.MapActivity">
+
+    <include layout="@layout/header"/>
+
+    <FrameLayout
+        android:layout_marginTop="44dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <ImageView
+            android:id="@+id/ivMarker"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/marker"/>
+
+        <com.yxd.baselib.view.comb.YxdButton
+            android:id="@+id/btnSelect"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确定选择"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="50dp"
+            app:bgCommonColor="#ff3c79fb"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            app:cornerRadius="10dp"
+            />
+    </FrameLayout>
+
+
+    
+
+</FrameLayout>
