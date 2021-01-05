@@ -32,36 +32,52 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 
     private lateinit var helper: BluetoothHelper
 
-    private lateinit var pd:ProgressDialog
+    private lateinit var pd: ProgressDialog
+
+    private lateinit var pd1: ProgressDialog
+
+    private lateinit var pd2: ProgressDialog
 
     @Subscribe
-    fun handle(msg:Message){
-        when(msg.what){
-            MsgWhat.SHOW_DIALOG ->{
+    fun handle(msg: Message) {
+        when (msg.what) {
+            MsgWhat.SHOW_DIALOG -> {
                 pd.show()
             }
-            MsgWhat.HIDE_DIALOG ->{
+            MsgWhat.HIDE_DIALOG -> {
                 pd.dismiss()
             }
-            MsgWhat.CONNECT_OVERTIME ->{
-                if(pd.isShowing){
+            MsgWhat.SHOW_DIALOG1 -> {
+                pd1.show()
+            }
+            MsgWhat.HIDE_DIALOG1 -> {
+                pd1.dismiss()
+            }
+            MsgWhat.CONNECT_OVERTIME -> {
+                if (pd.isShowing) {
                     pd.dismiss()
                     "连接超时".toast()
                 }
             }
-            MsgWhat.CLEAR_BOUNDED_DEVICE->{
-                if(pd.isShowing){
+            MsgWhat.CLEAR_BOUNDED_DEVICE -> {
+                if (pd.isShowing) {
                     pd.dismiss()
                     "连接失败，请重试".toast()
                 }
                 rvConnectedDevices.update()
                 tvNoBondedDevice.show()
             }
-            MsgWhat.CONNECT_SUCCESS->{
+            MsgWhat.CONNECT_SUCCESS -> {
+                if(!extraBool("reconn", false))
+                    BusUtils.post(MsgWhat.SHOW_DIALOG1)
+                else
+                    pd2.dismiss()
                 val device = msg.obj as BtDevice
-                listBonded.add(device)
+                if (!listBonded.any { it.address == device.address }) {
+                    listBonded.add(device)
+                }
                 listUnBonded.removeAll {
-                  it.address == device.address
+                    it.address == device.address
                 }
                 rvConnectedDevices.update()
                 rvDisconnectDevices.update()
@@ -71,12 +87,13 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     }
 
     override fun init(bundle: Bundle?) {
+
         tvTitle.txt("设备连接").click {
             CmdUtils.sendCmdForMarkPoint(this, 0)
         }
 
         tvSubTitle.show().txt("重新搜索").click {
-            if(!helper.isDiscovering()){
+            if (!helper.isDiscovering()) {
                 listUnBonded.clear()
                 rvDisconnectDevices.update()
                 helper.discoverDevices()
@@ -87,9 +104,29 @@ class DeviceConnectActivity : ProjectBaseActivity() {
         pd.setMessage("正在连接...")
         pd.setCanceledOnTouchOutside(false)
 
+        pd1 = ProgressDialog(this)
+        pd1.setMessage("正在写入设备当前时间...")
+        pd1.setCanceledOnTouchOutside(false)
+
+        pd2 = ProgressDialog(this)
+        pd2.setMessage("发送指令失败，正在重连设备...")
+        pd2.setCanceledOnTouchOutside(false)
+
         helper = BluetoothHelper.getInstance()
 
-        if(helper.isBtEnabled()){
+        if(extraBool("reconn", false)){
+            pd2.show()
+            helper.cancelDiscoverDevices()
+            if (HomeActivity.isConnectedDevice) {
+                BusUtils.post(MsgWhat.SEND_COMMAND, MsgWhat.STOP_NOTIFY)
+                BluetoothLeService.disconnect()
+                listBonded.clear()
+                rvConnectedDevices.update()
+            }
+            BusUtils.post(MsgWhat.CONNECT_DEVICE, listBonded[0])
+        }
+
+        if (helper.isBtEnabled()) {
             switchBT.bg(R.drawable.bg_switch_on)
             viewEnable.show()
         } else {
@@ -118,17 +155,17 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 
         helper.registerSearchReceiver(this, { device ->
             if (device.name != null && listUnBonded.find { it.address == device.address } == null) {
-                if(listBonded.find { it.address == device.address } == null){
+                if (listBonded.find { it.address == device.address } == null) {
                     listUnBonded.add(device)
                     rvDisconnectDevices.update()
                 }
             }
         }, {
-            if(loading.isStart){
+            if (loading.isStart) {
                 loading.stop()
             }
         }, {
-            if(loading.isStart){
+            if (loading.isStart) {
                 loading.stop()
             }
             loading.start()
@@ -147,26 +184,29 @@ class DeviceConnectActivity : ProjectBaseActivity() {
             rvConnectedDevices.update()
             rvDisconnectDevices.update()
         })
-
-        helper.discoverDevices()
+        if(!extraBool("reconn", false)){
+            helper.discoverDevices()
+        }
     }
 
     private fun doUnBondedDeviceList() {
-        rvDisconnectDevices.wrap.generate(listUnBonded,
-            {
-                h, i, it ->
+        rvDisconnectDevices.wrap.generate(
+            listUnBonded,
+            { h, i, it ->
                 h.tv(R.id.tvName).txt(it.name)
                 h.tv(R.id.tvAddress).txt(it.address)
-                h.v(R.id.btnConn).click { v->
+                h.v(R.id.btnConn).click { v ->
                     helper.cancelDiscoverDevices()
-                    if(HomeActivity.isConnectedDevice){
+                    if (HomeActivity.isConnectedDevice) {
+                        BusUtils.post(MsgWhat.SEND_COMMAND, MsgWhat.STOP_NOTIFY)
                         BluetoothLeService.disconnect()
                         listBonded.clear()
                         rvConnectedDevices.update()
                     }
                     BusUtils.post(MsgWhat.CONNECT_DEVICE, it)
                 }
-            }, null, R.layout.item_device1)
+            }, null, R.layout.item_device1
+        )
     }
 
     private fun doBondedDeviceList() {
@@ -185,6 +225,7 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 //                    goTo<CharacteristicsActivity>("is_usr_service" to true)
                 }
                 h.itemLongClick {
+                    BusUtils.post(MsgWhat.SEND_COMMAND, MsgWhat.STOP_NOTIFY)
                     HomeActivity.isConnectedDevice = false
                     BluetoothLeService.disconnect()
                     listBonded.clear()
@@ -197,7 +238,7 @@ class DeviceConnectActivity : ProjectBaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(helper.isDiscovering()){
+        if (helper.isDiscovering()) {
             helper.cancelDiscoverDevices()
         }
         helper.unRegisterSearchReceiver(this)

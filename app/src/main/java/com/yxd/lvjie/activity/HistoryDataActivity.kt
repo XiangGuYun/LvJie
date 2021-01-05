@@ -114,7 +114,7 @@ class HistoryDataActivity : ProjectBaseActivity() {
 
         // 查看曲线图
         tvChaKanQuXianTu.click {
-            val url = "http://47.96.4.50/h5/index.html#/show?token=${SPHelper.getToken()}${if(startDate != 0L)"&startTime=${startDate}" else ""}${if(endDate != 0L)"&endTime=${endDate}" else ""}&equipNo=$number"
+            val url = "http://47.96.4.50/h5/index.html#/show?token=${SPHelper.getToken()}${if(startDate != 0L)"&startTime=${startDate}" else ""}${if(endDate != 0L)"&endTime=${endDate}" else ""}&equipNo=$number&pageSize=${totalPage}"
             url.logD("YXD_URL")
             LvJieHtmlActivity.start(this, url)
         }

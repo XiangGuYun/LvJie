@@ -191,26 +191,30 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <Button
+        <com.yxd.baselib.view.comb.YxdButton
             android:id="@+id/tvAutoAdjust"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:text="自校准"
             android:textColor="#ffffffff"
-            android:background="@drawable/bg_blue_button"
+            app:bgCommonColor="#3C79FB"
+            app:cornerRadius="4dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="120dp"
             android:textSize="16sp"
             />
-        <Button
+        <com.yxd.baselib.view.comb.YxdButton
             android:id="@+id/tvSaveSetting"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:text="保存设置"
             android:layout_marginTop="15dp"
             android:textColor="#3C79FB"
-            android:background="@drawable/bg_blue_button_stroke"
+            app:bgCommonColor="@color/white"
+            app:strokeWidth="1dp"
+            app:strokeColor="#3C79FB"
+            app:cornerRadius="4dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_gravity="bottom"

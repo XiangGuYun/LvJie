@@ -111,7 +111,7 @@ class HomeActivity : BaseActivity() {
                 stopBroadcastDataNotify(notifyCharacteristic)
             }
             MsgWhat.SEND_COMMAND -> {
-                if(msg.obj == null){
+                if (msg.obj == null) {
                     "发生空指针异常".toast()
                 }
                 val text = msg.obj.toString()
@@ -123,6 +123,9 @@ class HomeActivity : BaseActivity() {
                     return
                 }
                 cmdType = when (text) {
+                    Cmd.TABLE1 -> "表1"
+                    Cmd.TABLE2 -> "表2"
+                    Cmd.TABLE3 -> "表3"
                     Cmd.GET_HISTORY_DATA -> "历史数据同步"
                     Cmd.DEVICE_INFO -> "设备信息"
                     Cmd.DEVICE_AWAKE_TIME -> "设备唤醒时间"
@@ -257,9 +260,9 @@ class HomeActivity : BaseActivity() {
                     )
                     // 搜索服务
                     BluetoothLeService.discoverServices()
-                    doDelayTask(1000){
+                    doDelayTask(2000) {
                         CmdUtils.sendCmdForDeviceNumber()
-                        doDelayTask(1000){
+                        doDelayTask(2000) {
                             CmdUtils.writeCurrentTime(this@HomeActivity)
                         }
                     }
@@ -291,9 +294,18 @@ class HomeActivity : BaseActivity() {
                     if (extras!!.containsKey(Constants.EXTRA_BYTE_VALUE)) {
                         if (extras.containsKey(Constants.EXTRA_BYTE_UUID_VALUE)) {
                             val array = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE)
-                            formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：字节数组长度是${array.size}")
+                            formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：字节数组长度是${array.size} ")
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (cmdType) {
+                                "表1" -> {
+                                    BusUtils.post(MsgWhat.CMD_TABLE1, array)
+                                }
+                                "表2" -> {
+                                    BusUtils.post(MsgWhat.CMD_TABLE2, array)
+                                }
+                                "表3" -> {
+                                    BusUtils.post(MsgWhat.CMD_TABLE3, array)
+                                }
                                 "算法读取" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_READ_ARTH,
@@ -301,7 +313,9 @@ class HomeActivity : BaseActivity() {
                                     )
                                 }
                                 "历史数据同步" -> {
-                                    if (array.size == 100 || Utils.ByteArraytoHex(array).trim() == "02 41 01 FF FF 10 4C 06")
+                                    if (array.size == 100 || Utils.ByteArraytoHex(array)
+                                            .trim() == "02 41 01 FF FF 10 4C 06"
+                                    )
                                         BusUtils.post(
                                             MsgWhat.CMD_HISTORY_DATA,
                                             Utils.ByteArraytoHex(array).trim()
@@ -380,6 +394,7 @@ class HomeActivity : BaseActivity() {
                                         MsgWhat.CMD_DEVICE_NAME,
                                         String(array.sliceArray(3..20))
                                     )
+                                    SPHelper.putEquipName(String(array.sliceArray(23..37)))
                                 }
                                 "IMEI" -> {
                                     if (array.size > 23) {
@@ -390,21 +405,21 @@ class HomeActivity : BaseActivity() {
                                     }
                                 }
                                 "标准频率1", "标准频率2", "标准频率3", "标准频率4", "标准频率5",
-                                "标准频率6", "标准频率7", "标准频率8", "标准频率9", "标准频率10"-> {
+                                "标准频率6", "标准频率7", "标准频率8", "标准频率9", "标准频率10" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_FREQ,
                                         CmdUtils.hex2Float(hex.substring(6, 14))
                                     )
                                 }
                                 "标准值1", "标准值2", "标准值3", "标准值4", "标准值5",
-                                "标准值6", "标准值7", "标准值8", "标准值9", "标准值10"-> {
+                                "标准值6", "标准值7", "标准值8", "标准值9", "标准值10" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_VALUE,
                                         CmdUtils.hex2Float(hex.substring(6, 14))
                                     )
                                 }
                                 "标准测试值1", "标准测试值2", "标准测试值3", "标准测试值4", "标准测试值5",
-                                "标准测试值6", "标准测试值7", "标准测试值8", "标准测试值9", "标准测试值10"-> {
+                                "标准测试值6", "标准测试值7", "标准测试值8", "标准测试值9", "标准测试值10" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_STARTED_TEST_VALUE,
                                         CmdUtils.hex2Float(hex.substring(6, 14))
@@ -462,7 +477,10 @@ class HomeActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         listBonded.clear()
-//        stopBroadcastDataNotify(notifyCharacteristic)
+        if(isConnectedDevice){
+            BusUtils.post(MsgWhat.SEND_COMMAND, MsgWhat.STOP_NOTIFY)
+            BluetoothLeService.disconnect()
+        }
         unregisterReceiver(mGattUpdateReceiver)
     }
 

@@ -7,6 +7,14 @@ import com.yxd.lvjie.utils.CmdUtils
  */
 object Cmd {
 
+    const val POWER_OFF = "02 10 00 c9 00 01 02 01 00 A2 A9"
+
+    const val TABLE1 = "02 03 00 00 00 78 45 DB"
+
+    const val TABLE2 = "02 03 00 C8 00 13 85 CA"
+
+    const val TABLE3 = "02 03 00 fa 00 57 24 36"
+
     const val IMEI = "02 03 00 14 00 0a 85 FA"
 
     const val DEVICE_NO = "02 03 00 14 00 14 05 F2"
@@ -42,7 +50,7 @@ object Cmd {
     // 标定频率1
     val STARTED_FREQ1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x15, 0x00, 0x02))
     // 标定值1
-    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02))
+    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02), true)
     // 标定测试值1
     val STARTED_TEST_VALUE1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x19, 0x00, 0x02))
 

@@ -36,6 +36,13 @@ object SPHelper {
         return SPUtils.getString("equipNo", "")
     }
 
+    fun putEquipName(equipNo: String) {
+        SPUtils.put("equipName", equipNo)
+    }
+
+    fun getEquipName(): String {
+        return SPUtils.getString("equipName", "")
+    }
 
 
 }

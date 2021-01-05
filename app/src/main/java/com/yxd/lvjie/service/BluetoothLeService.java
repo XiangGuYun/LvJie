@@ -51,8 +51,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.yxd.baselib.base.BaseActivity;
 import com.yxd.baselib.utils.BusUtils;
 import com.yxd.baselib.utils.LogUtils;
+import com.yxd.baselib.utils.ToastUtils;
+import com.yxd.lvjie.activity.DeviceConnectActivity;
 import com.yxd.lvjie.bluetooth.BloodPressureParser;
 import com.yxd.lvjie.bluetooth.CSCParser;
 import com.yxd.lvjie.bluetooth.CapSenseParser;
@@ -871,6 +874,11 @@ public class BluetoothLeService extends Service {
             Log.d("HomeTest", mBluetoothDeviceAddress + "\n" + characteristic.getInstanceId() + "\n"
                     + characteristic.getWriteType() + "\n" + Arrays.toString(characteristic.getValue()));
             boolean result = mBluetoothGatt.writeCharacteristic(characteristic);
+            if(!result){
+//                BaseActivity.getStackTopActivity().startActivity(new Intent(BaseActivity.getStackTopActivity(), DeviceConnectActivity.class)
+//                    .putExtra("reconn", true));
+                ToastUtils.toast("发送指令失败");
+            }
             LogUtils.d("YXD_Cmd", "写入命令是否成功？"+result);
         }
     }

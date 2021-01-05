@@ -18,6 +18,10 @@ import kotlinx.android.synthetic.main.header.*
 class AdvancedSettingActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
+
+        llEnterPassword.setOnTouchListener { v, event ->
+            true
+        }
         btnEnter.click {
             if (etPassword.isEmpty) {
                 "请输入密码".toast()
@@ -25,6 +29,7 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
             }
             Req.verifyPassword(etPassword.str) {
                 if (it.code == 0) {
+                    closeKeyboard()
                     tvTitle.text = "高级设置"
                     llEnterPassword.gone()
                 } else {
@@ -34,7 +39,6 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
                     ) {
                         it.dismiss()
                         etPassword.txt("")
-                        openKeyboardDelay(100)
                     }.show()
                 }
             }

@@ -68,14 +68,16 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         timer.start()
 
         btnRefresh.click(2) {
-            dialogRefresh.show()
             sendCmd()
         }
     }
 
     private fun sendCmd() {
+        dialogRefresh.setMessage("正在获取数据...")
+        dialogRefresh.show()
         CmdUtils.sendCmdForStrengthAndFrequency()
-        doDelayTask(300){
+        doDelayTask(2000){
+            dialogRefresh.dismiss()
             CmdUtils.sendCmdForElectricQuantity()
         }
     }

@@ -1,5 +1,6 @@
 package com.yxd.lvjie.utils
 
+import android.util.Log
 import com.yxd.baselib.base.BaseActivity
 import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.LogUtils
@@ -55,6 +56,7 @@ object CmdUtils {
             } $checkCode"
         BusUtils.post(MsgWhat.SEND_COMMAND, command)
         activity.doDelayTask(1000) {
+            BusUtils.post(MsgWhat.HIDE_DIALOG1)
             BusUtils.post(MsgWhat.SEND_COMMAND, "02 10 00 c9 00 01 02 03 00 A3 C9")
         }
     }
@@ -78,14 +80,16 @@ object CmdUtils {
         BusUtils.post(MsgWhat.SEND_COMMAND, command)
     }
 
-    fun mark(originCmd: ByteArray): String {
+    fun mark(originCmd: ByteArray, needLog: Boolean = false): String {
         // 生成校验码
         val valueCrc16 = Crc16Utils.calcCrc16(originCmd).toString(16)
         val checkCode = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
             .replace(" ", "")
 
         val command = "${Utils.ByteArraytoHex(originCmd)}$checkCode"
-        LogUtils.d("YXD_CMD", command)
+        if(needLog){
+            LogUtils.d("YXD_CMD", "************ $command")
+        }
         return command
     }
 
@@ -95,7 +99,7 @@ object CmdUtils {
      * @param h47 Int
      * @param g47 String
      */
-    fun write(writeValue: Float, h47: Int, g47: String) {
+    fun write(writeValue: Float, h47: Int, g47: String, needLog:Boolean = false) {
         val first = "0210"
         // 00fe
         var second = h47.toBigDecimal().divide(2.toBigDecimal()).toInt().toString(16)
@@ -116,12 +120,14 @@ object CmdUtils {
         // 42c80000
         val fifth = float2Hex(writeValue)
 
-        val valueCrc16 =
-            Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth"))
+        val valueCrc16 = Crc16Utils.calcCrc16(Utils.hexStringToByteArray("$first$second$third$fourth$fifth"))
                 .toString(16)
         val newValue = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
             .replace(" ", "")
         val command = "$first$second$third$fourth$fifth$newValue"
+        if(needLog){
+            Log.d("YXD_", "NEED LOG IS $command")
+        }
         BusUtils.post(MsgWhat.SEND_COMMAND, command)
     }
 

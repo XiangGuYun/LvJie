@@ -1,5 +1,6 @@
 package com.yxd.lvjie.activity
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
@@ -11,6 +12,7 @@ import com.yxd.baselib.utils.DialogUtils
 import com.yxd.baselib.utils.OK
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
+import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.Cmd.DEVICE_AWAKE_TIME
 import com.yxd.lvjie.constant.Cmd.READ_ARITHMETIC
 import com.yxd.lvjie.constant.Cmd.WRITE_ARITHMETIC1
@@ -33,6 +35,7 @@ import org.greenrobot.eventbus.Subscribe
 @LayoutId(R.layout.activity_setting)
 class SettingActivity : ProjectBaseActivity() {
 
+    private lateinit var dialogClose: ProgressDialog
     var currentAwakeTime = ""
 
     var checkItem = 0
@@ -47,6 +50,15 @@ class SettingActivity : ProjectBaseActivity() {
             CMD_READ_ARTH -> {
                 checkItem = msg.obj.toString().toInt() - 1
                 rvSetting.getChildAt(4).tv(R.id.tvRight).txt("算法${msg.obj}")
+            }
+            MsgWhat.DEVICE_DISCONNECT -> {
+                dialogClose.dismiss()
+                ProjectDialog(this).setInfo(
+                    "设备已断开连接", "确定",
+                    false
+                ) {
+                    it.dismiss()
+                }.show()
             }
         }
     }
@@ -65,9 +77,14 @@ class SettingActivity : ProjectBaseActivity() {
             "退出登录" to ""
         )
 
-        BusUtils.post(MsgWhat.SEND_COMMAND, DEVICE_AWAKE_TIME)
-        doDelayTask(1000) {
-            BusUtils.post(MsgWhat.SEND_COMMAND, READ_ARITHMETIC)
+        if (HomeActivity.isConnectedDevice) {
+            val pd = DialogUtils.createProgressDialog(this, "正在获取数据...")
+            pd.show()
+            BusUtils.post(MsgWhat.SEND_COMMAND, DEVICE_AWAKE_TIME)
+            doDelayTask(2000) {
+                pd.dismiss()
+                BusUtils.post(MsgWhat.SEND_COMMAND, READ_ARITHMETIC)
+            }
         }
 
         val dialogArth = DialogUtils.createOptionsDialog(
@@ -79,9 +96,23 @@ class SettingActivity : ProjectBaseActivity() {
                     1 -> BusUtils.post(MsgWhat.SEND_COMMAND, WRITE_ARITHMETIC2)
                     2 -> BusUtils.post(MsgWhat.SEND_COMMAND, WRITE_ARITHMETIC3)
                 }
-                rvSetting.getChildAt(4).tv(R.id.tvRight).txt("算法${checkItem+1}")
+                rvSetting.getChildAt(4).tv(R.id.tvRight).txt("算法${checkItem + 1}")
             }, "算法选择"
         )
+
+        dialogClose = DialogUtils.createProgressDialog(this, "正在关闭设备")
+
+        tvQuitDebugMode.click(2) {
+            if (!HomeActivity.isConnectedDevice) {
+                "请先连接设备".toast()
+                return@click
+            }
+            ProjectDialog(this).setInfo("退出后将会关闭设备，确定要退出吗", "确定", true) {
+                it.dismiss()
+                dialogClose.show()
+                BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.POWER_OFF)
+            }.show()
+        }
 
         rvSetting.wrap.generate(listSetting,
             { h, p, item ->
@@ -93,10 +124,23 @@ class SettingActivity : ProjectBaseActivity() {
                 h.itemClick {
                     when (item.first) {
                         "算法选择" -> {
-                            dialogArth.show()
+                            if (HomeActivity.isConnectedDevice)
+                                dialogArth.show()
+                            else
+                                "请先连接设备".toast()
                         }
-                        "设备唤醒时间" -> goTo<TimeSetActivity>("time" to currentAwakeTime)
-                        "高级设置" -> goTo<AdvancedSettingActivity>()
+                        "设备唤醒时间" -> {
+                            if (HomeActivity.isConnectedDevice)
+                                goTo<TimeSetActivity>("time" to currentAwakeTime)
+                            else
+                                "请先连接设备".toast()
+                        }
+                        "高级设置" -> {
+                            if (HomeActivity.isConnectedDevice)
+                                goTo<AdvancedSettingActivity>()
+                            else
+                                "请先连接设备".toast()
+                        }
                         "应用更新" -> {
                             Req.getApkVersionInfo {
                                 if (it.data.version != AppUtils.getVersionName()) {
@@ -123,11 +167,17 @@ class SettingActivity : ProjectBaseActivity() {
                                 }
                             }
                         }
-                        "设备信息" -> goTo<DeviceInfoActivity>()
+                        "设备信息" -> {
+                            if (HomeActivity.isConnectedDevice)
+                                goTo<DeviceInfoActivity>()
+                            else
+                                "请先连接设备".toast()
+                        }
                         "退出登录" -> {
                             ProjectDialog(this).setInfo("是否要退出登录？", "确定", true) {
                                 goTo<LoginActivity>()
                                 SPHelper.putToken("")
+                                SPHelper.putPassword("")
                                 finishAllActivities()
                             }.show()
                         }

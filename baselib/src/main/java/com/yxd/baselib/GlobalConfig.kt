@@ -50,7 +50,7 @@ object GlobalConfig {
      */
     @JvmStatic
     fun isWriteExceptionFile(): Boolean {
-        return SPUtils.getBool("WriteExceptionFile", false)
+        return SPUtils.getBool("WriteExceptionFile", true)
     }
 
     fun setWriteExceptionFile(enable: Boolean) {

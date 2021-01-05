@@ -17,6 +17,7 @@ import com.yxd.lvjie.bean.DeviceDetailBean
 import com.yxd.lvjie.bean.DeviceEditBean
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.LonLatDialog
+import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_device_detail.*
 import kotlinx.android.synthetic.main.header.*
@@ -80,6 +81,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                         company = etCompany.str,
                         equipModel = currentData.equipModel,
                         equipNo = currentData.equipNo,
+                        imei = SPHelper.getEquipNo(),
                         id = id.toInt(),
                         installMode = currentData.installMode,
                         installPattern = currentData.installPattern,
@@ -174,7 +176,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                             }
                             "阀门编号：" -> {
                                 etValveNo = et
-                                etValveNo.txt(currentData.valveNo)
+                                etValveNo.txt(currentData.valveNo).select(currentData.valveNo?.length)
                             }
                             "阀门位置：" -> {
                                 etValveLocation = et

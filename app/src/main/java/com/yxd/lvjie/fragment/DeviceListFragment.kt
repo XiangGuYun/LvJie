@@ -84,6 +84,7 @@ class DeviceListFragment : BaseFragment() {
                         }, null, R.layout.item_device_list
                     )
                 }, onRefresh = {
+                    list.clear()
                     reqData(isRefresh = true) {
                         it.finishRefresh()
                     }

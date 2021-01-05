@@ -15,6 +15,8 @@ class YxdButton @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr), BaseEx {
 
+
+
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.YxdButton)
         val bgCommonColor = ta.getColor(R.styleable.YxdButton_bgCommonColor, Color.GRAY)

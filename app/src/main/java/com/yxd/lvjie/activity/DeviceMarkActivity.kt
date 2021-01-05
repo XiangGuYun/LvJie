@@ -1,12 +1,14 @@
 package com.yxd.lvjie.activity
 
 import android.app.ProgressDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.PopupUtils
+import com.yxd.baselib.utils.ShapeUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.DeviceMarkEditJson
@@ -29,6 +31,7 @@ import java.math.BigDecimal
 @LayoutId(R.layout.activity_device_biao_ding)
 class DeviceMarkActivity : ProjectBaseActivity() {
 
+    private lateinit var pdRefresh: ProgressDialog
     private lateinit var pu: PopupUtils
 
     var selectedIndex = 0
@@ -61,6 +64,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                         BigDecimal.ROUND_HALF_UP
                     )).toString()
                 )
+                pdRefresh.dismiss()
             }
             MsgWhat.CMD_STARTED_VALUE -> {
                 // 标定强度
@@ -74,42 +78,49 @@ class DeviceMarkActivity : ProjectBaseActivity() {
     }
 
     private val listMarkFreqAddress = listOf(
-        528, 540, 552, 564, 576
+        554, 566, 578, 590, 602, 614, 626, 638, 650, 662
     )
 
     private val listMarkValueAddress = listOf(
-        532, 544, 556, 568, 580
+        558, 570, 582, 594, 606, 618, 630, 642, 654, 666
     )
 
     private val listMarkTestValueAddress = listOf(
-        536, 548, 560, 572, 584
+        562, 574, 586, 598, 610, 622, 634, 646, 658, 670
     )
 
     override fun init(bundle: Bundle?) {
 
-        val pdRefresh = ProgressDialog(this)
-        pdRefresh.setMessage("正在刷新...")
+        pdRefresh = ProgressDialog(this)
         pdRefresh.setCanceledOnTouchOutside(false)
 
         tvSubTitle.show().txt("刷新").click(3) {
+            if (!HomeActivity.isConnectedDevice){
+                "未连接设备".toast()
+                return@click
+            }
+            pdRefresh.setMessage("正在刷新...")
             pdRefresh.show()
             // 读取强度和频率
             BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.ORIGIN_STRENGTH)
-            doDelayTask(1000){
+            doDelayTask(1000) {
                 pdRefresh.dismiss()
                 CmdUtils.sendCmdForStrengthAndFrequency()
             }
         }
 
-        CmdUtils.sendCmdForStrengthAndFrequency()
+        if(HomeActivity.isConnectedDevice){
+            pdRefresh.setMessage("正在获取数据...")
+            pdRefresh.show()
+            CmdUtils.sendCmdForStrengthAndFrequency()
+            doDelayTask(1000) {
+                CmdUtils.sendCmdForMarkPoint(this, 0)
+            }
+        }
 
         val pd = ProgressDialog(this)
         pd.setMessage("正在保存...")
         pd.setCanceledOnTouchOutside(false)
-
-        doDelayTask(1000) {
-            CmdUtils.sendCmdForMarkPoint(this, 0)
-        }
 
         flMarkPoint.post {
             pu = PopupUtils(this, R.layout.mark_point, flMarkPoint.width to 200.dp)
@@ -120,10 +131,14 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                     { h, i, item ->
                         h.tv(R.id.tv).txt(item)
                         h.itemClick {
-                            selectedIndex = i
-                            pu.window.dismiss()
-                            tvMarkPoint.txt(item)
-                            CmdUtils.sendCmdForMarkPoint(this, selectedIndex)
+                            if(HomeActivity.isConnectedDevice){
+                                selectedIndex = i
+                                pu.window.dismiss()
+                                tvMarkPoint.txt(item)
+                                CmdUtils.sendCmdForMarkPoint(this, selectedIndex)
+                                pdRefresh.setMessage("正在获取数据...")
+                                pdRefresh.show()
+                            }
                         }
                     }, null, R.layout.item_mark_point
                 )
@@ -144,17 +159,18 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         ) {
             it.dismiss()
             pd.show()
-            Req.editDeviceMark(DeviceMarkEditJson(
-                equipNo = SPHelper.getEquipNo(),
-                frequency = tvFreq.str.replace("Hz", "").replace("频率：",""),
-                number = selectedIndex+1,
-                ratio = (tvMarkStrength.str.toBigDecimal().divide(
-                    tvStrength.str.replace("原始强度：", "").toBigDecimal(),
-                    2,
-                    BigDecimal.ROUND_HALF_UP
-                )).toString(),
-                strength = tvMarkStrength.str
-            )
+            Req.editDeviceMark(
+                DeviceMarkEditJson(
+                    equipNo = SPHelper.getEquipNo(),
+                    frequency = tvFreq.str.replace("Hz", "").replace("频率：", ""),
+                    number = selectedIndex + 1,
+                    ratio = (tvMarkStrength.str.toBigDecimal().divide(
+                        tvStrength.str.replace("原始强度：", "").toBigDecimal(),
+                        2,
+                        BigDecimal.ROUND_HALF_UP
+                    )).toString(),
+                    strength = tvMarkStrength.str
+                )
             ) {
                 // 原始强度
                 CmdUtils.write(
@@ -162,17 +178,18 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                     listMarkTestValueAddress[selectedIndex],
                     "4"
                 )
-                doDelayTask(1500) {
+                doDelayTask(2000) {
                     // 标定强度
                     CmdUtils.write(
                         tvMarkStrength.str.toFloat(),
                         listMarkValueAddress[selectedIndex],
-                        "4"
+                        "4",
+                        true
                     )
-                    doDelayTask(1500) {
+                    doDelayTask(2000) {
                         CmdUtils.write(
                             // 标定频率
-                            tvFreq.str.replace("Hz", "").replace("频率：","").toFloat(),
+                            tvFreq.str.replace("Hz", "").replace("频率：", "").toFloat(),
                             listMarkFreqAddress[selectedIndex],
                             "4"
                         )
@@ -182,18 +199,34 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                                 tvStrength.str.replace("原始强度：", "").toBigDecimal(),
                                 2,
                                 BigDecimal.ROUND_HALF_UP
-                            )).toString())
+                            )).toString()
+                        )
                     }
                 }
             }
         }
 
+        if(!HomeActivity.isConnectedDevice){
+            tvAutoAdjust.background =  ShapeUtils.getRectangleDrawable(
+                cornerRadius = 4.dp.toFloat(),
+                solidColor = Color.GRAY,
+            )
+            tvSaveSetting.background =  ShapeUtils.getRectangleDrawable(
+                cornerRadius = 4.dp.toFloat(),
+                solidColor = Color.WHITE,
+                strokeColor = Color.GRAY,
+                strokeWidth = 1.dp
+            )
+        }
+
         tvAutoAdjust.click {
-            dialogAutoAdjust.show()
+            if (HomeActivity.isConnectedDevice)
+                dialogAutoAdjust.show()
         }
 
         tvSaveSetting.click {
-            dialogSaveSetting.show()
+            if (HomeActivity.isConnectedDevice)
+                dialogSaveSetting.show()
         }
 
     }

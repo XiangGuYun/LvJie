@@ -64,7 +64,6 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         //初始化注解
-        initAnnotation()
 
         //设置屏幕方向
         if (!dont_request_orientation) {
@@ -82,6 +81,8 @@ abstract class BaseActivity : SupportActivity(), BaseEx {
 
             }
         }
+
+        initAnnotation()
 
         //加载布局
         if (viewInject != null) {

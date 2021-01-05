@@ -124,8 +124,8 @@
             android:layout_marginTop="77dp"
             android:layout_gravity="center_horizontal"/>
         <TextView
-            android:layout_width="192dp"
-            android:layout_height="34dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="暂无数据\n请先将设备与手机蓝牙连接读取数据"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"

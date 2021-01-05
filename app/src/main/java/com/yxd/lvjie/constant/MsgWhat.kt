@@ -29,6 +29,10 @@ object MsgWhat {
 
     const val HIDE_DIALOG = 0x008
 
+    const val SHOW_DIALOG1 = 0x0071
+
+    const val HIDE_DIALOG1 = 0x0081
+
     const val UPDATE_LON_LAT = 0x009
 
     /**
@@ -88,5 +92,11 @@ object MsgWhat {
     const val CMD_DEVICE_NAME = 0x116
 
     const val CMD_READ_ARTH = 0x117
+
+    const val CMD_TABLE1 = 0x118
+
+    const val CMD_TABLE2 = 0x119
+
+    const val CMD_TABLE3= 0x120
 
 }

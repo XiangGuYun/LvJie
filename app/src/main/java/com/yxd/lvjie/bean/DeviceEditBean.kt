@@ -4,6 +4,7 @@ data class DeviceEditBean(
     val company: String? = null,
     val equipModel: String? = null,
     val equipNo: String? = null,
+    val imei: String = "",
     val id: Int? = null,
     val installMode: Int? = null,
     val installPattern: Int? = null,
