@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.header.*
 
 /**
- *
+ * 地图
  * @author YeXuDong
  */
 @LayoutId(R.layout.activity_map)

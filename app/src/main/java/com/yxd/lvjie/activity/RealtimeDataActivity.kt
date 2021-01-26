@@ -18,6 +18,7 @@ import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_realtime_data.*
 import kotlinx.android.synthetic.main.item_device_list.*
 import org.greenrobot.eventbus.Subscribe
+import java.math.BigDecimal
 import java.math.RoundingMode
 
 /**
@@ -46,7 +47,8 @@ class RealtimeDataActivity : ProjectBaseActivity() {
             }
             MsgWhat.CMD_EQ->{
                 dialogRefresh.dismiss()
-                tvDianLiang.txt("电量：${msg.obj}%")
+                tvDianLiang.txt("电量：${
+                    BigDecimal(msg.obj.toString()).setScale(1, BigDecimal.ROUND_HALF_UP)}%")
             }
             MsgWhat.CMD_DEVICE_NO->{
                 tvSheBeiBianHao.txt("设备编号：${msg.obj}")

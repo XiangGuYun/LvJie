@@ -9,6 +9,8 @@ import com.yxd.baselib.utils.LogUtils
 import com.yxd.baselib.utils.ToastUtils
 import com.yxd.baselib.utils.http.OkHttpUtils
 import com.yxd.baselib.utils.http.callback.StringCallback
+import com.yxd.lvjie.activity.HistoryDataActivity
+import com.yxd.lvjie.activity.LoginActivity
 import com.yxd.lvjie.helper.SPHelper
 import okhttp3.Call
 import okhttp3.MediaType
@@ -104,7 +106,18 @@ object OkUtils {
                         "......................................................................................................................................."
                     )
                     LogUtils.d(TAG, " URL：$url\nJSON：$mapJson\nRESPONSE：$response")
-                    onSuccess.invoke(Gson().fromJson(response, T::class.java))
+                    val jp = JsonParser()
+                    val jo = jp.parse(response) as JsonObject
+                    if (jo.get("code").asInt == 0) {
+                        onSuccess.invoke(Gson().fromJson(response, T::class.java))
+                    } else {
+                        ToastUtils.toast(jo.get("message").asString)
+                        if(jo.get("code").asInt in listOf(10001, 10003)){
+                            SPHelper.putToken("")
+                            BaseActivity.getStackTopActivity()?.goTo<LoginActivity>()
+                            BaseActivity.finishAllActivities()
+                        }
+                    }
                 }
             })
 
@@ -139,8 +152,6 @@ object OkUtils {
             .execute(object : StringCallback() {
 
                 override fun onError(call: Call?, e: Exception?, id: Int) {
-                    val fileDebug = FileUtils.newSDCardFile("接口日志.txt")
-                    fileDebug.writeText(" URL：$url\nJSON：$jsonString\nMessage：${e?.localizedMessage}")
                     LogUtils.e(
                         TAG,
                         "......................................................................................................................................."
@@ -169,8 +180,6 @@ object OkUtils {
                 }
 
                 override fun onResponse(response: String?, id: Int) {
-                    val fileDebug = FileUtils.newSDCardFile("同步接口日志.txt")
-                    fileDebug.writeText(" URL：$url\nJSON：$jsonString\nRESPONSE：$response")
                     LogUtils.d(
                         TAG,
                         "......................................................................................................................................."
@@ -198,6 +207,11 @@ object OkUtils {
                         onSuccess.invoke(Gson().fromJson(response, T::class.java))
                     } else {
                         ToastUtils.toast(jo.get("message").asString)
+                        if(jo.get("code").asInt in listOf(10001, 10003)){
+                            SPHelper.putToken("")
+                            BaseActivity.getStackTopActivity()?.goTo<LoginActivity>()
+                            BaseActivity.finishAllActivities()
+                        }
                     }
                 }
             })
@@ -301,6 +315,11 @@ object OkUtils {
                             onSuccess.invoke(Gson().fromJson(response, T::class.java))
                         } else {
                             ToastUtils.toast(jo.get("message").asString)
+                            if(jo.get("code").asInt in listOf(10001, 10003)){
+                                SPHelper.putToken("")
+                                BaseActivity.getStackTopActivity()?.goTo<LoginActivity>()
+                                BaseActivity.finishAllActivities()
+                            }
                         }
                     } else {
                         onSuccess.invoke(Gson().fromJson(response, T::class.java))
@@ -364,6 +383,7 @@ object OkUtils {
                         TAG,
                         " URL：$lastUrl\nMESSAGE：${e?.localizedMessage}"
                     );
+                    ToastUtils.toast(e!!.localizedMessage)
                     call?.cancel()
                 }
 
@@ -399,6 +419,11 @@ object OkUtils {
                         onSuccess.invoke(Gson().fromJson(response, T::class.java))
                     } else {
                         ToastUtils.toast(jo.get("message").asString)
+                        if(jo.get("code").asInt in listOf(10001, 10003)){
+                            SPHelper.putToken("")
+                            BaseActivity.getStackTopActivity()?.goTo<LoginActivity>()
+                            BaseActivity.finishAllActivities()
+                        }
                     }
                 }
             })

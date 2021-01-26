@@ -33,6 +33,9 @@ object MsgWhat {
 
     const val HIDE_DIALOG1 = 0x0081
 
+    /**
+     * 更新经纬度
+     */
     const val UPDATE_LON_LAT = 0x009
 
     /**
@@ -65,38 +68,83 @@ object MsgWhat {
      */
     const val CMD_IMEI = 0x103
 
+    /**
+     * 标准频率
+     */
     const val CMD_STARTED_FREQ = 0x104
 
+    /**
+     * 标准值
+     */
     const val CMD_STARTED_VALUE = 0x105
 
+    /**
+     * 标准测试值
+     */
     const val CMD_STARTED_TEST_VALUE = 0x106
 
+    /**
+     * 原始强度
+     */
     const val ORIGIN_STRENGTH = 0x107
 
+    /**
+     * 设备唤醒时间
+     */
     const val CMD_DEVICE_AWAKE_TIME = 0x108
 
-    const val CMD_DEVICE_INFO_1 = 0x109
-
-    const val CMD_DEVICE_INFO_2 = 0x110
-
-    const val CMD_DEVICE_INFO_3 = 0x111
-
-    const val CMD_DEVICE_INFO_4 = 0x112
-
-    const val CMD_DEVICE_INFO_5 = 0x113
-
+    /**
+     * 获取设备信息
+     */
     const val CMD_DEVICE_INFO_6 = 0x114
 
+    /**
+     * 同步历史数据
+     */
     const val CMD_HISTORY_DATA = 0x115
 
+    /**
+     * 设备名
+     */
     const val CMD_DEVICE_NAME = 0x116
 
+    /**
+     * 读取算法
+     */
     const val CMD_READ_ARTH = 0x117
 
+    /**
+     * 寄存器表1
+     */
     const val CMD_TABLE1 = 0x118
 
+    /**
+     * 寄存器表2
+     */
     const val CMD_TABLE2 = 0x119
 
+    /**
+     * 寄存器表3
+     */
     const val CMD_TABLE3= 0x120
 
+    /**
+     * 更新设备列表
+     */
+    const val UPDATE_DEVICE_LIST = 0x121
+
+    /**
+     * 写入时间完成
+     */
+    const val WRITE_TIME_DONE = 0x122
+
+    /**
+     * 更新设备模式
+     */
+    const val CHANGE_DEVICE_PATTERN = 0x123
+
+    /**
+     * 完成修改设备名
+     */
+    const val CHANGE_DEVICE_NAME_DONE = 0x124
 }

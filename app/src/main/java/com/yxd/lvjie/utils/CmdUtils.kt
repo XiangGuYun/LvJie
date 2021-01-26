@@ -7,6 +7,7 @@ import com.yxd.baselib.utils.LogUtils
 import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
+import com.yxd.lvjie.helper.SPHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,6 +15,23 @@ import java.util.*
  * 蓝牙数据发送与处理的工具类
  */
 object CmdUtils {
+
+    /**
+     * 修改设备名称
+     * @param name String
+     * @return String
+     */
+    fun changeDeviceName(name:String) {
+        val cmdOrigin = byteArrayOf(0x02, 0x10, 0x00, 0x14, 0x00, 0x0a, 0x14)
+        val baName = name.toByteArray().toMutableList()
+        while (baName.size != 20){
+            baName.add(0, 0x00)
+        }
+        baName.addAll(0, cmdOrigin.toList())
+        val code = mark(baName.toByteArray())
+        SPHelper.putEquipName(name)
+        BusUtils.post(MsgWhat.SEND_COMMAND, code, arg1 = 200)
+    }
 
     fun add0(num: Int): String {
         return if (num < 10)
@@ -30,7 +48,7 @@ object CmdUtils {
         val year = calendar.get(Calendar.YEAR).toString().slice(2..3).toInt()
         val month = SimpleDateFormat("MM").format(System.currentTimeMillis()).toInt()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
@@ -61,6 +79,12 @@ object CmdUtils {
         }
     }
 
+    /**
+     * 写入设备唤醒时间
+     * @param hour Int
+     * @param minute Int
+     * @param second Int
+     */
     fun writeTime(hour: Int, minute: Int, second: Int) {
         val hour1 = if (hour < 10) "0$hour" else hour
         val minute1 = if (minute < 10) "0$minute" else minute
@@ -77,19 +101,25 @@ object CmdUtils {
 
         LogUtils.d("YXD_", command)
 
-        BusUtils.post(MsgWhat.SEND_COMMAND, command)
+        BusUtils.post(MsgWhat.SEND_COMMAND, command, arg1 = 100)
     }
 
-    fun mark(originCmd: ByteArray, needLog: Boolean = false): String {
+    /**
+     * 为指令添加验证码
+     * @param originCmd ByteArray
+     * @param needLog Boolean
+     * @return String
+     */
+    fun mark(originCmd: ByteArray): String {
         // 生成校验码
-        val valueCrc16 = Crc16Utils.calcCrc16(originCmd).toString(16)
+        var valueCrc16 = Crc16Utils.calcCrc16(originCmd).toString(16)
+        if(valueCrc16.length == 3){
+            valueCrc16 = "0$valueCrc16"
+        }
         val checkCode = Utils.ByteArraytoHex(Utils.hexStringToByteArray(valueCrc16).reversedArray())
             .replace(" ", "")
 
         val command = "${Utils.ByteArraytoHex(originCmd)}$checkCode"
-        if(needLog){
-            LogUtils.d("YXD_CMD", "************ $command")
-        }
         return command
     }
 
@@ -238,11 +268,18 @@ object CmdUtils {
      * @param index Int 标定点的索引位，标定点1对应0，标定点2对应1，以此类推
      */
     fun sendCmdForMarkPoint(activity: BaseActivity, index: Int) {
+        // 原始强度
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.ORIGIN_STRENGTH)
         activity.doDelayTask(1000) {
+            // 标定值
             BusUtils.post(MsgWhat.SEND_COMMAND, markPointValueList[index])
             activity.doDelayTask(1000) {
+                // 标定频率
                 BusUtils.post(MsgWhat.SEND_COMMAND, markPointFreqList[index])
+                activity.doDelayTask(1000){
+                    //标定测试值
+                    BusUtils.post(MsgWhat.SEND_COMMAND, markPointTestValue[index])
+                }
             }
         }
     }

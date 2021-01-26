@@ -2,7 +2,7 @@ package com.yxd.lvjie.bean
 
 data class DeviceDetailBean(
     var code: Int? = null,
-    var `data`: Data,
+    var `data`: Data?,
     var message: String? = null
 ) {
     data class Data(

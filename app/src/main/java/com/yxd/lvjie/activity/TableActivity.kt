@@ -12,12 +12,14 @@ import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bluetooth.Utils
 import com.yxd.lvjie.constant.Cmd
 import com.yxd.lvjie.constant.MsgWhat
+import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_table.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
+import java.nio.charset.Charset
 
 /**
- *
+ * 寄存器表
  * @author YeXuDong
  */
 @Bus
@@ -28,35 +30,65 @@ class TableActivity : ProjectBaseActivity() {
 
     var listTest3 =  byteArrayOf().toMutableList()
 
+    fun ByteArray.toGBK(): String {
+        return Utils.ByteArraytoHex(this)//String(this, Charset.forName("GBK"))
+    }
+
+    fun ByteArray.toUTF8(log:Boolean, pre: String): String {
+        val str = Utils.ByteArraytoHex(this)
+        if(log){
+            ("转换前："+Utils.ByteArraytoHex(this)+" 转换后："+str).logD(pre = pre)
+        }
+        return str
+    }
+
+    fun ByteArray.toUTF16(log: Boolean = false, pre:String = ""): String {
+        val str = Utils.ByteArraytoHex(this)
+        if(log){
+            ("转换前："+Utils.ByteArraytoHex(this)+" 转换后："+str).logD(pre = pre)
+        }
+        return str
+    }
+
+    fun ByteArray.toUTF32(): String {
+        return Utils.ByteArraytoHex(this)
+    }
+
+    fun ByteArray.toFloat32(): String {
+        return CmdUtils.hex2Float(Utils.ByteArraytoHex(this)).toString()
+    }
+
     @Subscribe
     fun handle(msg: Message) {
         when (msg.what) {
             MsgWhat.CMD_TABLE1 -> {
                 val array = msg.obj as ByteArray
-                if(array.size == 100){
-                    listContent.add(Utils.byteToASCII(array.sliceArray(0..19)))
-                    listContent.add(Utils.byteToASCII(array.sliceArray(20..39)))
-                    listContent.add(Utils.byteToASCII(array.sliceArray(40..59)))
-                    listContent.add(Utils.byteToASCII(array.sliceArray(60..79)))
-                    listContent.add(Utils.byteToASCII(array.sliceArray(80..99)))
-                    rv3.update()
-                } else {
-                    listContent.add(Utils.byteToASCII(array.sliceArray(0..19)))
-                    listContent.add(Utils.byteToASCII(array.sliceArray(20..39)))
-                    rv3.update()
-                }
+                listContent.add(Utils.byteToASCII(array.sliceArray(3..22)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(23..42)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(43..62)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(63..82)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(83..102)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(103..122)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(123..142)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(143..162)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(163..182)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(183..202)))
+                listContent.add(Utils.byteToASCII(array.sliceArray(203..222)))
+                listContent.add(array.sliceArray(223..242).toGBK())
+                listContent.add(array.sliceArray(243..262).toGBK())
+                rv3.update()
             }
             MsgWhat.CMD_TABLE2 -> {
                 val array = msg.obj as ByteArray
                 (3..22).forEach {
-                    listContent.add(Utils.byteToASCII(array.sliceArray(it..it)))
+                    listContent.add(array.sliceArray(it..it).toUTF8(false, ""))
                 }
-                listContent.add(Utils.byteToASCII(array.sliceArray(23..26)))
-                listContent.add(Utils.byteToASCII(array.sliceArray(27..28)))
-                listContent.add(Utils.byteToASCII(array.sliceArray(29..30)))
-                listContent.add(Utils.byteToASCII(array.sliceArray(31..32)))
-                listContent.add(Utils.byteToASCII(array.sliceArray(33..36)))
-                listContent.add(Utils.byteToASCII(array.sliceArray(37..40)))
+                listContent.add(array.sliceArray(23..26).toFloat32())
+                listContent.add(array.sliceArray(27..28).toUTF16())
+                listContent.add(array.sliceArray(29..30).toUTF16())
+                listContent.add(array.sliceArray(31..32).toUTF16())
+                listContent.add(array.sliceArray(33..36).toUTF32())
+                listContent.add(array.sliceArray(37..40).toUTF32())
                 rv3.update()
             }
             MsgWhat.CMD_TABLE3 -> {
@@ -69,14 +101,15 @@ class TableActivity : ProjectBaseActivity() {
                     val lastArray = listTest3.toByteArray()
                     lastArray.size.logD(pre = "**************")
                     for (i in 3..47 step 4){
-                        listContent.add(Utils.byteToASCII(lastArray.sliceArray(i..(i+3))))
+                        listContent.add(lastArray.sliceArray(i..(i+3)).toFloat32())
+
                     }
-                    listContent.add(Utils.byteToASCII(lastArray.sliceArray(51..51)))
-                    listContent.add(Utils.byteToASCII(lastArray.sliceArray(52..52)))
-                    listContent.add(Utils.byteToASCII(lastArray.sliceArray(53..54)))
-                    listContent.add(Utils.byteToASCII(lastArray.sliceArray(55..56)))
+                    listContent.add(lastArray.sliceArray(51..51).toUTF8(true, "传感器类型："))
+                    listContent.add(lastArray.sliceArray(52..52).toUTF8(true,"算法类型："))
+                    listContent.add(lastArray.sliceArray(53..54).toUTF16(true, "传感器校准点："))
+                    listContent.add(lastArray.sliceArray(55..56).toUTF16(true, "传感器档位："))
                     for (i in 57..173 step 4){
-                        listContent.add(Utils.byteToASCII(lastArray.sliceArray(i..(i+3))))
+                        listContent.add(lastArray.sliceArray(i..(i+3)).toFloat32())
                     }
                     rv3.update()
                 }
@@ -98,7 +131,7 @@ class TableActivity : ProjectBaseActivity() {
         reqData()
 
         val listNo = mutableListOf("寄存器编号")
-        listNo.addAll((0..11).map { "REG_INFO$it" })
+        listNo.addAll((0..12).map { "REG_INFO$it" })
         listNo.addAll((0..25).map { "REG_CONF$it" })
         listNo.addAll((0..45).map { "REG_DATA$it" })
 
@@ -108,6 +141,7 @@ class TableActivity : ProjectBaseActivity() {
             "主控板软件版本",
             "设备编号",
             "IMEI",
+            "ICCID",
             "目标IP地址",
             "无线电代码",
             "安装人员（手机号）",
@@ -230,6 +264,8 @@ class TableActivity : ProjectBaseActivity() {
 
     private fun reqData() {
         pd.show()
+        listContent.clear()
+        listContent.add("内容")
         BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.TABLE1)
         doDelayTask(1000) {
             BusUtils.post(MsgWhat.SEND_COMMAND, Cmd.TABLE2)
@@ -239,16 +275,4 @@ class TableActivity : ProjectBaseActivity() {
             }
         }
     }
-    //                listContent.add(Utils.byteToASCII(array.sliceArray(3..6)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(7..10)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(11..14)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(15..18)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(19..22)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(23..26)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(27..30)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(31..34)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(35..38)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(39..42)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(43..46)))
-//                listContent.add(Utils.byteToASCII(array.sliceArray(47..50)))
 }

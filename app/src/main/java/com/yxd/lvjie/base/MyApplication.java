@@ -13,9 +13,11 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yxd.baselib.base.BaseApplication;
 import com.yxd.baselib.helper.ExceptionHelper;
 import com.yxd.baselib.view.header.CustomRefreshFooter;
+import com.yxd.lvjie.BuildConfig;
 import com.yxd.lvjie.R;
 import com.yxd.lvjie.bean.MService;
 
@@ -50,7 +52,8 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        ExceptionHelper.getInstance().init();
+//        ExceptionHelper.getInstance().init();
+        CrashReport.initCrashReport(getApplicationContext(), "ae61c0e34e", BuildConfig.DEBUG);
 
     }
 

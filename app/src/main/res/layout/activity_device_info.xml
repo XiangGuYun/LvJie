@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".activity.DeviceInfoActivity">
 
@@ -82,11 +83,28 @@
             android:id="@+id/tvSheBeiBianHao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="lvjie"
             android:textColor="#ff666666"
             android:textSize="14sp"
             android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="80dp"
+            />
+        <com.yxd.baselib.view.comb.YxdButton
+            android:id="@+id/btnModify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:cornerRadius="4dp"
+            app:bgCommonColor="#3C79FB"
+            app:bgPressedColor="#CD3C79FB"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right|center_vertical"
             />
         <View
             android:layout_width="match_parent"
@@ -111,6 +129,35 @@
             />
         <TextView
             android:id="@+id/tvIMEI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#ff666666"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="15dp"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#F7F7FB"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ICCID"
+            android:textColor="#ff333333"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:id="@+id/tvICCID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
@@ -183,10 +230,10 @@
             android:background="#F7F7FB"
             android:layout_gravity="bottom"/>
     </FrameLayout>
-    
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F7F7FB"/>
+        android:background="#F7F7FB" />
 
 </LinearLayout>

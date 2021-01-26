@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.bigkoo.pickerview.builder.TimePickerBuilder
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.DialogUtils
 import com.yxd.baselib.utils.KeyboardUtils
 import com.yxd.lvjie.R
@@ -17,11 +18,13 @@ import com.yxd.lvjie.bean.DeviceDetailBean
 import com.yxd.lvjie.bean.DeviceEditBean
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.dialog.LonLatDialog
+import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_device_detail.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
+import java.math.BigDecimal
 
 /**
  * 设备详情
@@ -58,6 +61,9 @@ class DeviceDetailActivity : ProjectBaseActivity() {
     override fun init(bundle: Bundle?) {
 
         val id = extraStr("id")
+        val pd = DialogUtils.createProgressDialog(this, "正在保存...")
+
+        val mode = extraInt("mode", 0)
 
         tvSubTitle.show().txt("编辑").click {
             if (tvSubTitle.str == "编辑") {
@@ -74,8 +80,9 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                     pipeCaliber = etPipeCaliber.str.trim()
                     installPerson = etInstallPerson.str.trim()
                     company = etCompany.str.trim()
-                    installTime = tvInstallTime.str.reverseFmtDate("yyyy-MM-dd")
+                    installTime = if(tvInstallTime.str.isEmpty()||tvInstallTime.str=="null") null else tvInstallTime.str.reverseFmtDate("yyyy-MM-dd")
                 }
+                pd.show()
                 Req.editDevice(
                     DeviceEditBean(
                         company = etCompany.str,
@@ -96,7 +103,17 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                     )
                 ) {
                     if (it.code == 0) {
-                        "保存成功".toast()
+                        if(mode != currentData.installPattern){
+                            BusUtils.post(MsgWhat.UPDATE_DEVICE_LIST,
+                                currentData.installTime to it.data.toString(),
+                                extraStr("id").toInt(),
+                                currentData.installPattern?:0)
+                        } else {
+                            BusUtils.post(MsgWhat.UPDATE_DEVICE_LIST,
+                                currentData.installTime to it.data.toString(),
+                                extraStr("id").toInt())
+                        }
+
                         closeKeyboard()
                         list.clear()
                         list.addAll(
@@ -108,7 +125,11 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                                 "管道口径：" to "管道口径：${currentData.pipeCaliber}",
                                 "安装人员：" to "安装人员：${currentData.installPerson}",
                                 "公        司：" to "公        司：${currentData.company}",
-                                "安装时间：" to "安装时间：${currentData.installTime?.fmtDate("yyyy-MM-dd")}",
+                                "安装时间：" to "安装时间：${
+                                    if (currentData.installTime == null || currentData.installTime == 0L) "" else currentData.installTime?.fmtDate(
+                                        "yyyy-MM-dd"
+                                    )
+                                }",
                                 "安装模式：" to "安装模式：${getPattern(currentData.installPattern)}",
                                 "安装方式：" to "安装方式：${getModel(currentData.installMode)}"
                             )
@@ -116,6 +137,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                         isEditable = false
                         rvDeviceDetail.update()
                         tvSubTitle.txt("编辑")
+                        pd.dismiss()
                     } else {
                         "保存失败,${it.message}".toast()
                     }
@@ -125,12 +147,12 @@ class DeviceDetailActivity : ProjectBaseActivity() {
 
 
         Req.getDeviceDetail(id) {
-            currentData = it.data
-
-
+            if(it.data==null)
+                return@getDeviceDetail
+            currentData = it.data!!
             tvXingHao.txt("型号：${currentData.equipModel}")
 
-            tvDianLiang.txt("电量：${currentData.power}%")
+            tvDianLiang.txt("电量：${BigDecimal(currentData.power!!).setScale(1, BigDecimal.ROUND_HALF_UP)}%")
 
             tvSheBeiBianHao.txt("设备编号：${currentData.equipNo} ")
 
@@ -143,7 +165,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                 "管道口径：" to "管道口径：${currentData.pipeCaliber}",
                 "安装人员：" to "安装人员：${currentData.installPerson}",
                 "公        司：" to "公        司：${currentData.company}",
-                "安装时间：" to "安装时间：${currentData.installTime?.fmtDate("yyyy-MM-dd")}",
+                "安装时间：" to "安装时间：${if(currentData.installTime==null||currentData.installTime==0L) "" else currentData.installTime?.fmtDate("yyyy-MM-dd")}",
                 "安装模式：" to "安装模式：${getPattern(currentData.installPattern)}",
                 "安装方式：" to "安装方式：${getModel(currentData.installMode)}"
             )
@@ -205,7 +227,11 @@ class DeviceDetailActivity : ProjectBaseActivity() {
                         when (h.tv(R.id.tv1).str) {
                             "安装时间：" -> {
                                 tvInstallTime = tv
-                                tvInstallTime.txt(currentData.installTime?.fmtDate("yyyy-MM-dd"))
+                                tvInstallTime.txt("${
+                                    if (currentData.installTime == null) "" else currentData.installTime?.fmtDate(
+                                        "yyyy-MM-dd"
+                                    )
+                                }")
                                 h.v(R.id.flTV3).click {
                                     KeyboardUtils.closeKeyboard(this)
                                     pvTime.show()

@@ -2,6 +2,7 @@ package com.yxd.lvjie.activity
 
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothDevice.DEVICE_TYPE_LE
 import android.os.Bundle
 import android.os.Message
 import com.yxd.baselib.annotation.Bus
@@ -154,7 +155,8 @@ class DeviceConnectActivity : ProjectBaseActivity() {
     private fun discoverDevices() {
 
         helper.registerSearchReceiver(this, { device ->
-            if (device.name != null && listUnBonded.find { it.address == device.address } == null) {
+            device.type
+            if (device.name != null && listUnBonded.find { it.address == device.address } == null && device.type == DEVICE_TYPE_LE) {
                 if (listBonded.find { it.address == device.address } == null) {
                     listUnBonded.add(device)
                     rvDisconnectDevices.update()

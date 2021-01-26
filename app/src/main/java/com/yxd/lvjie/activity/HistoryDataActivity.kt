@@ -28,8 +28,10 @@ import kotlinx.android.synthetic.main.activity_history_data.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
+import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
 
 /**
  * 历史数据
@@ -38,7 +40,7 @@ import kotlin.collections.ArrayList
 @LayoutId(R.layout.activity_history_data)
 class HistoryDataActivity : ProjectBaseActivity() {
 
-    lateinit var fileDebug:File
+    var count = 0
 
     var dialogSync: ProgressDialog? = null
 
@@ -46,8 +48,6 @@ class HistoryDataActivity : ProjectBaseActivity() {
     fun handle(msg: Message){
         when(msg.what){
             CMD_DEVICE_NO -> {
-                number = msg.obj.toString()
-                number.logD()
                 reqData()
             }
             CMD_DEVICE_NAME -> {
@@ -59,7 +59,7 @@ class HistoryDataActivity : ProjectBaseActivity() {
                 if(msg.obj.toString().trim() == "02 41 01 FF FF 10 4C 06"){
                     // 请求同步历史数据
                     Req.syncHistoryData(dataList.map {
-                        HistoryData(number, name, it)
+                        HistoryData(SPHelper.getEquipNo(), name, it)
                     }){
                         dialogSync!!.dismiss()
                         if(it.code == 0){
@@ -91,13 +91,15 @@ class HistoryDataActivity : ProjectBaseActivity() {
     val dataList = ArrayList<String>()
 
     override fun init(bundle: Bundle?) {
-        fileDebug = FileUtils.newSDCardFile("指令日志.txt")
-        fileDebug.writeText("")
         initView()
     }
 
     private fun initView() {
         tvSubTitle.show().txt("同步").click {
+            if(!HomeActivity.isConnectedDevice){
+                "请先连接设备".toast()
+                return@click
+            }
             dataList.clear()
             if(dialogSync == null){
                 dialogSync = DialogUtils.createProgressDialog(this, "正在同步...")
@@ -110,11 +112,16 @@ class HistoryDataActivity : ProjectBaseActivity() {
 
         tvEndTime.txt("")
 
+        if(HomeActivity.isConnectedDevice)
         CmdUtils.sendCmdForDeviceNumber()
 
         // 查看曲线图
         tvChaKanQuXianTu.click {
-            val url = "http://47.96.4.50/h5/index.html#/show?token=${SPHelper.getToken()}${if(startDate != 0L)"&startTime=${startDate}" else ""}${if(endDate != 0L)"&endTime=${endDate}" else ""}&equipNo=$number&pageSize=${totalPage}"
+            if(!HomeActivity.isConnectedDevice){
+                "请先连接设备".toast()
+                return@click
+            }
+            val url = "http://47.96.4.50/h5/index.html#/show?token=${SPHelper.getToken()}${if(startDate != 0L)"&startTime=${startDate}" else ""}${if(endDate != 0L)"&endTime=${endDate}" else ""}&equipNo=${SPHelper.getEquipNo()}&pageSize=${count}"
             url.logD("YXD_URL")
             LvJieHtmlActivity.start(this, url)
         }
@@ -154,7 +161,6 @@ class HistoryDataActivity : ProjectBaseActivity() {
         }
     }
 
-    private var number: String = ""
     private var name: String = ""
     private var startDate: Long = 0
     private var endDate: Long = 0
@@ -171,12 +177,16 @@ class HistoryDataActivity : ProjectBaseActivity() {
         if (isRefresh) currentPage = 1
         if (isLoadMore) currentPage++
         Req.getHistoryData(
-            equipNo = number,
+            equipNo = SPHelper.getEquipNo(),
             pageNum = currentPage,
             startTime = startDate.toString(),
             endTime = endDate.toString()) {
             callback?.invoke()
             totalPage = it.data?.total?.div(20)!!
+            count = it.data.total
+            if(it.data?.list != null && it.data.list.isNotEmpty()){
+                totalPage = max(totalPage, 1)
+            }
             when {
                 isRefresh -> {
                     listHistory.clear()
@@ -194,8 +204,8 @@ class HistoryDataActivity : ProjectBaseActivity() {
                             listHistory,
                             { h, p, item ->
                                 h.tv(R.id.tv1).txt(item.time?.fmtDate())
-                                h.tv(R.id.tv2).txt("${item.frequency}Hz")
-                                h.tv(R.id.tv3).txt("${item.strength}")
+                                h.tv(R.id.tv2).txt("${BigDecimal(item.frequency!!).setScale(2, BigDecimal.ROUND_HALF_UP) }Hz")
+                                h.tv(R.id.tv3).txt("${BigDecimal(item.strength!!).setScale(2, BigDecimal.ROUND_HALF_UP) }")
                             },
                             {
                                 if (it % 2 == 0) 1 else 0

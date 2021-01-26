@@ -2,6 +2,7 @@ package com.yxd.lvjie.activity
 
 import android.os.Bundle
 import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.listener.OnPageChange
 import com.yxd.baselib.utils.fragment.FragPagerUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
@@ -14,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_device_list.*
  */
 @LayoutId(R.layout.activity_device_list)
 class DeviceListActivity : ProjectBaseActivity() {
+
+    var currentType:DeviceListFragment.Type = DeviceListFragment.Type.QUAN_BU
 
     override fun init(bundle: Bundle?) {
         val tabList = listOf("全部", "固定", "流动", "观察")

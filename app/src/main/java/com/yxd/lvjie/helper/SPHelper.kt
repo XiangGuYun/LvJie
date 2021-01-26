@@ -44,5 +44,13 @@ object SPHelper {
         return SPUtils.getString("equipName", "")
     }
 
+    fun putAdvancedPwd(advancedPwd: String) {
+        SPUtils.put("advancedPwd", advancedPwd)
+    }
+
+    fun getAdvancedPwd(): String {
+        return SPUtils.getString("advancedPwd", "")
+    }
+
 
 }

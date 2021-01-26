@@ -342,7 +342,7 @@ object DialogUtils : ViewEx {
         yesCallback: ((dialog: DialogInterface, text: String) -> Unit)? = null,
         noCallback: ((dialog: DialogInterface) -> Unit)? = null,
         doEditText: ((EditText) -> Unit)? = null,
-        isMaterial: Boolean = true
+        isMaterial: Boolean = false
     ): AlertDialog {
         val builder = if (isMaterial) {
             MaterialAlertDialogBuilder(ctx)
@@ -364,11 +364,13 @@ object DialogUtils : ViewEx {
         }
         if (yes != null) {
             builder.setPositiveButton(yes) { dialog, _ ->
+                dialog.dismiss()
                 yesCallback?.invoke(dialog!!, editText.text.toString())
             }
         }
         if (no != null) {
             builder.setNegativeButton(no) { dialog, _ ->
+                dialog.dismiss()
                 noCallback?.invoke(dialog!!)
             }
         }

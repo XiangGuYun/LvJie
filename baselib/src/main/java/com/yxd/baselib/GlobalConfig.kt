@@ -25,7 +25,7 @@ object GlobalConfig {
      * @return Boolean
      */
     fun isBanLogPrint(): Boolean {
-        return SPUtils.getBool("BanLog", false)
+        return SPUtils.getBool("BanLog", true)
     }
 
     fun setBanLogPrint(enable: Boolean) {

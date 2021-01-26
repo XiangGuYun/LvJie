@@ -14,12 +14,13 @@ import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.ex.BaseEx
 import com.yxd.baselib.utils.DensityUtils
+import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
 
 /**
  * Fragment的基类
  */
-abstract class BaseFragment : Fragment(), BaseEx {
+abstract class BaseFragment : SupportFragment(), BaseEx {
 
     companion object {
         lateinit var gson:Gson

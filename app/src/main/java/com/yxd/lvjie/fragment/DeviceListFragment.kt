@@ -1,26 +1,67 @@
 package com.yxd.lvjie.fragment
 
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import com.yxd.baselib.Holder
+import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
+import com.yxd.baselib.base.BaseActivity
 import com.yxd.baselib.base.BaseFragment
+import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.OK
 import com.yxd.lvjie.R
 import com.yxd.lvjie.activity.DeviceDetailActivity
+import com.yxd.lvjie.activity.LoginActivity
 import com.yxd.lvjie.bean.DeviceListBean
 import com.yxd.lvjie.bean.HistoryDataBean
+import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_history_data.*
 import kotlinx.android.synthetic.main.fragment_device_list.*
+import org.greenrobot.eventbus.Subscribe
 import java.io.Serializable
 
 /**
- *
+ * 设备列表
  * @author
  */
+@Bus
 @LayoutId(R.layout.fragment_device_list)
 class DeviceListFragment : BaseFragment() {
+
+    @Subscribe
+    fun handle(msg:Message){
+        when(msg.what){
+            MsgWhat.UPDATE_DEVICE_LIST->{
+//                val result = list.find { it.id == msg.arg1 }
+//                if(result != null){
+//                    val index = list.indexOf(result)
+//                    list[index].installTime = (msg.obj as Pair<Long, String>).first
+//                    list[index].dataUpdateTime = (msg.obj as Pair<String, String>).second.toLong()
+//                    if(msg.arg2 != -1){
+//                        list.remove(result)
+//                        BusUtils.post(MsgWhat.CHANGE_DEVICE_PATTERN, result, arg1 = msg.arg2)
+//                    }
+//                    refreshDevice.update()
+//                }
+                list.clear()
+                reqData(true)
+            }
+            MsgWhat.CHANGE_DEVICE_PATTERN -> {
+//                val type =  when (arguments!!.getSerializable("type") as Type) {
+//                    Type.QUAN_BU -> OK.OPTIONAL
+//                    Type.GU_DING_DIAN -> "0"
+//                    Type.GUAN_CHA_DIAN -> "2"
+//                    else -> "1"
+//                }
+//                if(msg.arg1.toString() == type){
+//                    list.add(msg.obj as DeviceListBean.Data.Device)
+//                    refreshDevice.update()
+//                }
+            }
+        }
+    }
 
     private fun Holder.setGuDingDian() {
         iv(R.id.ivPoint).sIR(R.mipmap.gudingdian)
@@ -38,6 +79,10 @@ class DeviceListFragment : BaseFragment() {
     }
 
     override fun init() {
+
+    }
+
+    override fun onLazyInitView(savedInstanceState: Bundle?) {
         reqData()
     }
 
@@ -64,6 +109,7 @@ class DeviceListFragment : BaseFragment() {
             callback?.invoke()
             if(it.data?.list != null){
                 totalPage = it.data.total!!.div(10)+1
+//                "加了${it.data.list.size}条数据".toast()
                 list.addAll(it.data.list)
                 refreshDevice.set({ wrap ->
                     wrap.generate(
@@ -79,7 +125,7 @@ class DeviceListFragment : BaseFragment() {
                             h.tv(R.id.tvInstallDate).txt("安装时间：${item.installTime?.fmtDate("yyyy-MM-dd")}")
                             h.tv(R.id.tvDataUpdateDate).txt("数据更新时间：${item.dataUpdateTime?.fmtDate("yyyy-MM-dd HH:mm:ss")}")
                             h.itemClick {
-                                goTo<DeviceDetailActivity>("id" to item.id.toString())
+                                goTo<DeviceDetailActivity>("id" to item.id.toString(), "mode" to (item.installPattern?:0))
                             }
                         }, null, R.layout.item_device_list
                     )
@@ -95,6 +141,7 @@ class DeviceListFragment : BaseFragment() {
                     } else {
                         reqData(isLoadMore = true) {
                             it.finishLoadMore()
+                            refreshDevice.rv.layoutManager?.scrollToPosition(list.lastIndex)
                         }
                     }
                 })

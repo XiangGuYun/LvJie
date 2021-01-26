@@ -1,7 +1,9 @@
 package com.yxd.lvjie.net
 
+import com.google.gson.Gson
 import com.yxd.baselib.utils.MD5Utils
 import com.yxd.baselib.utils.OK
+import com.yxd.baselib.utils.ToastUtils
 import com.yxd.lvjie.bean.*
 import com.yxd.lvjie.helper.SPHelper
 
@@ -139,17 +141,38 @@ object Req {
         })
     }
 
+    /**
+     * 获取所有设备
+     * @param callback Function1<AllDevices, Unit>
+     */
     fun getAllDevices(callback: (AllDevices) -> Unit) {
         OkUtils.get<AllDevices>(URL.ALL_DEVICES, {
             callback.invoke(it)
         })
     }
 
+    /**
+     * 同步历史数据
+     * @param dataList List<HistoryData>
+     * @param callback Function1<DeviceMarkEditBean, Unit>
+     */
     fun syncHistoryData(dataList: List<HistoryData>, callback: (DeviceMarkEditBean) -> Unit) {
         OkUtils.post<DeviceMarkEditBean>("/system/history/app/add", dataList) {
             callback.invoke(it)
         }
     }
+
+    /**
+     * 修改设备名称
+     * @param newName String
+     * @param callback Function1<Any, Unit>
+     */
+    fun modifyDeviceName(newName: String, callback: (Any) -> Unit){
+        OkUtils.postForm<Any>("/system/equip/app/editNo", {
+            callback.invoke(it)
+        }, "imei" to SPHelper.getEquipNo(), "equipNo" to newName)
+    }
+
 
 
 }

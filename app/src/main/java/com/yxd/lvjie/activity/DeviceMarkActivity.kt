@@ -56,23 +56,25 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             MsgWhat.CMD_STARTED_FREQ -> {
                 // 标定频率
                 tvMarkFreq.txt("${msg.obj.toString()}Hz")
-                // 标定值
-                tvMarkNumber.txt(
-                    (tvMarkStrength.str.toBigDecimal().divide(
-                        tvStrength.str.replace("原始强度：", "").toBigDecimal(),
-                        2,
-                        BigDecimal.ROUND_HALF_UP
-                    )).toString()
-                )
-                pdRefresh.dismiss()
             }
             MsgWhat.CMD_STARTED_VALUE -> {
-                // 标定强度
+                // 标定值
                 tvMarkStrength.txt("${msg.obj}")
             }
             MsgWhat.ORIGIN_STRENGTH -> {
                 // 原始强度
                 tvStrength.txt("原始强度：${msg.obj}")
+            }
+            MsgWhat.CMD_STARTED_TEST_VALUE -> {
+                // 标定测试值
+                // 标定系数
+                tvMarkNumber.txt(
+                    (tvMarkStrength.str.toBigDecimal().divide(msg.obj.toString().toBigDecimal(),
+                        2,
+                        BigDecimal.ROUND_HALF_UP
+                    )).toString()
+                )
+                pdRefresh.dismiss()
             }
         }
     }
@@ -161,7 +163,8 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             pd.show()
             Req.editDeviceMark(
                 DeviceMarkEditJson(
-                    equipNo = SPHelper.getEquipNo(),
+                    equipNo = SPHelper.getEquipName(),
+                    imei = SPHelper.getEquipNo(),
                     frequency = tvFreq.str.replace("Hz", "").replace("频率：", ""),
                     number = selectedIndex + 1,
                     ratio = (tvMarkStrength.str.toBigDecimal().divide(

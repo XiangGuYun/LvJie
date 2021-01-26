@@ -74,6 +74,9 @@ class HomeActivity : BaseActivity() {
 
     companion object {
 
+        /**
+         * 是否已连接设备
+         */
         var isConnectedDevice = false
 
         /**
@@ -167,6 +170,14 @@ class HomeActivity : BaseActivity() {
                     Cmd.STARTED_TEST_VALUE10 -> "标准测试值10"
                     else -> ""
                 }
+                when (msg.arg1) {
+                    100 -> {
+                        cmdType = "写入时间"
+                    }
+                    200 -> {
+                        cmdType = "修改设备名"
+                    }
+                }
                 val array = Utils.hexStringToByteArray(command)
                 writeCharacteristic(writeCharacteristic, array)
             }
@@ -179,7 +190,7 @@ class HomeActivity : BaseActivity() {
             { h, p, item ->
                 h.iv(R.id.ivIcon).sIR(item.first)
                 h.tv(R.id.tvName).txt(item.second)
-                h.v(R.id.item).click {
+                h.v(R.id.item).click(2) {
                     when (item.second) {
                         "设备连接" -> goTo<DeviceConnectActivity>()
                         "设备列表" -> goTo<DeviceListActivity>()
@@ -196,7 +207,7 @@ class HomeActivity : BaseActivity() {
             { h, p, item ->
                 h.iv(R.id.ivIcon).sIR(item.first)
                 h.tv(R.id.tvName).txt(item.second)
-                h.itemClick {
+                h.itemClick(2) {
                     when (item.second) {
                         "地图分布" -> goTo<MapActivity>()
                     }
@@ -242,6 +253,10 @@ class HomeActivity : BaseActivity() {
             BluetoothLeService.setCharacteristicNotification(characteristic, true)
         }
     }
+
+    var listDeviceInfo =  byteArrayOf().toMutableList()
+
+    var listTable1 = byteArrayOf().toMutableList()
 
     /**
      * 接收GATT通讯状态的广播接收器
@@ -297,8 +312,17 @@ class HomeActivity : BaseActivity() {
                             formatMsgContent(array)?.logD("YXD_Cmd", "收到了反馈：字节数组长度是${array.size} ")
                             val hex = Utils.ByteArraytoHex(array).replace(" ", "")
                             when (cmdType) {
+                                "修改设备名"->{
+                                    BusUtils.post(MsgWhat.CHANGE_DEVICE_NAME_DONE)
+                                }
+                                "写入时间"->{
+                                    BusUtils.post(MsgWhat.WRITE_TIME_DONE)
+                                }
                                 "表1" -> {
-                                    BusUtils.post(MsgWhat.CMD_TABLE1, array)
+                                    listTable1.addAll(array.toList())
+                                    if(array.size != 100){
+                                        BusUtils.post(MsgWhat.CMD_TABLE1, listTable1.toByteArray())
+                                    }
                                 }
                                 "表2" -> {
                                     BusUtils.post(MsgWhat.CMD_TABLE2, array)
@@ -323,31 +347,14 @@ class HomeActivity : BaseActivity() {
                                 }
                                 "设备信息" -> {
                                     if (array.size == 100) {
-                                        BusUtils.post(
-                                            MsgWhat.CMD_DEVICE_INFO_1,
-                                            Utils.byteToASCII(array.sliceArray(2..19))
-                                        )
-                                        BusUtils.post(
-                                            MsgWhat.CMD_DEVICE_INFO_2,
-                                            Utils.byteToASCII(array.sliceArray(23..38))
-                                        )
-                                        BusUtils.post(
-                                            MsgWhat.CMD_DEVICE_INFO_3,
-                                            Utils.byteToASCII(array.sliceArray(43..61))
-                                        )
-                                        BusUtils.post(
-                                            MsgWhat.CMD_DEVICE_INFO_4,
-                                            Utils.byteToASCII(array.sliceArray(63..77))
-                                        )
-                                        BusUtils.post(
-                                            MsgWhat.CMD_DEVICE_INFO_5,
-                                            Utils.byteToASCII(array.sliceArray(83..97))
-                                        )
+                                        listDeviceInfo.addAll(array.toList())
                                     } else {
+                                        listDeviceInfo.addAll(array.toList())
                                         BusUtils.post(
                                             MsgWhat.CMD_DEVICE_INFO_6,
-                                            Utils.byteToASCII(array.sliceArray(0..20))
+                                            listDeviceInfo.toByteArray()
                                         )
+                                        listDeviceInfo.clear()
                                     }
                                 }
                                 "设备唤醒时间" -> {
@@ -387,14 +394,14 @@ class HomeActivity : BaseActivity() {
                                 "设备编号" -> {
                                     BusUtils.post(
                                         MsgWhat.CMD_DEVICE_NO,
-                                        String(array.sliceArray(23..37))
+                                        Utils.byteToASCII(array.sliceArray(23..42))
                                     )
-                                    SPHelper.putEquipNo(String(array.sliceArray(23..37)))
+                                    SPHelper.putEquipNo(Utils.byteToASCII(array.sliceArray(23..42)))
                                     BusUtils.post(
                                         MsgWhat.CMD_DEVICE_NAME,
-                                        String(array.sliceArray(3..20))
+                                        Utils.byteToASCII(array.sliceArray(3..22))
                                     )
-                                    SPHelper.putEquipName(String(array.sliceArray(23..37)))
+                                    SPHelper.putEquipName( Utils.byteToASCII(array.sliceArray(3..22)))
                                 }
                                 "IMEI" -> {
                                     if (array.size > 23) {
@@ -482,6 +489,7 @@ class HomeActivity : BaseActivity() {
             BluetoothLeService.disconnect()
         }
         unregisterReceiver(mGattUpdateReceiver)
+        SPHelper.putAdvancedPwd("")
     }
 
     override fun onBackPressedSupport() {

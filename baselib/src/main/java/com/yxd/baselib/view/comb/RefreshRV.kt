@@ -19,12 +19,14 @@ class RefreshRV @JvmOverloads constructor(
 ) :
     SmartRefreshLayout(context, attrs, defStyleAttr), BaseEx {
 
-    private val rv = RecyclerView(context)
+     val rv = RecyclerView(context)
 
     init {
         rv.lp(SmartRefreshLayout.LayoutParams(MP, MP))
         addView(rv)
     }
+
+
 
     fun set(
         getWrap: (RVUtils) -> Unit,

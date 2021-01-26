@@ -11,7 +11,9 @@ import com.yxd.lvjie.R
 import kotlinx.android.synthetic.main.activity_html.*
 import kotlinx.android.synthetic.main.header.*
 
-
+/**
+ * 网页
+ */
 @LayoutId(R.layout.activity_html)
 class LvJieHtmlActivity : BaseWebActivity() {
 
@@ -22,7 +24,7 @@ class LvJieHtmlActivity : BaseWebActivity() {
         }
 
         setOnGetTitle {
-            tvTitle.txt(it)
+            tvTitle.txt("历史数据曲线")
         }
 
         setWebViewLP {

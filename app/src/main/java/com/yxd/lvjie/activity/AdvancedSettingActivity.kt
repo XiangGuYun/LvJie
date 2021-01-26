@@ -1,11 +1,11 @@
 package com.yxd.lvjie.activity
 
-import android.app.TabActivity
 import android.os.Bundle
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.dialog.ProjectDialog
+import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.advanced_settings.*
 import kotlinx.android.synthetic.main.enter_advanced_settings.*
@@ -22,6 +22,13 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
         llEnterPassword.setOnTouchListener { v, event ->
             true
         }
+
+        if(SPHelper.getAdvancedPwd().isNotEmpty()){
+            closeKeyboard()
+            tvTitle.text = "高级设置"
+            llEnterPassword.gone()
+        }
+
         btnEnter.click {
             if (etPassword.isEmpty) {
                 "请输入密码".toast()
@@ -29,12 +36,12 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
             }
             Req.verifyPassword(etPassword.str) {
                 if (it.code == 0) {
-                    closeKeyboard()
+                    SPHelper.putAdvancedPwd(etPassword.str)
                     tvTitle.text = "高级设置"
                     llEnterPassword.gone()
                 } else {
                     ProjectDialog(this).setInfo(
-                        "密码输入错误，请输入正确的密码",
+                        it.message.toString(),
                         "确定", false
                     ) {
                         it.dismiss()
@@ -55,7 +62,9 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
             }
         }, null, R.layout.item_advanced_setting)
 
-        openKeyboardDelay(etPassword, 100)
+        if(SPHelper.getAdvancedPwd().isEmpty()){
+            openKeyboardDelay(etPassword, 100)
+        }
 
     }
 

@@ -6,4 +6,5 @@ data class DeviceMarkEditJson(
     val number: Int = 0,
     val ratio: String = "",
     val strength: String = "",
+    val imei: String = ""
 )

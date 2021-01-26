@@ -10,11 +10,11 @@ data class DeviceListBean(
         val total: Int? = null
     ) {
         data class Device(
-            val dataUpdateTime: Long? = null,
+            var dataUpdateTime: Long? = null,
             val equipNo: String? = null,
             val id: Int? = null,
             val installPattern: Int? = null,
-            val installTime: Long? = null,
+            var installTime: Long? = null,
             val latitude: String? = null,
             val longitude: String? = null,
             val power: Int? = null

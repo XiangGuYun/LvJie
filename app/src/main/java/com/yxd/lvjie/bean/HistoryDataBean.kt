@@ -10,7 +10,7 @@ data class HistoryDataBean(
         val total: Int? = null
     ) {
         data class History(
-            val frequency: Int? = null,
+            val frequency: Double? = null,
             val strength: Double? = null,
             val time: Long? = null
         )

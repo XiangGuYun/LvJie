@@ -24,7 +24,7 @@ object BusUtils {
     /**
      * 发送普通消息
      */
-    fun post(what: Int, obj: Any? = null, arg1: Int = 0, arg2: Int = 0) {
+    fun post(what: Int, obj: Any? = null, arg1: Int = -1, arg2: Int = -1) {
         val msg = Message.obtain()
         msg.what = what
         if (obj != null) msg.obj = obj

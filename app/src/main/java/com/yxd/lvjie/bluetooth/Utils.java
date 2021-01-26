@@ -304,9 +304,13 @@ public class Utils{
         StringBuffer sb = new StringBuffer();
         for (byte byteChar : array) {
             if (byteChar >= 32 && byteChar < 127) {
-                sb.append(String.format("%c", byteChar));
+                if(byteChar != 0x00){
+                    sb.append(String.format("%c", byteChar));
+                }
             } else {
-                sb.append(String.format("%d ", byteChar & 0xFF)); // to convert
+                if(byteChar != 0x00){
+                    sb.append(String.format("%d ", byteChar & 0xFF)); // to convert
+                }
                 // >127 to
                 // positive
                 // value

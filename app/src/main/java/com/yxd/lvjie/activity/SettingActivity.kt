@@ -164,10 +164,18 @@ class SettingActivity : ProjectBaseActivity() {
                                             dialogProgress.progress = 100.times(it).toInt()
                                         }
                                     }.show()
+                                } else {
+//                                    "当前已经是最新版本！".toast()
+                                   runOnUiThread {
+                                       ProjectDialog(this).setInfo("当前已经是最新版本", "确认", false){
+                                           it.dismiss()
+                                       }.show()
+                                   }
                                 }
                             }
                         }
                         "设备信息" -> {
+//                            goTo<DeviceInfoActivity>()
                             if (HomeActivity.isConnectedDevice)
                                 goTo<DeviceInfoActivity>()
                             else

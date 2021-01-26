@@ -50,8 +50,8 @@ object Cmd {
     // 标定频率1
     val STARTED_FREQ1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x15, 0x00, 0x02))
     // 标定值1
-    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02), true)
-    // 标定测试值1
+    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02))
+    // 标定测试值1 "02 03 01 19 00 02 14 03"
     val STARTED_TEST_VALUE1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x19, 0x00, 0x02))
 
     // 标定频率2
