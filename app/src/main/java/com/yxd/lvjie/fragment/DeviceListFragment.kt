@@ -2,22 +2,16 @@ package com.yxd.lvjie.fragment
 
 import android.os.Bundle
 import android.os.Message
-import android.util.Log
 import com.yxd.baselib.Holder
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
-import com.yxd.baselib.base.BaseActivity
 import com.yxd.baselib.base.BaseFragment
-import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.OK
 import com.yxd.lvjie.R
 import com.yxd.lvjie.activity.DeviceDetailActivity
-import com.yxd.lvjie.activity.LoginActivity
 import com.yxd.lvjie.bean.DeviceListBean
-import com.yxd.lvjie.bean.HistoryDataBean
 import com.yxd.lvjie.constant.MsgWhat
 import com.yxd.lvjie.net.Req
-import kotlinx.android.synthetic.main.activity_history_data.*
 import kotlinx.android.synthetic.main.fragment_device_list.*
 import org.greenrobot.eventbus.Subscribe
 import java.io.Serializable
@@ -33,32 +27,10 @@ class DeviceListFragment : BaseFragment() {
     @Subscribe
     fun handle(msg:Message){
         when(msg.what){
-            MsgWhat.UPDATE_DEVICE_LIST->{
-//                val result = list.find { it.id == msg.arg1 }
-//                if(result != null){
-//                    val index = list.indexOf(result)
-//                    list[index].installTime = (msg.obj as Pair<Long, String>).first
-//                    list[index].dataUpdateTime = (msg.obj as Pair<String, String>).second.toLong()
-//                    if(msg.arg2 != -1){
-//                        list.remove(result)
-//                        BusUtils.post(MsgWhat.CHANGE_DEVICE_PATTERN, result, arg1 = msg.arg2)
-//                    }
-//                    refreshDevice.update()
-//                }
+            // 更新设备列表
+            MsgWhat.UPDATE_DEVICE_LIST -> {
                 list.clear()
                 reqData(true)
-            }
-            MsgWhat.CHANGE_DEVICE_PATTERN -> {
-//                val type =  when (arguments!!.getSerializable("type") as Type) {
-//                    Type.QUAN_BU -> OK.OPTIONAL
-//                    Type.GU_DING_DIAN -> "0"
-//                    Type.GUAN_CHA_DIAN -> "2"
-//                    else -> "1"
-//                }
-//                if(msg.arg1.toString() == type){
-//                    list.add(msg.obj as DeviceListBean.Data.Device)
-//                    refreshDevice.update()
-//                }
             }
         }
     }
@@ -88,8 +60,18 @@ class DeviceListFragment : BaseFragment() {
 
     private var currentPage = 1
     private var totalPage = 1
+
+    /**
+     * 设备列表
+     */
     private val list = ArrayList<DeviceListBean.Data.Device>()
 
+    /**
+     * 请求设备列表数据
+     * @param isRefresh Boolean
+     * @param isLoadMore Boolean
+     * @param callback Function0<Unit>?
+     */
     private fun reqData(
         isRefresh: Boolean = false,
         isLoadMore: Boolean = false,
@@ -109,7 +91,6 @@ class DeviceListFragment : BaseFragment() {
             callback?.invoke()
             if(it.data?.list != null){
                 totalPage = it.data.total!!.div(10)+1
-//                "加了${it.data.list.size}条数据".toast()
                 list.addAll(it.data.list)
                 refreshDevice.set({ wrap ->
                     wrap.generate(
@@ -160,8 +141,14 @@ class DeviceListFragment : BaseFragment() {
         }
     }
 
+    /**
+     * 设备类型
+     */
     enum class Type : Serializable {
-        QUAN_BU, GU_DING_DIAN, LIU_DONG_DIAN, GUAN_CHA_DIAN
+        QUAN_BU,
+        GU_DING_DIAN,
+        LIU_DONG_DIAN,
+        GUAN_CHA_DIAN
     }
 
 }

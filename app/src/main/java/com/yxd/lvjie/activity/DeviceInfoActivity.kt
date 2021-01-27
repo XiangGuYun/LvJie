@@ -35,7 +35,8 @@ class DeviceInfoActivity : ProjectBaseActivity() {
     @Subscribe
     fun handle(msg: Message) {
         when (msg.what) {
-            CMD_DEVICE_INFO_6->{
+            // 处理设备返回的数据
+            CMD_DEVICE_INFO_6 -> {
                 val byteArray = msg.obj as ByteArray
                 tvZhuKongBanYingJianXinXi.txt(byteArray.sliceArray(3..22).byteArrayToASCII())
                 tvZhuKongBanRuanJianBanBen.txt(byteArray.sliceArray(23..42).byteArrayToASCII())
@@ -45,7 +46,8 @@ class DeviceInfoActivity : ProjectBaseActivity() {
                 tvMuBiaoIpDiZhi.txt(byteArray.sliceArray(103..122).byteArrayToASCII())
                 tvWuXianDianDaiMa.txt(byteArray.sliceArray(123..142).byteArrayToASCII())
             }
-            MsgWhat.CHANGE_DEVICE_NAME_DONE->{
+            // 修改设备名称成功之后的处理
+            MsgWhat.CHANGE_DEVICE_NAME_DONE -> {
                 dialogProgress.dismiss()
                 "修改成功".toast()
                 SPHelper.putEquipName(currentDeviceName)
@@ -82,6 +84,7 @@ class DeviceInfoActivity : ProjectBaseActivity() {
             }
         )
 
+        // 修改设备编号
         btnModify.click {
             dialog.show()
             KeyboardUtils.openKeyboardDelay(this, 500)

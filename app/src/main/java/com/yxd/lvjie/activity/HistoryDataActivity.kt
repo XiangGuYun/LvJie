@@ -9,8 +9,6 @@ import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.DialogUtils
-import com.yxd.baselib.utils.FileUtils
-import com.yxd.baselib.utils.TimerUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.HistoryData
@@ -22,12 +20,10 @@ import com.yxd.lvjie.constant.MsgWhat.CMD_DEVICE_NO
 import com.yxd.lvjie.constant.MsgWhat.CMD_HISTORY_DATA
 import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.net.Req
-import com.yxd.lvjie.net.URL
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_history_data.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
-import java.io.File
 import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
@@ -56,13 +52,13 @@ class HistoryDataActivity : ProjectBaseActivity() {
             }
             CMD_HISTORY_DATA -> {
                 msg.obj.logD("YXD_MESS")
-                if(msg.obj.toString().trim() == "02 41 01 FF FF 10 4C 06"){
+                if (msg.obj.toString().trim() == "02 41 01 FF FF 10 4C 06") {
                     // 请求同步历史数据
                     Req.syncHistoryData(dataList.map {
                         HistoryData(SPHelper.getEquipNo(), name, it)
-                    }){
+                    }) {
                         dialogSync!!.dismiss()
-                        if(it.code == 0){
+                        if (it.code == 0) {
                             "同步成功".toast()
                         } else {
                             msg.toast()
@@ -72,23 +68,14 @@ class HistoryDataActivity : ProjectBaseActivity() {
                     // 添加数据
                     dataList.add(msg.obj.toString())
                 }
-
-//                val size = dataList.size
-//                doDelayTask(1000){
-//                    if(size == dataList.size){
-//                        "接收完毕".logD()
-//                        Req.syncHistoryData(dataList.map {
-//                            HistoryData(number, name, it)
-//                        }){
-//
-//                        }
-//                    }
-//                }
             }
         }
     }
-    
-    val dataList = ArrayList<String>()
+
+    /**
+     * 用于接收同步历史数据的列表
+     */
+    private val dataList = ArrayList<String>()
 
     override fun init(bundle: Bundle?) {
         initView()
@@ -96,7 +83,7 @@ class HistoryDataActivity : ProjectBaseActivity() {
 
     private fun initView() {
         tvSubTitle.show().txt("同步").click {
-            if(!HomeActivity.isConnectedDevice){
+            if (!HomeActivity.isConnectedDevice) {
                 "请先连接设备".toast()
                 return@click
             }
@@ -161,14 +148,42 @@ class HistoryDataActivity : ProjectBaseActivity() {
         }
     }
 
+    /**
+     * 设备名称
+     */
     private var name: String = ""
+
+    /**
+     * 开始时间
+     */
     private var startDate: Long = 0
+
+    /**
+     * 结束时间
+     */
     private var endDate: Long = 0
 
+    /**
+     * 当前页
+     */
     private var currentPage = 1
+
+    /**
+     * 总页数
+     */
     private var totalPage = 1
+
+    /**
+     * 历史数据列表
+     */
     private val listHistory = ArrayList<HistoryDataBean.Data.History>()
 
+    /**
+     * 请求历史数据
+     * @param isRefresh Boolean 刷新操作
+     * @param isLoadMore Boolean 加载操作
+     * @param callback Function0<Unit>? 处理请求回调
+     */
     private fun reqData(
         isRefresh: Boolean = false,
         isLoadMore: Boolean = false,
@@ -177,10 +192,11 @@ class HistoryDataActivity : ProjectBaseActivity() {
         if (isRefresh) currentPage = 1
         if (isLoadMore) currentPage++
         Req.getHistoryData(
-            equipNo = SPHelper.getEquipNo(),
+            equipNo = SPHelper.getEquipName(),
             pageNum = currentPage,
             startTime = startDate.toString(),
-            endTime = endDate.toString()) {
+            endTime = endDate.toString()
+        ) {
             callback?.invoke()
             totalPage = it.data?.total?.div(20)!!
             count = it.data.total

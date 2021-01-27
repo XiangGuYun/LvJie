@@ -1,9 +1,7 @@
 package com.yxd.lvjie.net
 
-import com.google.gson.Gson
 import com.yxd.baselib.utils.MD5Utils
 import com.yxd.baselib.utils.OK
-import com.yxd.baselib.utils.ToastUtils
 import com.yxd.lvjie.bean.*
 import com.yxd.lvjie.helper.SPHelper
 

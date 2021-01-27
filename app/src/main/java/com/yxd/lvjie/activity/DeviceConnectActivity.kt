@@ -19,7 +19,6 @@ import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_device_connect.*
 import kotlinx.android.synthetic.main.header.*
 import org.greenrobot.eventbus.Subscribe
-import kotlin.collections.ArrayList
 
 
 /**
@@ -29,14 +28,29 @@ import kotlin.collections.ArrayList
 @LayoutId(R.layout.activity_device_connect)
 class DeviceConnectActivity : ProjectBaseActivity() {
 
+    /**
+     * 未绑定设备列表
+     */
     private var listUnBonded = ArrayList<BluetoothDevice>()
 
+    /**
+     * 蓝牙帮助类
+     */
     private lateinit var helper: BluetoothHelper
 
+    /**
+     * "正在连接"弹窗
+     */
     private lateinit var pd: ProgressDialog
 
+    /**
+     * "正在写入当前设备"弹窗
+     */
     private lateinit var pd1: ProgressDialog
 
+    /**
+     * "发送指令失败，正在重连设备"弹窗
+     */
     private lateinit var pd2: ProgressDialog
 
     @Subscribe
@@ -152,8 +166,10 @@ class DeviceConnectActivity : ProjectBaseActivity() {
         discoverDevices()
     }
 
+    /**
+     * 搜索附近设备
+     */
     private fun discoverDevices() {
-
         helper.registerSearchReceiver(this, { device ->
             device.type
             if (device.name != null && listUnBonded.find { it.address == device.address } == null && device.type == DEVICE_TYPE_LE) {
@@ -186,11 +202,14 @@ class DeviceConnectActivity : ProjectBaseActivity() {
             rvConnectedDevices.update()
             rvDisconnectDevices.update()
         })
-        if(!extraBool("reconn", false)){
+        if (!extraBool("reconn", false)) {
             helper.discoverDevices()
         }
     }
 
+    /**
+     * 处理未连接的设备列表
+     */
     private fun doUnBondedDeviceList() {
         rvDisconnectDevices.wrap.generate(
             listUnBonded,
@@ -211,6 +230,9 @@ class DeviceConnectActivity : ProjectBaseActivity() {
         )
     }
 
+    /**
+     * 处理已连接的设备列表
+     */
     private fun doBondedDeviceList() {
         if (listBonded.isEmpty()) tvNoBondedDevice.show()
 
@@ -219,13 +241,6 @@ class DeviceConnectActivity : ProjectBaseActivity() {
             { h, p, it ->
                 h.tv(R.id.tvName).txt(listBonded[p].name)
                 h.tv(R.id.tvAddress).txt(listBonded[p].address)
-                h.itemClick {
-//                    (application as MyApplication).characteristic = BluetoothGattCharacteristic(
-//                        UUID.fromString(
-//                        GattAttributes.USR_SERVICE),-1,-1)
-//                    goTo<GattDetailActivity>()
-//                    goTo<CharacteristicsActivity>("is_usr_service" to true)
-                }
                 h.itemLongClick {
                     BusUtils.post(MsgWhat.SEND_COMMAND, MsgWhat.STOP_NOTIFY)
                     HomeActivity.isConnectedDevice = false

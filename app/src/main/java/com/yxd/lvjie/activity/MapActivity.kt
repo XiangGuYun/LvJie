@@ -19,7 +19,6 @@ import com.yxd.baselib.base.BaseActivity
 import com.yxd.baselib.utils.BusUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.constant.MsgWhat
-import com.yxd.lvjie.dialog.LonLatDialog
 import com.yxd.lvjie.net.Req
 import com.yxd.maplib.MapUtils
 import kotlinx.android.synthetic.main.activity_map.*
@@ -69,13 +68,6 @@ class MapActivity : BaseActivity(), LocationSource, AMapLocationListener,
             myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW)
 
             if (extraBool("isDetail", false)) {
-                val dialogLonLat = LonLatDialog(this)
-//                aMap.setOnMapClickListener {
-//                    dialogLonLat.init(it.longitude.toString(), it.latitude.toString()) { lon, lat ->
-//                        BusUtils.post(MsgWhat.UPDATE_LON_LAT, "$lon,$lat")
-//                        finish()
-//                    }.show()
-//                }
                 ivMarker.show()
                 btnSelect.show()
                 //创建一个导航对话框视图，将其添加到布局中并隐藏，以作为地图标记的Bitmap使用

@@ -1,14 +1,12 @@
 package com.yxd.lvjie.activity
 
 import android.app.ProgressDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
 import com.yxd.baselib.annotation.Bus
 import com.yxd.baselib.annotation.LayoutId
 import com.yxd.baselib.utils.BusUtils
 import com.yxd.baselib.utils.PopupUtils
-import com.yxd.baselib.utils.ShapeUtils
 import com.yxd.lvjie.R
 import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.DeviceMarkEditJson
@@ -34,6 +32,9 @@ class DeviceMarkActivity : ProjectBaseActivity() {
     private lateinit var pdRefresh: ProgressDialog
     private lateinit var pu: PopupUtils
 
+    /**
+     * 当前选择的标定索引值
+     */
     var selectedIndex = 0
 
     @Subscribe
@@ -69,7 +70,8 @@ class DeviceMarkActivity : ProjectBaseActivity() {
                 // 标定测试值
                 // 标定系数
                 tvMarkNumber.txt(
-                    (tvMarkStrength.str.toBigDecimal().divide(msg.obj.toString().toBigDecimal(),
+                    (tvMarkStrength.str.toBigDecimal().divide(
+                        msg.obj.toString().toBigDecimal(),
                         2,
                         BigDecimal.ROUND_HALF_UP
                     )).toString()
@@ -79,14 +81,23 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         }
     }
 
+    /**
+     * 标定频率列表
+     */
     private val listMarkFreqAddress = listOf(
         554, 566, 578, 590, 602, 614, 626, 638, 650, 662
     )
 
+    /**
+     * 标定值列表
+     */
     private val listMarkValueAddress = listOf(
         558, 570, 582, 594, 606, 618, 630, 642, 654, 666
     )
 
+    /**
+     * 标定测试值列表
+     */
     private val listMarkTestValueAddress = listOf(
         562, 574, 586, 598, 610, 622, 634, 646, 658, 670
     )
@@ -124,6 +135,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
         pd.setMessage("正在保存...")
         pd.setCanceledOnTouchOutside(false)
 
+        // 设备标定下拉框
         flMarkPoint.post {
             pu = PopupUtils(this, R.layout.mark_point, flMarkPoint.width to 200.dp)
             val list = (1..10).toList().map { "标定点$it" }
@@ -149,6 +161,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             }
         }
 
+        // 自校准弹窗
         val dialogAutoAdjust = ProjectDialog(this).setInfo(
             "请确认是否开始设备自校准?", "确定", true
         ) {
@@ -156,6 +169,7 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             it.dismiss()
         }
 
+        // 保存设置弹窗
         val dialogSaveSetting = ProjectDialog(this).setInfo(
             "请确认是否保存标定点设置?", "确定", true
         ) {
@@ -209,34 +223,18 @@ class DeviceMarkActivity : ProjectBaseActivity() {
             }
         }
 
-        if(!HomeActivity.isConnectedDevice){
-            tvAutoAdjust.background =  ShapeUtils.getRectangleDrawable(
-                cornerRadius = 4.dp.toFloat(),
-                solidColor = Color.GRAY,
-            )
-            tvSaveSetting.background =  ShapeUtils.getRectangleDrawable(
-                cornerRadius = 4.dp.toFloat(),
-                solidColor = Color.WHITE,
-                strokeColor = Color.GRAY,
-                strokeWidth = 1.dp
-            )
-        }
-
+        // 自校准
         tvAutoAdjust.click {
             if (HomeActivity.isConnectedDevice)
                 dialogAutoAdjust.show()
         }
 
+        // 保存设置
         tvSaveSetting.click {
             if (HomeActivity.isConnectedDevice)
                 dialogSaveSetting.show()
         }
 
     }
-
-    private fun refresh() {
-
-    }
-
 
 }

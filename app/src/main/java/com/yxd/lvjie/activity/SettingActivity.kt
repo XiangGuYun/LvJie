@@ -166,11 +166,11 @@ class SettingActivity : ProjectBaseActivity() {
                                     }.show()
                                 } else {
 //                                    "当前已经是最新版本！".toast()
-                                   runOnUiThread {
-                                       ProjectDialog(this).setInfo("当前已经是最新版本", "确认", false){
-                                           it.dismiss()
-                                       }.show()
-                                   }
+                                    runOnUiThread {
+                                        ProjectDialog(this).setInfo("当前已经是最新版本", "确认", false) {
+                                            it.dismiss()
+                                        }.show()
+                                    }
                                 }
                             }
                         }
@@ -202,6 +202,12 @@ class SettingActivity : ProjectBaseActivity() {
 
     }
 
+    /**
+     * 处理安装APK权限回调
+     * @param requestCode Int
+     * @param resultCode Int
+     * @param data Intent?
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AppUtils.doInOnActivityResult(

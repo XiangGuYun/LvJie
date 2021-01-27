@@ -15,6 +15,9 @@ class ArithmeticSelectActivity : ProjectBaseActivity() {
     override fun init(bundle: Bundle?) {
         val list = listOf("算法1", "算法2", "算法3")
 
+        /**
+         * 当前选择的算法索引值
+         */
         var currentIndex = 0
 
         rvArithmetic.wrap.generate(list, { h, p, item ->

@@ -7,20 +7,38 @@ import com.yxd.lvjie.utils.CmdUtils
  */
 object Cmd {
 
+    /**
+     * 关机
+     */
     const val POWER_OFF = "02 10 00 c9 00 01 02 01 00 A2 A9"
 
+    /**
+     * 寄存器表1
+     */
     const val TABLE1 = "02 03 00 00 00 78 45 DB"
 
+    /**
+     * 寄存器表2
+     */
     const val TABLE2 = "02 03 00 C8 00 13 85 CA"
 
+    /**
+     * 寄存器表3
+     */
     const val TABLE3 = "02 03 00 fa 00 57 24 36"
 
     const val IMEI = "02 03 00 14 00 0a 85 FA"
 
     const val DEVICE_NO = "02 03 00 14 00 14 05 F2"
 
+    /**
+     * 电量
+     */
     const val EQ = "02 03 00 d2 00 02 64 01"
 
+    /**
+     * 强度和频率
+     */
     const val STRENGTH_FREQ = "02 03 00 fa 00 04 64 0b"
 
     /**
@@ -32,25 +50,51 @@ object Cmd {
      * 自校准
      */
     const val AUTO_ADJUST = "02 10 00 c900 01 02 04 00 a1f9"
-    
+
+    /**
+     * 获取历史数据
+     */
     const val GET_HISTORY_DATA = "02 41 01 00 00 10 3D C6"
 
+    /**
+     * 设备唤醒时间
+     */
     const val DEVICE_AWAKE_TIME = "02 03 00 d0 00 02 C5 C1"
 
+    /**
+     * 涉笔信息
+     */
     const val DEVICE_INFO = "02 03 00 00 00 3c 45 E8"
 
+    /**
+     * 读取算法
+     */
     const val READ_ARITHMETIC = "02 03 01 12 00 01 25 C0"
 
-    val WRITE_ARITHMETIC1 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x01))
+    /**
+     * 写入算法1
+     */
+    val WRITE_ARITHMETIC1 =
+        CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x01))
 
-    val WRITE_ARITHMETIC2 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x02))
+    /**
+     * 写入算法2
+     */
+    val WRITE_ARITHMETIC2 =
+        CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x02))
 
-    val WRITE_ARITHMETIC3 = CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x03))
+    /**
+     * 写入算法3
+     */
+    val WRITE_ARITHMETIC3 =
+        CmdUtils.mark(byteArrayOf(0x02, 0x10, 0x01, 0x12, 0x00, 0x01, 0x02, 0x01, 0x03))
 
     // 标定频率1
     val STARTED_FREQ1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x15, 0x00, 0x02))
+
     // 标定值1
-    val STARTED_VALUE1= CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02))
+    val STARTED_VALUE1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x17, 0x00, 0x02))
+
     // 标定测试值1 "02 03 01 19 00 02 14 03"
     val STARTED_TEST_VALUE1 = CmdUtils.mark(byteArrayOf(0x02, 0x03, 0x01, 0x19, 0x00, 0x02))
 

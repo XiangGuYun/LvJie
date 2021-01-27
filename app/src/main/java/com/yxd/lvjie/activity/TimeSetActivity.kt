@@ -36,12 +36,14 @@ class TimeSetActivity : ProjectBaseActivity() {
     }
 
     override fun init(bundle: Bundle?) {
-
+        // 计时器
         timer = TimerUtils.schedule(0, 1000) {
             runOnUiThread {
                 tvCurrentTime.txt(System.currentTimeMillis().fmtDate())
             }
         }
+
+        // 时间选择器
         pd = DialogUtils.createProgressDialog(this, "正在保存...")
         val pvTime = TimePickerBuilder(this)
         { date, v ->
@@ -67,6 +69,7 @@ class TimeSetActivity : ProjectBaseActivity() {
             .setTitleBgColor(Color.WHITE)
             .build()
 
+        // 点击唤醒时间设置
         tvAwakeTimeSet.click {
             pvTime.setDate(Calendar.getInstance().apply {
                 set(this.get(Calendar.YEAR), this.get(Calendar.MONDAY), this.get(Calendar.DAY_OF_MONTH),

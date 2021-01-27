@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.header.*
 class AdvancedSettingActivity : ProjectBaseActivity() {
 
     override fun init(bundle: Bundle?) {
-
+        // 避免点击穿透
         llEnterPassword.setOnTouchListener { v, event ->
             true
         }
@@ -29,11 +29,13 @@ class AdvancedSettingActivity : ProjectBaseActivity() {
             llEnterPassword.gone()
         }
 
+        // 进入
         btnEnter.click {
             if (etPassword.isEmpty) {
                 "请输入密码".toast()
                 return@click
             }
+            // 验证密码
             Req.verifyPassword(etPassword.str) {
                 if (it.code == 0) {
                     SPHelper.putAdvancedPwd(etPassword.str)

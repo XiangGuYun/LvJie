@@ -25,7 +25,7 @@ object CmdUtils {
         val cmdOrigin = byteArrayOf(0x02, 0x10, 0x00, 0x14, 0x00, 0x0a, 0x14)
         val baName = name.toByteArray().toMutableList()
         while (baName.size != 20){
-            baName.add(0, 0x00)
+            baName.add(0x00)
         }
         baName.addAll(0, cmdOrigin.toList())
         val code = mark(baName.toByteArray())

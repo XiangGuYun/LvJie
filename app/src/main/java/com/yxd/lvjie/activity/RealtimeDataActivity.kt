@@ -16,7 +16,6 @@ import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.utils.CmdUtils
 import kotlinx.android.synthetic.main.activity_realtime_data.*
-import kotlinx.android.synthetic.main.item_device_list.*
 import org.greenrobot.eventbus.Subscribe
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -65,7 +64,11 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         sendCmd()
 
         timer = TimerUtils.countdown(Long.MAX_VALUE, 1000, {
-            tvDianQianShiJian.txt("当前时间：${System.currentTimeMillis().fmtDate("yyyy-MM-dd HH:mm:ss")}")
+            tvDianQianShiJian.txt(
+                "当前时间：${
+                    System.currentTimeMillis().fmtDate("yyyy-MM-dd HH:mm:ss")
+                }"
+            )
         })
         timer.start()
 
@@ -74,11 +77,14 @@ class RealtimeDataActivity : ProjectBaseActivity() {
         }
     }
 
+    /**
+     * 发送命令来获取强度，频率，电量
+     */
     private fun sendCmd() {
         dialogRefresh.setMessage("正在获取数据...")
         dialogRefresh.show()
         CmdUtils.sendCmdForStrengthAndFrequency()
-        doDelayTask(2000){
+        doDelayTask(2000) {
             dialogRefresh.dismiss()
             CmdUtils.sendCmdForElectricQuantity()
         }

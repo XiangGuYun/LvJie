@@ -17,8 +17,6 @@ import com.yxd.lvjie.base.ProjectBaseActivity
 import com.yxd.lvjie.bean.DeviceDetailBean
 import com.yxd.lvjie.bean.DeviceEditBean
 import com.yxd.lvjie.constant.MsgWhat
-import com.yxd.lvjie.dialog.LonLatDialog
-import com.yxd.lvjie.dialog.ProjectDialog
 import com.yxd.lvjie.helper.SPHelper
 import com.yxd.lvjie.net.Req
 import kotlinx.android.synthetic.main.activity_device_detail.*
@@ -33,18 +31,59 @@ import java.math.BigDecimal
 @LayoutId(R.layout.activity_device_detail)
 class DeviceDetailActivity : ProjectBaseActivity() {
 
+    /**
+     * 表单列表
+     */
     private lateinit var list: ArrayList<Pair<String, String>>
+
+    /**
+     * 是否可编辑
+     */
     private var isEditable = false
 
+    /**
+     * 记录当前的数据状态
+     */
     private lateinit var currentData: DeviceDetailBean.Data
 
+    /**
+     * 公司
+     */
     private lateinit var etCompany: EditText
+
+    /**
+     * 经纬度
+     */
     private lateinit var etLonLat: TextView
+
+    /**
+     * 安装模式
+     */
     private lateinit var etInstallPerson: EditText
+
+    /**
+     * 安装时间
+     */
     private lateinit var tvInstallTime: TextView
+
+    /**
+     * 管道口径
+     */
     private lateinit var etPipeCaliber: EditText
+
+    /**
+     * 管道材质
+     */
     private lateinit var etPipeMaterial: EditText
+
+    /**
+     * 阀门位置
+     */
     private lateinit var etValveLocation: EditText
+
+    /**
+     * 阀门编号
+     */
     private lateinit var etValveNo: EditText
 
     @Subscribe
@@ -145,7 +184,7 @@ class DeviceDetailActivity : ProjectBaseActivity() {
             }
         }
 
-
+        // 获取设备详情
         Req.getDeviceDetail(id) {
             if(it.data==null)
                 return@getDeviceDetail

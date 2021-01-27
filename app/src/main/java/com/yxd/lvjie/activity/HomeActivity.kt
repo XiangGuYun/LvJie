@@ -41,10 +41,24 @@ import kotlin.collections.ArrayList
 @Bus
 @LayoutId(R.layout.activity_device_manager)
 class HomeActivity : BaseActivity() {
-
+    /**
+     * 当前连接的设备MAC地址
+     */
     private lateinit var currentDevAddress: String
+
+    /**
+     * 当前了解的设备名称
+     */
     private lateinit var currentDevName: String
+
+    /**
+     * 通知GATT
+     */
     private lateinit var notifyCharacteristic: BluetoothGattCharacteristic
+
+    /**
+     * 写入GATT
+     */
     private lateinit var writeCharacteristic: BluetoothGattCharacteristic
 
     private val listDeviceManager = listOf(
